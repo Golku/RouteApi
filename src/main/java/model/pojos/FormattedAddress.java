@@ -9,6 +9,7 @@ public class FormattedAddress {
     private String city;
     private String country;
     private boolean isBusiness;
+    private boolean isInvalid;
 
     public String getRawAddress() {
         return rawAddress;
@@ -64,5 +65,13 @@ public class FormattedAddress {
 
     public void setIsBusiness(boolean business) {
         isBusiness = business;
+    }
+
+    public boolean isInvalid() {
+        return isInvalid;
+    }
+
+    public void setInvalid(boolean invalid) {
+        isInvalid = invalid;
     }
 }

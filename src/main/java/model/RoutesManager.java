@@ -1,9 +1,9 @@
 package model;
 
 import model.pojos.FormattedAddress;
+import model.pojos.OrganizedRoute;
 import model.pojos.SingleDrive;
-import model.pojos.SingleOrganizedRoute;
-import model.pojos.SingleUnOrganizedRoute;
+import model.pojos.UnOrganizedRoute;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,12 +13,13 @@ import java.util.Map;
 public class RoutesManager {
 
     private List<String> routeCodeList = new ArrayList<>();
-    private static Map<String, SingleUnOrganizedRoute> UnorganizedRoutes = new HashMap<>();
-    private static Map<String, SingleOrganizedRoute> organizedRoutes = new HashMap<>();
+    private static Map<String, Boolean> routesOrganizingState = new HashMap<>();
+    private static Map<String, UnOrganizedRoute> unorganizedRoutes = new HashMap<>();
+    private static Map<String, OrganizedRoute> organizedRoutes = new HashMap<>();
 
     public void createUnorganizedRoute(String routeCode, Map<String, List<FormattedAddress>> validatedAddressLists){
 
-        SingleUnOrganizedRoute singleUnOrganizedRoute = new SingleUnOrganizedRoute(
+        UnOrganizedRoute UnOrganizedRoute = new UnOrganizedRoute(
                 routeCode,
                 validatedAddressLists.get("validAddresses"),
                 validatedAddressLists.get("privateAddresses"),
@@ -28,12 +29,12 @@ public class RoutesManager {
 
         routeCodeList.add(routeCode);
 
-//        System.out.println(singleUnOrganizedRoute.getAllValidatedAddressesList().size());
-//        System.out.println(singleUnOrganizedRoute.getPrivateAddressList().size());
-//        System.out.println(singleUnOrganizedRoute.getBusinessAddressList().size());
-//        System.out.println(singleUnOrganizedRoute.getWrongAddressesList().size());
+//        System.out.println(UnOrganizedRoute.getAllValidatedAddressesList().size());
+//        System.out.println(UnOrganizedRoute.getPrivateAddressList().size());
+//        System.out.println(UnOrganizedRoute.getBusinessAddressList().size());
+//        System.out.println(UnOrganizedRoute.getWrongAddressesList().size());
 
-        UnorganizedRoutes.put(routeCode, singleUnOrganizedRoute);
+        unorganizedRoutes.put(routeCode, UnOrganizedRoute);
 
     }
 
@@ -43,7 +44,7 @@ public class RoutesManager {
         int businessAddressesCount = getSingleUnorganizedRoute(routeCode).getBusinessAddressList().size();
         int wrongAddressesCount = getSingleUnorganizedRoute(routeCode).getWrongAddressesList().size();
 
-        SingleOrganizedRoute singleOrganizedRoute = new SingleOrganizedRoute(
+        OrganizedRoute organizedRoute = new OrganizedRoute(
                 routeCode,
                 privateAddressesCount,
                 businessAddressesCount,
@@ -51,23 +52,22 @@ public class RoutesManager {
                 organizedRouteList
         );
 
-        organizedRoutes.put(routeCode, singleOrganizedRoute);
+        organizedRoutes.put(routeCode, organizedRoute);
     }
 
-    public static SingleUnOrganizedRoute getSingleUnorganizedRoute(String routeCode){
-        return UnorganizedRoutes.get(routeCode);
+    public UnOrganizedRoute getSingleUnorganizedRoute(String routeCode){
+        return unorganizedRoutes.get(routeCode);
     }
 
-    public static SingleOrganizedRoute getSingleOrganizedRoute(String routeCode){
+    public OrganizedRoute getSingleOrganizedRoute(String routeCode){
         return organizedRoutes.get(routeCode);
     }
 
-    public Map getAllUnorganizedRoutes(){
-        return UnorganizedRoutes;
+    public boolean getRoutesOrganizingState(String routeCode) {
+        return routesOrganizingState.get(routeCode);
     }
 
-    public Map getAllOrganizedRoutes(){
-        return organizedRoutes;
+    public void setRoutesOrganizingState(String routeCode, boolean state) {
+        routesOrganizingState.put(routeCode, state);
     }
-
 }

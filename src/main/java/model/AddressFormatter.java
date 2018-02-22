@@ -7,6 +7,14 @@ public class AddressFormatter {
     /**
      * Formats the given address to a standard format of  "street, postCode city, country"
      */
+
+    public FormattedAddress addInvalidAddress(String address){
+        FormattedAddress formattedAddress = new FormattedAddress();
+        formattedAddress.setRawAddress(address);
+        formattedAddress.setInvalid(true);
+        return formattedAddress;
+    }
+
     public FormattedAddress formatAddress(String address){
 
         FormattedAddress formattedAddress;

@@ -1,15 +1,13 @@
 package controller;
 
 import model.*;
-import model.pojos.FormattedAddress;
-import model.pojos.SingleDrive;
-import model.pojos.SingleOrganizedRoute;
+import model.pojos.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MainController {
+public class Controller {
 
     private RoutesManager routesManager;
     private RoutesOrganizer routesOrganizer;
@@ -17,7 +15,7 @@ public class MainController {
     private GoogleMapsApi googleMapsApi;
     private AddressesInformationManager addressesInformationManager;
 
-    public MainController() {
+    public Controller() {
         this.addressFormatter = new AddressFormatter();
         this.googleMapsApi = new GoogleMapsApi(this.addressFormatter);
         this.routesManager = new RoutesManager();
@@ -25,36 +23,58 @@ public class MainController {
         this.addressesInformationManager = new AddressesInformationManager(this.googleMapsApi);
     }
 
-    public void getUnorganizedRoute(String routecode) {
+    public Response getRoute (String routeCode){
+        Response response = new Response();
 
-        int size = routesManager.getSingleUnorganizedRoute(routecode).getAllValidatedAddressesList().size();
-
-        for(int i=0; i<size; i++) {
-            System.out.println(routesManager.getSingleUnorganizedRoute(routecode).getAllValidatedAddressesList().get(i).getRawAddress());
-            System.out.println(routesManager.getSingleUnorganizedRoute(routecode).getAllValidatedAddressesList().get(i).getFormattedAddress());
+        if(routesManager.getRoutesOrganizingState(routeCode)){
+            response.setOrganizingInProgress(true);
+        }else{
+            response.setOrganizingInProgress(false);
+            response.setOrganizedRoute(routesManager.getSingleOrganizedRoute(routeCode));
         }
+
+        return response;
     }
 
-    public void getOrganizedRoute(String routecode) {
+    public void calculateRoute(IncomingRoute route){
 
-        int size = routesManager.getSingleUnorganizedRoute(routecode).getAllValidatedAddressesList().size();
+        routesManager.setRoutesOrganizingState(route.getRouteCode(), true);
 
-        for(int i=0; i<size; i++) {
-            //System.out.println(routesManager.getSingleOrganizedRoute(routecode).getRouteList().get(i).getCompletedAddress());
+        validateAddressList(route.getRouteCode(), route.getAddressList());
+
+        UnOrganizedRoute unOrganizedRoute = routesManager.getSingleUnorganizedRoute(route.getRouteCode());
+
+        unOrganizedRoute.setOrigin(route.getOrigin());
+
+        if(unOrganizedRoute.getWrongAddressesList().size()>0){
+            System.out.println("There are wrong addresses: "+unOrganizedRoute.getWrongAddressesList().size());
+            routesManager.setRoutesOrganizingState(unOrganizedRoute.getRouteCode(), false);
+        }else{
+            organizeRoute(unOrganizedRoute);
         }
+
+//        System.out.println("Validate addresses list size: " +unOrganizedRoute.getAllValidatedAddressesList().size());
+//        System.out.println("Invalid addresses list size: "+ unOrganizedRoute.getWrongAddressesList().size());
+//
+//        System.out.println("");
+//
+//        System.out.println("Valid");
+//        for(int i = 0; i<unOrganizedRoute.getAllValidatedAddressesList().size(); i++){
+//            System.out.println(unOrganizedRoute.getAllValidatedAddressesList().get(i).getRawAddress());
+//            System.out.println(unOrganizedRoute.getAllValidatedAddressesList().get(i).getFormattedAddress());
+//        }
+//        System.out.println("Wrong");
+//        for(int i = 0; i<unOrganizedRoute.getWrongAddressesList().size(); i++){
+//            System.out.println(unOrganizedRoute.getWrongAddressesList().get(i).getRawAddress());
+//        }
+
     }
 
     public void validateAddressList(String routeCode, List<String> addressesList) {
 
         Map<String, List<FormattedAddress>> validatedAddressLists;
 
-        List<FormattedAddress> addressListFormatted = new ArrayList<>();
-
-        for(int i = 0; i<addressesList.size(); i++){
-            addressListFormatted.add(addressFormatter.formatAddress(addressesList.get(i)));
-        }
-
-        validatedAddressLists = addressesInformationManager.validateAddresses(addressListFormatted);
+        validatedAddressLists = addressesInformationManager.validateAddresses(addressesList);
 
         validatedAddressLists.put("businessAddresses", addressesInformationManager.findBusinessAddresses());
 
@@ -67,16 +87,15 @@ public class MainController {
         routesManager.createUnorganizedRoute(routeCode, validatedAddressLists);
     }
 
-    public SingleOrganizedRoute organizeRoute(String routeCode, String origin){
+    public void organizeRoute(UnOrganizedRoute unOrganizedRoute){
 
-        routesOrganizer.setOrigin(origin);
+        routesOrganizer.setOrigin(unOrganizedRoute.getOrigin());
 
-        List<SingleDrive> organizedRouteList = routesOrganizer.organizeRouteClosestAddress(routesManager.getSingleUnorganizedRoute(routeCode));
+        List<SingleDrive> organizedRouteList = routesOrganizer.organizeRouteClosestAddress(unOrganizedRoute);
 
-        routesManager.createOrganizedRoute(routeCode, organizedRouteList);
+        routesManager.createOrganizedRoute(unOrganizedRoute.getRouteCode(), organizedRouteList);
 
-        SingleOrganizedRoute singleOrganizedRoute = routesManager.getSingleOrganizedRoute(routeCode);
-
+        routesManager.setRoutesOrganizingState(unOrganizedRoute.getRouteCode(), false);
 //        System.out.println("private addresses: " + singleOrganizedRoute.getPrivateAddressesCount());
 //        System.out.println("business addresses: " + singleOrganizedRoute.getBusinessAddressesCount());
 //        System.out.println("wrong addresses: " + singleOrganizedRoute.getWrongAddressesCount());
@@ -92,9 +111,6 @@ public class MainController {
 //            System.out.println("Estimated delivery Time: " + singleOrganizedRoute.getRouteList().get(i).getDeliveryTimeHumanReadable());
 //            System.out.println();
 //        }
-
-        return singleOrganizedRoute;
-
     }
 
 }

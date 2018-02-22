@@ -25,15 +25,19 @@ public class GoogleMapsApi {
 
     public FormattedAddress validatedAddress(String address){
 
-        String validatedAddress = null;
+        String verifiedAddress;
         GeocodingResult[] resultsGeo;
+        FormattedAddress formattedAddress = null;
 
         try {
 
             resultsGeo =  GeocodingApi.geocode(context,address).await();
 
             if(resultsGeo.length > 0){
-                validatedAddress = resultsGeo[0].formattedAddress;
+                verifiedAddress = resultsGeo[0].formattedAddress;
+                formattedAddress = addressFormatter.formatAddress(verifiedAddress);
+            }else{
+                formattedAddress = addressFormatter.addInvalidAddress(address);
             }
 
         } catch (ApiException e) {
@@ -44,7 +48,7 @@ public class GoogleMapsApi {
             e.printStackTrace();
         }
 
-        return addressFormatter.formatAddress(validatedAddress);
+        return formattedAddress;
     }
 
     public SingleDrive getDriveInformation(String origin, String destination){

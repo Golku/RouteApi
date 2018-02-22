@@ -45,24 +45,21 @@ public class AddressesInformationManager {
 
     }
 
-    public Map<String, List<FormattedAddress>> validateAddresses(List<FormattedAddress> addressListFormatted){
+    public Map<String, List<FormattedAddress>> validateAddresses(List<String> addressList){
 
-        for(int i=0; i<addressListFormatted.size(); i++){
+        for(int i=0; i<addressList.size(); i++){
 
-            System.out.println("addressRequesteGeo: "+addressListFormatted.get(i).getFormattedAddress());
+            FormattedAddress verifiedAddress = googleMapsApi.validatedAddress(addressList.get(i));
 
-            FormattedAddress validatedAddress = googleMapsApi.validatedAddress(addressListFormatted.get(i).getFormattedAddress());
-
-            if(validatedAddress == null) {
-                System.out.println("Wrong raw: "+addressListFormatted.get(i).getRawAddress());
-                System.out.println("Wrong formatted: "+addressListFormatted.get(i).getFormattedAddress());
-                System.out.println("");
-                wrongAddressList.add(addressListFormatted.get(i));
+            if(verifiedAddress.isInvalid()) {
+//                System.out.println("Wrong: "+verifiedAddress.getRawAddress());
+//                System.out.println("");
+                wrongAddressList.add(verifiedAddress);
             }else{
-                System.out.println("Validated raw: "+validatedAddress.getRawAddress());
-                System.out.println("Validated formatted: "+validatedAddress.getFormattedAddress());
-                System.out.println("");
-                validatedAddressList.add(validatedAddress);
+//                System.out.println("Validated raw: "+verifiedAddress.getRawAddress());
+//                System.out.println("Validated formatted: "+verifiedAddress.getFormattedAddress());
+//                System.out.println("");
+                validatedAddressList.add(verifiedAddress);
             }
 
         }
