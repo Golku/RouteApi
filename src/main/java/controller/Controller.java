@@ -24,35 +24,54 @@ public class Controller {
     }
 
     public Response getRoute (String routeCode){
+
         Response response = new Response();
 
-        if(routesManager.getRoutesOrganizingState(routeCode)){
-            response.setOrganizingInProgress(true);
-        }else{
-            response.setOrganizingInProgress(false);
-            response.setOrganizedRoute(routesManager.getSingleOrganizedRoute(routeCode));
-        }
+        UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(routeCode);
 
+        //If the client ask for the route while the api is running validateAddressList
+        //unOrganizedRoute will be null and the client will give a this route does not exist error. Fix This!!
+        //Fix: Make the unOrganizedRoute before the addresses are validated.
+        if(unOrganizedRoute != null) {
+            if (unOrganizedRoute.isOrganizingInProgress()) {
+                response.setOrganizingInProgress(true);
+            } else {
+
+                response.setOrganizingInProgress(false);
+
+                if (unOrganizedRoute.getWrongAddressesList().size() > 0) {
+                    response.setRouteHasInvalidAddresses(true);
+
+                    ArrayList<String> invalidAddresses = new ArrayList<>();
+
+                    for(int i=0; i<unOrganizedRoute.getWrongAddressesList().size(); i++){
+                        invalidAddresses.add(unOrganizedRoute.getWrongAddressesList().get(i).getRawAddress());
+                    }
+
+                    response.setInvalidAddresses(invalidAddresses);
+
+                } else {
+                    response.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
+                }
+            }
+        }else{
+            response.setRouteIsNull(true);
+        }
         return response;
     }
 
     public void calculateRoute(IncomingRoute route){
 
-        routesManager.setRoutesOrganizingState(route.getRouteCode(), true);
-
         validateAddressList(route.getRouteCode(), route.getAddressList());
 
-        UnOrganizedRoute unOrganizedRoute = routesManager.getSingleUnorganizedRoute(route.getRouteCode());
-
-        unOrganizedRoute.setOrigin(route.getOrigin());
+        UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(route.getRouteCode());
 
         if(unOrganizedRoute.getWrongAddressesList().size()>0){
-            System.out.println("There are wrong addresses: "+unOrganizedRoute.getWrongAddressesList().size());
-            routesManager.setRoutesOrganizingState(unOrganizedRoute.getRouteCode(), false);
+            unOrganizedRoute.setOrganizingInProgress(false);
         }else{
+            unOrganizedRoute.setOrigin(route.getOrigin());
             organizeRoute(unOrganizedRoute);
         }
-
 //        System.out.println("Validate addresses list size: " +unOrganizedRoute.getAllValidatedAddressesList().size());
 //        System.out.println("Invalid addresses list size: "+ unOrganizedRoute.getWrongAddressesList().size());
 //
@@ -67,7 +86,6 @@ public class Controller {
 //        for(int i = 0; i<unOrganizedRoute.getWrongAddressesList().size(); i++){
 //            System.out.println(unOrganizedRoute.getWrongAddressesList().get(i).getRawAddress());
 //        }
-
     }
 
     public void validateAddressList(String routeCode, List<String> addressesList) {
@@ -89,13 +107,16 @@ public class Controller {
 
     public void organizeRoute(UnOrganizedRoute unOrganizedRoute){
 
+        unOrganizedRoute.setOrganizingInProgress(true);
+
         routesOrganizer.setOrigin(unOrganizedRoute.getOrigin());
 
         List<SingleDrive> organizedRouteList = routesOrganizer.organizeRouteClosestAddress(unOrganizedRoute);
 
         routesManager.createOrganizedRoute(unOrganizedRoute.getRouteCode(), organizedRouteList);
 
-        routesManager.setRoutesOrganizingState(unOrganizedRoute.getRouteCode(), false);
+        unOrganizedRoute.setOrganizingInProgress(false);
+
 //        System.out.println("private addresses: " + singleOrganizedRoute.getPrivateAddressesCount());
 //        System.out.println("business addresses: " + singleOrganizedRoute.getBusinessAddressesCount());
 //        System.out.println("wrong addresses: " + singleOrganizedRoute.getWrongAddressesCount());

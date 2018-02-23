@@ -6,6 +6,7 @@ public class UnOrganizedRoute {
 
     private String routeCode;
     private String origin;
+    private boolean organizingInProgress;
 
     private List<FormattedAddress> allValidatedAddressesList;
     private List<FormattedAddress> privateAddressList;
@@ -34,6 +35,14 @@ public class UnOrganizedRoute {
 
     public void setOrigin(String origin) {
         this.origin = origin;
+    }
+
+    public boolean isOrganizingInProgress() {
+        return organizingInProgress;
+    }
+
+    public void setOrganizingInProgress(boolean organizingInProgress) {
+        this.organizingInProgress = organizingInProgress;
     }
 
     public List<FormattedAddress> getAllValidatedAddressesList() {

@@ -13,7 +13,6 @@ import java.util.Map;
 public class RoutesManager {
 
     private List<String> routeCodeList = new ArrayList<>();
-    private static Map<String, Boolean> routesOrganizingState = new HashMap<>();
     private static Map<String, UnOrganizedRoute> unorganizedRoutes = new HashMap<>();
     private static Map<String, OrganizedRoute> organizedRoutes = new HashMap<>();
 
@@ -40,9 +39,9 @@ public class RoutesManager {
 
     public void createOrganizedRoute(String routeCode, List<SingleDrive> organizedRouteList){
 
-        int privateAddressesCount = getSingleUnorganizedRoute(routeCode).getPrivateAddressList().size();
-        int businessAddressesCount = getSingleUnorganizedRoute(routeCode).getBusinessAddressList().size();
-        int wrongAddressesCount = getSingleUnorganizedRoute(routeCode).getWrongAddressesList().size();
+        int privateAddressesCount = getUnorganizedRoute(routeCode).getPrivateAddressList().size();
+        int businessAddressesCount = getUnorganizedRoute(routeCode).getBusinessAddressList().size();
+        int wrongAddressesCount = getUnorganizedRoute(routeCode).getWrongAddressesList().size();
 
         OrganizedRoute organizedRoute = new OrganizedRoute(
                 routeCode,
@@ -55,19 +54,12 @@ public class RoutesManager {
         organizedRoutes.put(routeCode, organizedRoute);
     }
 
-    public UnOrganizedRoute getSingleUnorganizedRoute(String routeCode){
+    public UnOrganizedRoute getUnorganizedRoute(String routeCode){
         return unorganizedRoutes.get(routeCode);
     }
 
-    public OrganizedRoute getSingleOrganizedRoute(String routeCode){
+    public OrganizedRoute getOrganizedRoute(String routeCode){
         return organizedRoutes.get(routeCode);
     }
 
-    public boolean getRoutesOrganizingState(String routeCode) {
-        return routesOrganizingState.get(routeCode);
-    }
-
-    public void setRoutesOrganizingState(String routeCode, boolean state) {
-        routesOrganizingState.put(routeCode, state);
-    }
 }
