@@ -13,12 +13,8 @@ public class UnOrganizedRoute {
     private List<FormattedAddress> businessAddressList;
     private List<FormattedAddress> wrongAddressesList;
 
-    public UnOrganizedRoute(String routeCode, List<FormattedAddress> allValidatedAddressesList, List<FormattedAddress> privateAddressList, List<FormattedAddress> businessAddressList, List<FormattedAddress> wrongAddressesList) {
+    public UnOrganizedRoute(String routeCode) {
         this.routeCode = routeCode;
-        this.allValidatedAddressesList = allValidatedAddressesList;
-        this.privateAddressList = privateAddressList;
-        this.businessAddressList = businessAddressList;
-        this.wrongAddressesList = wrongAddressesList;
     }
 
     public String getRouteCode() {

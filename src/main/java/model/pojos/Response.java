@@ -11,7 +11,7 @@ public class Response {
     private OrganizedRoute organizedRoute;
     private ArrayList<String> invalidAddresses;
 
-    public boolean isOrganizingInProgress() {
+    public boolean getOrganizingInProgress() {
         return organizingInProgress;
     }
 
@@ -19,7 +19,7 @@ public class Response {
         this.organizingInProgress = organizingInProgress;
     }
 
-    public boolean isRouteHasInvalidAddresses() {
+    public boolean getRouteHasInvalidAddresses() {
         return routeHasInvalidAddresses;
     }
 
@@ -27,7 +27,7 @@ public class Response {
         this.routeHasInvalidAddresses = routeHasInvalidAddresses;
     }
 
-    public boolean isRouteIsNull() {
+    public boolean getRouteIsNull() {
         return routeIsNull;
     }
 

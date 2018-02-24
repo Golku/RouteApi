@@ -16,24 +16,13 @@ public class RoutesManager {
     private static Map<String, UnOrganizedRoute> unorganizedRoutes = new HashMap<>();
     private static Map<String, OrganizedRoute> organizedRoutes = new HashMap<>();
 
-    public void createUnorganizedRoute(String routeCode, Map<String, List<FormattedAddress>> validatedAddressLists){
+    public void createUnorganizedRoute(String routeCode){
 
-        UnOrganizedRoute UnOrganizedRoute = new UnOrganizedRoute(
-                routeCode,
-                validatedAddressLists.get("validAddresses"),
-                validatedAddressLists.get("privateAddresses"),
-                validatedAddressLists.get("businessAddresses"),
-                validatedAddressLists.get("wrongAddresses")
-        );
+        UnOrganizedRoute unOrganizedRoute = new UnOrganizedRoute(routeCode);
 
         routeCodeList.add(routeCode);
 
-//        System.out.println(UnOrganizedRoute.getAllValidatedAddressesList().size());
-//        System.out.println(UnOrganizedRoute.getPrivateAddressList().size());
-//        System.out.println(UnOrganizedRoute.getBusinessAddressList().size());
-//        System.out.println(UnOrganizedRoute.getWrongAddressesList().size());
-
-        unorganizedRoutes.put(routeCode, UnOrganizedRoute);
+        unorganizedRoutes.put(routeCode, unOrganizedRoute);
 
     }
 

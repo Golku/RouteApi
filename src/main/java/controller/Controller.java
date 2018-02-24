@@ -29,10 +29,8 @@ public class Controller {
 
         UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(routeCode);
 
-        //If the client ask for the route while the api is running validateAddressList
-        //unOrganizedRoute will be null and the client will give a this route does not exist error. Fix This!!
-        //Fix: Make the unOrganizedRoute before the addresses are validated.
         if(unOrganizedRoute != null) {
+
             if (unOrganizedRoute.isOrganizingInProgress()) {
                 response.setOrganizingInProgress(true);
             } else {
@@ -40,6 +38,7 @@ public class Controller {
                 response.setOrganizingInProgress(false);
 
                 if (unOrganizedRoute.getWrongAddressesList().size() > 0) {
+
                     response.setRouteHasInvalidAddresses(true);
 
                     ArrayList<String> invalidAddresses = new ArrayList<>();
@@ -62,9 +61,13 @@ public class Controller {
 
     public void calculateRoute(IncomingRoute route){
 
-        validateAddressList(route.getRouteCode(), route.getAddressList());
+        routesManager.createUnorganizedRoute(route.getRouteCode());
 
         UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(route.getRouteCode());
+
+        unOrganizedRoute.setOrganizingInProgress(true);
+
+        validateAddressList(unOrganizedRoute, route.getAddressList());
 
         if(unOrganizedRoute.getWrongAddressesList().size()>0){
             unOrganizedRoute.setOrganizingInProgress(false);
@@ -88,7 +91,7 @@ public class Controller {
 //        }
     }
 
-    public void validateAddressList(String routeCode, List<String> addressesList) {
+    public void validateAddressList(UnOrganizedRoute unOrganizedRoute, List<String> addressesList) {
 
         Map<String, List<FormattedAddress>> validatedAddressLists;
 
@@ -98,16 +101,13 @@ public class Controller {
 
         validatedAddressLists.put("privateAddresses", addressesInformationManager.findPrivateAddresses());
 
-        createUnorganizedRoute(routeCode, validatedAddressLists);
-    }
-
-    public void createUnorganizedRoute(String routeCode, Map<String, List<FormattedAddress>> validatedAddressLists){
-        routesManager.createUnorganizedRoute(routeCode, validatedAddressLists);
+        unOrganizedRoute.setAllValidatedAddressesList(validatedAddressLists.get("validAddresses"));
+        unOrganizedRoute.setPrivateAddressList(validatedAddressLists.get("privateAddresses"));
+        unOrganizedRoute.setBusinessAddressList(validatedAddressLists.get("businessAddresses"));
+        unOrganizedRoute.setWrongAddressesList(validatedAddressLists.get("wrongAddresses"));
     }
 
     public void organizeRoute(UnOrganizedRoute unOrganizedRoute){
-
-        unOrganizedRoute.setOrganizingInProgress(true);
 
         routesOrganizer.setOrigin(unOrganizedRoute.getOrigin());
 
