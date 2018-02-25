@@ -1,6 +1,7 @@
 package model;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import model.pojos.DatabaseResponse;
 import model.pojos.FormattedAddress;
 import okhttp3.OkHttpClient;
@@ -16,7 +17,7 @@ public class AddressesInformationManager {
 
     private GoogleMapsApi googleMapsApi;
 
-    private final String root_url = "http://217.103.231.118/map/v1/";
+    private final String root_url = "http://192.168.0.14/map/v1/";
     private final String url_getAddressInfo = root_url + "getAddressBusinessInfo.php";
 
     private String street;
@@ -60,18 +61,19 @@ public class AddressesInformationManager {
 
         OkHttpClient okHttpClient = new OkHttpClient();
 
-        for (int i=0; i<validatedAddressList.size(); i++){
+        for (int i=0; i<validatedAddressList.size(); i++) {
 
             street = validatedAddressList.get(i).getStreet();
             postCode = validatedAddressList.get(i).getPostCode();
             city = validatedAddressList.get(i).getCity();
 
             Request request = new Request.Builder()
-                    .url(url_getAddressInfo+"?"
-                            +"street_name="+street
-                            +"post_code="+postCode
-                            +"city="+city
+                    .url(url_getAddressInfo + "?"
+                            + "street_name=" + street +"&"
+                            + "post_code=" + postCode +"&"
+                            + "city=" + city
                     )
+                    .get()
                     .build();
 
             Response response;
@@ -84,17 +86,24 @@ public class AddressesInformationManager {
                 e.printStackTrace();
             }
 
-            DatabaseResponse databaseResponse = gson.fromJson(responseString, DatabaseResponse.class);
+            DatabaseResponse databaseResponse = null;
 
-            if(!databaseResponse.isError()){
-                if(databaseResponse.getBusiness() == 1){
-                    validatedAddressList.get(i).setIsBusiness(true);
-                    businessAddressList.add(validatedAddressList.get(i));
-                }
-            }else{
-                System.out.println(databaseResponse.getErrorMessage());
+            try{
+            databaseResponse = gson.fromJson(responseString, DatabaseResponse.class);
+            }catch (JsonSyntaxException e){
+                System.out.println("Response failed: "+ e);
             }
 
+            if(databaseResponse != null) {
+                if (!databaseResponse.isError()) {
+                    if (databaseResponse.getBusiness() == 1) {
+                        validatedAddressList.get(i).setIsBusiness(true);
+                        businessAddressList.add(validatedAddressList.get(i));
+                    }
+                } else {
+                    System.out.println(databaseResponse.getErrorMessage());
+                }
+            }
         }
 
         return businessAddressList;
