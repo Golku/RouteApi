@@ -3,8 +3,9 @@ package model;
 import com.google.gson.Gson;
 import model.pojos.DatabaseResponse;
 import model.pojos.FormattedAddress;
-import okhttp3.*;
-
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +15,6 @@ import java.util.Map;
 public class AddressesInformationManager {
 
     private GoogleMapsApi googleMapsApi;
-    private OkHttpClient okHttpClient;
 
     private final String root_url = "http://217.103.231.118/map/v1/";
     private final String url_getAddressInfo = root_url + "getAddressBusinessInfo.php";
@@ -58,7 +58,7 @@ public class AddressesInformationManager {
 
         final Gson gson = new Gson();
 
-        okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient();
 
         for (int i=0; i<validatedAddressList.size(); i++){
 
