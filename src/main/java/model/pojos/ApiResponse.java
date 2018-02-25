@@ -3,7 +3,7 @@ package model.pojos;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Response {
+public class ApiResponse {
 
     private boolean organizingInProgress;
     private boolean routeHasInvalidAddresses;

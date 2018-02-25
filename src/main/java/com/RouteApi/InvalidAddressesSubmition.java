@@ -2,7 +2,7 @@ package com.RouteApi;
 
 import controller.Controller;
 import model.pojos.IncomingRoute;
-import model.pojos.Response;
+import model.pojos.ApiResponse;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -16,9 +16,9 @@ public class InvalidAddressesSubmition {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response submitRouteForOrganizing(final IncomingRoute route) {
+    public ApiResponse submitRouteForOrganizing(final IncomingRoute route) {
 
-        final Response response = new Response();
+        final ApiResponse apiResponse = new ApiResponse();
 
         new Thread(new Runnable() {
             @Override
@@ -27,7 +27,7 @@ public class InvalidAddressesSubmition {
             }
 
             private void beginRouteOrganizing() {
-                response.setOrganizingInProgress(true);
+                apiResponse.setOrganizingInProgress(true);
                 controller.calculateRoute(route);
                 //find a way to stop the thread after it's done
                 //organizing the route. Doing this will prevent memory leak.
@@ -41,7 +41,7 @@ public class InvalidAddressesSubmition {
 //            System.out.println("Address " + String.valueOf(i) + " " + route.getAddressList().get(i));
 //        }
 
-        return response;
+        return apiResponse;
     }
 
 }

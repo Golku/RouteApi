@@ -23,23 +23,23 @@ public class Controller {
         this.addressesInformationManager = new AddressesInformationManager(this.googleMapsApi);
     }
 
-    public Response getRoute (String routeCode){
+    public ApiResponse getRoute (String routeCode){
 
-        Response response = new Response();
+        ApiResponse apiResponse = new ApiResponse();
 
         UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(routeCode);
 
         if(unOrganizedRoute != null) {
 
             if (unOrganizedRoute.isOrganizingInProgress()) {
-                response.setOrganizingInProgress(true);
+                apiResponse.setOrganizingInProgress(true);
             } else {
 
-                response.setOrganizingInProgress(false);
+                apiResponse.setOrganizingInProgress(false);
 
                 if (unOrganizedRoute.getWrongAddressesList().size() > 0) {
 
-                    response.setRouteHasInvalidAddresses(true);
+                    apiResponse.setRouteHasInvalidAddresses(true);
 
                     ArrayList<String> invalidAddresses = new ArrayList<>();
 
@@ -47,16 +47,16 @@ public class Controller {
                         invalidAddresses.add(unOrganizedRoute.getWrongAddressesList().get(i).getRawAddress());
                     }
 
-                    response.setInvalidAddresses(invalidAddresses);
+                    apiResponse.setInvalidAddresses(invalidAddresses);
 
                 } else {
-                    response.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
+                    apiResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
                 }
             }
         }else{
-            response.setRouteIsNull(true);
+            apiResponse.setRouteIsNull(true);
         }
-        return response;
+        return apiResponse;
     }
 
     public void calculateRoute(IncomingRoute route){

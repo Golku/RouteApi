@@ -1,8 +1,7 @@
 package com.RouteApi;
 
 import controller.Controller;
-import model.pojos.IncomingRoute;
-import model.pojos.Response;
+import model.pojos.ApiResponse;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -16,9 +15,15 @@ public class GetRoute {
     private Controller controller = new Controller();
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public ApiResponse retrieveSingleOrganizedRoute() {
+        return controller.getRoute("");
+    }
+
+    @GET
     @Path("/{routeCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveSingleOrganizedRoute(@PathParam("routeCode") String routeCode) {
+    public ApiResponse retrieveSingleOrganizedRoute(@PathParam("routeCode") String routeCode) {
         return controller.getRoute(routeCode);
     }
 
