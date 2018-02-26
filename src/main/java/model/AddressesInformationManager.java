@@ -17,7 +17,7 @@ public class AddressesInformationManager {
 
     private GoogleMapsApi googleMapsApi;
 
-    private final String root_url = "http://192.168.0.14/map/v1/";
+    private final String root_url = "http://10.163.48.174/map/v1/";
     private final String url_getAddressInfo = root_url + "getAddressBusinessInfo.php";
 
     private String street;
@@ -42,8 +42,10 @@ public class AddressesInformationManager {
             FormattedAddress verifiedAddress = googleMapsApi.validatedAddress(addressList.get(i));
 
             if(verifiedAddress.isInvalid()) {
+                System.out.println("Wrong: "+verifiedAddress.getRawAddress());
                 wrongAddressList.add(verifiedAddress);
             }else{
+                System.out.println("Validated: "+verifiedAddress.getRawAddress());
                 validatedAddressList.add(verifiedAddress);
             }
 
@@ -103,6 +105,8 @@ public class AddressesInformationManager {
                 } else {
                     System.out.println(databaseResponse.getErrorMessage());
                 }
+            }else{
+                System.out.println("Database response is null");
             }
         }
 

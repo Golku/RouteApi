@@ -87,27 +87,6 @@ public class GoogleMapsApi {
 
         return singleDrive;
 
-//        System.out.println(oneDriveInformation.getOriginStreet());
-//        System.out.println(oneDriveInformation.getOriginPostCode());
-//        System.out.println(oneDriveInformation.getOriginCity());
-//        System.out.println(oneDriveInformation.getOriginCountry());
-
-
-//        System.out.println(singleDrive.getDestinationCompleteAddress());
-//        System.out.println(oneDriveInformation.getDestinationStreet());
-//        System.out.println(oneDriveInformation.getDestinationPostCode());
-//        System.out.println(oneDriveInformation.getDestinationCity());
-//        System.out.println(oneDriveInformation.getDestinationCountry());
-
-//        System.out.println(singleDrive.getDriveDurationHumanReadable());
-//        System.out.println(singleDrive.getDriveDistanceHumanReadable());
-
-//        System.out.println(singleDrive.getDriveDurationInSeconds());
-//        System.out.println(singleDrive.getdriveDistanceInMeters());
-
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//        System.out.println(gson.toJson(results.rows[0].elements[0].durationInTraffic));
-
     }
 
 }
