@@ -17,7 +17,7 @@ public class AddressesInformationManager {
 
     private GoogleMapsApi googleMapsApi;
 
-    private final String root_url = "http://10.163.48.174/map/v1/";
+    private final String root_url = "http://192.168.0.14/map/v1/";
     private final String url_getAddressInfo = root_url + "getAddressBusinessInfo.php";
 
     private String street;
@@ -46,7 +46,19 @@ public class AddressesInformationManager {
                 wrongAddressList.add(verifiedAddress);
             }else{
                 System.out.println("Validated: "+verifiedAddress.getRawAddress());
-                validatedAddressList.add(verifiedAddress);
+
+                String country = verifiedAddress.getCountry();
+
+//                System.out.println(country);
+
+                if(country.equals("Netherlands")){
+                    validatedAddressList.add(verifiedAddress);
+                }else{
+//                    Send the original inputed address to the client as well
+//                    addressList.get(i);
+                    wrongAddressList.add(verifiedAddress);
+                }
+
             }
 
         }
@@ -85,7 +97,8 @@ public class AddressesInformationManager {
                 response = okHttpClient.newCall(request).execute();
                 responseString = response.body().string();
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+                System.out.println("Database request failed for: " + street+", "+postCode+" "+city);
             }
 
             DatabaseResponse databaseResponse = null;
