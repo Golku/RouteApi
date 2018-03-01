@@ -33,6 +33,9 @@ public class InvalidAddressesSubmition {
             }
         }).start();
 
+        //This wont work.
+        apiResponse.setOrganizingInProgress(true);
+
         return apiResponse;
     }
 

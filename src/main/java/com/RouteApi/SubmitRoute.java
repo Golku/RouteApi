@@ -34,6 +34,7 @@ public class SubmitRoute {
             }
         }).start();
 
+        apiResponse.setRouteIsNull(false);
         apiResponse.setOrganizingInProgress(true);
 
         return apiResponse;
