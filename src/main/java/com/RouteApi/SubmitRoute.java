@@ -18,7 +18,7 @@ public class SubmitRoute {
     @Consumes(MediaType.APPLICATION_JSON)
     public ApiResponse submitRouteForOrganizing(final IncomingRoute route) {
 
-        final ApiResponse apiResponse = new ApiResponse();
+        ApiResponse apiResponse = new ApiResponse();
 
         new Thread(new Runnable() {
             @Override

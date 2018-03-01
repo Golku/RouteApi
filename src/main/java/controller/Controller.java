@@ -11,16 +11,14 @@ public class Controller {
 
     private RoutesManager routesManager;
     private RoutesOrganizer routesOrganizer;
-    private AddressFormatter addressFormatter;
-    private GoogleMapsApi googleMapsApi;
     private AddressesInformationManager addressesInformationManager;
 
     public Controller() {
-        this.addressFormatter = new AddressFormatter();
-        this.googleMapsApi = new GoogleMapsApi(this.addressFormatter);
+        AddressFormatter addressFormatter = new AddressFormatter();
+        GoogleMapsApi googleMapsApi = new GoogleMapsApi(addressFormatter);
         this.routesManager = new RoutesManager();
-        this.routesOrganizer = new RoutesOrganizer(this.googleMapsApi);
-        this.addressesInformationManager = new AddressesInformationManager(this.googleMapsApi);
+        this.routesOrganizer = new RoutesOrganizer(googleMapsApi);
+        this.addressesInformationManager = new AddressesInformationManager(googleMapsApi);
     }
 
     public ApiResponse getRoute (String routeCode){
@@ -91,7 +89,18 @@ public class Controller {
 //        }
     }
 
-    public void validateAddressList(UnOrganizedRoute unOrganizedRoute, List<String> addressesList) {
+    public void checkSubmittedAddresses(ArrayList<String> correctedAddresses){
+
+//      client sends a map with the original invalid addresses an the key and
+//      the corrected addresses as the value. Match keys and if the value in the map is empty
+//      that address was not corrected and can be deleted from the route.
+
+        for(int i=0; i<correctedAddresses.size(); i++){
+            System.out.println(correctedAddresses.get(i));
+        }
+    }
+
+    private void validateAddressList(UnOrganizedRoute unOrganizedRoute, List<String> addressesList) {
 
         Map<String, List<FormattedAddress>> validatedAddressLists;
 
@@ -107,7 +116,7 @@ public class Controller {
         unOrganizedRoute.setWrongAddressesList(validatedAddressLists.get("wrongAddresses"));
     }
 
-    public void organizeRoute(UnOrganizedRoute unOrganizedRoute){
+    private void organizeRoute(UnOrganizedRoute unOrganizedRoute){
 
         routesOrganizer.setOrigin(unOrganizedRoute.getOrigin());
 

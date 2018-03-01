@@ -46,6 +46,8 @@ public class GoogleMapsApi {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
         }
 
         return formattedAddress;
