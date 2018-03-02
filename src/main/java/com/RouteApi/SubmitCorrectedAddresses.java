@@ -1,21 +1,22 @@
 package com.RouteApi;
 
-import controller.Controller;
-import model.pojos.IncomingRoute;
+import controller.SubmitCorrectedAddressesController;
+import controller.SubmitRouteController;
 import model.pojos.ApiResponse;
+import model.pojos.CorrectedAddresses;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
-
+import java.util.Map;
 
 @Path("/invalidaddressessubmition")
-public class InvalidAddressesSubmition {
+public class SubmitCorrectedAddresses {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public ApiResponse submitRouteForOrganizing(final ArrayList<String> correctedAddresses) {
+    public ApiResponse submitRouteForOrganizing(final CorrectedAddresses correctedAddresses) {
 
         final ApiResponse apiResponse = new ApiResponse();
 
@@ -26,7 +27,7 @@ public class InvalidAddressesSubmition {
             }
 
             private void beginRouteOrganizing() {
-                Controller controller = new Controller();
+                SubmitCorrectedAddressesController controller = new SubmitCorrectedAddressesController();
                 controller.checkSubmittedAddresses(correctedAddresses);
                 //find a way to stop the thread after it's done
                 //organizing the route. Doing this will prevent memory leak.

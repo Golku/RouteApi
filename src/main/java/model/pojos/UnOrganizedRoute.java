@@ -6,7 +6,9 @@ public class UnOrganizedRoute {
 
     private String routeCode;
     private String origin;
+    private boolean addressValidatingInProgress;
     private boolean organizingInProgress;
+    private boolean hasInvalidAddresses;
 
     private List<FormattedAddress> allValidatedAddressesList;
     private List<FormattedAddress> privateAddressList;
@@ -71,5 +73,21 @@ public class UnOrganizedRoute {
 
     public void setWrongAddressesList(List<FormattedAddress> wrongAddressesList) {
         this.wrongAddressesList = wrongAddressesList;
+    }
+
+    public boolean getHasInvalidAddresses() {
+        return hasInvalidAddresses;
+    }
+
+    public void setHasInvalidAddresses(boolean hasInvalidAddresses) {
+        this.hasInvalidAddresses = hasInvalidAddresses;
+    }
+
+    public boolean getAddressValidatingInProgress() {
+        return addressValidatingInProgress;
+    }
+
+    public void setAddressValidatingInProgress(boolean addressValidatingInProgress) {
+        this.addressValidatingInProgress = addressValidatingInProgress;
     }
 }

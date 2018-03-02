@@ -35,7 +35,7 @@ public class GoogleMapsApi {
 
             if(resultsGeo.length > 0){
                 verifiedAddress = resultsGeo[0].formattedAddress;
-                formattedAddress = addressFormatter.formatAddress(verifiedAddress);
+                formattedAddress = addressFormatter.tryToFormatAddress(verifiedAddress);
             }else{
                 formattedAddress = addressFormatter.addInvalidAddress(address);
             }
@@ -45,8 +45,6 @@ public class GoogleMapsApi {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        }catch (ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
 

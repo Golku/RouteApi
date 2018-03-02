@@ -1,6 +1,6 @@
 package com.RouteApi;
 
-import controller.Controller;
+import controller.SubmitRouteController;
 import model.pojos.IncomingRoute;
 import model.pojos.ApiResponse;
 
@@ -27,8 +27,8 @@ public class SubmitRoute {
             }
 
             private void beginRouteOrganizing() {
-                Controller controller = new Controller();
-                controller.calculateRoute(route);
+                SubmitRouteController submitRouteController = new SubmitRouteController();
+                submitRouteController.calculateRoute(route);
                 //find a way to stop the thread after it's done
                 //organizing the route. Doing this will prevent memory leak.
             }

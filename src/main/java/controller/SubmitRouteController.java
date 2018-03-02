@@ -7,54 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Controller {
+public class SubmitRouteController {
 
     private RoutesManager routesManager;
     private RoutesOrganizer routesOrganizer;
     private AddressesInformationManager addressesInformationManager;
 
-    public Controller() {
+    public SubmitRouteController() {
         AddressFormatter addressFormatter = new AddressFormatter();
         GoogleMapsApi googleMapsApi = new GoogleMapsApi(addressFormatter);
         this.routesManager = new RoutesManager();
         this.routesOrganizer = new RoutesOrganizer(googleMapsApi);
         this.addressesInformationManager = new AddressesInformationManager(googleMapsApi);
-    }
-
-    public ApiResponse getRoute (String routeCode){
-
-        ApiResponse apiResponse = new ApiResponse();
-
-        UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(routeCode);
-
-        if(unOrganizedRoute != null) {
-
-            if (unOrganizedRoute.isOrganizingInProgress()) {
-                apiResponse.setOrganizingInProgress(true);
-            } else {
-
-                apiResponse.setOrganizingInProgress(false);
-
-                if (unOrganizedRoute.getWrongAddressesList().size() > 0) {
-
-                    apiResponse.setRouteHasInvalidAddresses(true);
-
-                    ArrayList<String> invalidAddresses = new ArrayList<>();
-
-                    for(int i=0; i<unOrganizedRoute.getWrongAddressesList().size(); i++){
-                        invalidAddresses.add(unOrganizedRoute.getWrongAddressesList().get(i).getRawAddress());
-                    }
-
-                    apiResponse.setInvalidAddresses(invalidAddresses);
-
-                } else {
-                    apiResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
-                }
-            }
-        }else{
-            apiResponse.setRouteIsNull(true);
-        }
-        return apiResponse;
     }
 
     public void calculateRoute(IncomingRoute route){
@@ -63,12 +27,17 @@ public class Controller {
 
         UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(route.getRouteCode());
 
+        unOrganizedRoute.setAddressValidatingInProgress(true);
+
         unOrganizedRoute.setOrganizingInProgress(true);
 
         validateAddressList(unOrganizedRoute, route.getAddressList());
 
+        unOrganizedRoute.setAddressValidatingInProgress(false);
+
         if(unOrganizedRoute.getWrongAddressesList().size()>0){
             unOrganizedRoute.setOrganizingInProgress(false);
+            unOrganizedRoute.setHasInvalidAddresses(true);
         }else{
             unOrganizedRoute.setOrigin(route.getOrigin());
             organizeRoute(unOrganizedRoute);
@@ -87,17 +56,6 @@ public class Controller {
 //        for(int i = 0; i<unOrganizedRoute.getWrongAddressesList().size(); i++){
 //            System.out.println(unOrganizedRoute.getWrongAddressesList().get(i).getRawAddress());
 //        }
-    }
-
-    public void checkSubmittedAddresses(ArrayList<String> correctedAddresses){
-
-//      client sends a map with the original invalid addresses an the key and
-//      the corrected addresses as the value. Match keys and if the value in the map is empty
-//      that address was not corrected and can be deleted from the route.
-
-        for(int i=0; i<correctedAddresses.size(); i++){
-            System.out.println(correctedAddresses.get(i));
-        }
     }
 
     private void validateAddressList(UnOrganizedRoute unOrganizedRoute, List<String> addressesList) {

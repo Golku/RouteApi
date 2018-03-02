@@ -8,6 +8,15 @@ public class AddressFormatter {
      * Formats the given address to a standard format of  "street, postCode city, country"
      */
 
+    public FormattedAddress tryToFormatAddress(String address){
+        try{
+            return formatAddress(address);
+        }catch(StringIndexOutOfBoundsException e){
+            System.out.println("Can't format this address: "+address);
+            return addInvalidAddress(address);
+        }
+    }
+
     public FormattedAddress addInvalidAddress(String address){
         FormattedAddress formattedAddress = new FormattedAddress();
         formattedAddress.setRawAddress(address);

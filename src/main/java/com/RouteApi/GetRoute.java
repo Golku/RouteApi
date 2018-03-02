@@ -1,6 +1,7 @@
 package com.RouteApi;
 
-import controller.Controller;
+import controller.GetRouteController;
+import controller.SubmitRouteController;
 import model.pojos.ApiResponse;
 
 import javax.ws.rs.*;
@@ -12,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/getroute")
 public class GetRoute {
 
-    private Controller controller = new Controller();
+    private GetRouteController controller = new GetRouteController();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

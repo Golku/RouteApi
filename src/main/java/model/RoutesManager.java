@@ -13,6 +13,8 @@ import java.util.Map;
 public class RoutesManager {
 
     private List<String> routeCodeList = new ArrayList<>();
+
+    //Change this two to vectors to make it usable with more threads
     private static Map<String, UnOrganizedRoute> unorganizedRoutes = new HashMap<>();
     private static Map<String, OrganizedRoute> organizedRoutes = new HashMap<>();
 
