@@ -22,6 +22,8 @@ public class GetRouteController {
 
         if(unOrganizedRoute != null) {
 
+            apiResponse.setRouteIsNull(false);
+
             if (unOrganizedRoute.isOrganizingInProgress()) {
                 apiResponse.setOrganizingInProgress(true);
             } else {
