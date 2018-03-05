@@ -17,25 +17,18 @@ public class AddressesInformationManager {
 
     private GoogleMapsApi googleMapsApi;
 
-    private final String root_url = "http://10.163.48.179/map/v1/";
+    private final String root_url = "http://192.168.0.16/map/v1/";
     private final String url_getAddressInfo = root_url + "getAddressBusinessInfo.php";
-
-    private String street;
-    private String postCode;
-    private String city;
-
-    private Map<String, List<FormattedAddress>> validatedAddressLists = new HashMap<>();
-    private List<FormattedAddress> validatedAddressList = new ArrayList<>();
-    private List<FormattedAddress> privateAddressList = new ArrayList<>();
-    private List<FormattedAddress> businessAddressList = new ArrayList<>();
-    private List<FormattedAddress> wrongAddressList = new ArrayList<>();
-
 
     public AddressesInformationManager(GoogleMapsApi googleMapsApiInstance) {
         this.googleMapsApi = googleMapsApiInstance;
     }
 
     public Map<String, List<FormattedAddress>> validateAddresses(List<String> addressList){
+
+        Map<String, List<FormattedAddress>> validatedAddressLists = new HashMap<>();
+        List<FormattedAddress> validatedAddressList = new ArrayList<>();
+        List<FormattedAddress> wrongAddressList = new ArrayList<>();
 
         for(int i=0; i<addressList.size(); i++){
 
@@ -45,17 +38,16 @@ public class AddressesInformationManager {
                 System.out.println("Wrong: "+verifiedAddress.getRawAddress());
                 wrongAddressList.add(verifiedAddress);
             }else{
-                System.out.println("Validated: "+verifiedAddress.getRawAddress());
 
                 String country = verifiedAddress.getCountry();
 
-//                System.out.println(country);
-
                 if(country.equals("Netherlands")){
+                    System.out.println("Validated: "+verifiedAddress.getRawAddress());
                     validatedAddressList.add(verifiedAddress);
                 }else{
 //                    Send the original inputed address to the client as well
 //                    addressList.get(i);
+                    System.out.println("Wrong: "+verifiedAddress.getRawAddress());
                     wrongAddressList.add(verifiedAddress);
                 }
 
@@ -69,7 +61,9 @@ public class AddressesInformationManager {
         return validatedAddressLists;
     }
 
-    public List<FormattedAddress> findBusinessAddresses() {
+    public List<FormattedAddress> findBusinessAddresses(List<FormattedAddress> validatedAddressList) {
+
+        List<FormattedAddress> businessAddressList = new ArrayList<>();
 
         final Gson gson = new Gson();
 
@@ -77,9 +71,9 @@ public class AddressesInformationManager {
 
         for (int i=0; i<validatedAddressList.size(); i++) {
 
-            street = validatedAddressList.get(i).getStreet();
-            postCode = validatedAddressList.get(i).getPostCode();
-            city = validatedAddressList.get(i).getCity();
+            String street = validatedAddressList.get(i).getStreet();
+            String postCode = validatedAddressList.get(i).getPostCode();
+            String city = validatedAddressList.get(i).getCity();
 
             Request request = new Request.Builder()
                     .url(url_getAddressInfo + "?"
@@ -98,13 +92,13 @@ public class AddressesInformationManager {
                 responseString = response.body().string();
             } catch (IOException e) {
 //                e.printStackTrace();
-                System.out.println("Database request failed for: " + street+", "+postCode+" "+city);
+                System.out.println("Database request failed for: " + street +", "+ postCode +" "+ city);
             }
 
             DatabaseResponse databaseResponse = null;
 
             try{
-            databaseResponse = gson.fromJson(responseString, DatabaseResponse.class);
+                databaseResponse = gson.fromJson(responseString, DatabaseResponse.class);
             }catch (JsonSyntaxException e){
                 System.out.println("Response failed: "+ e);
             }
@@ -127,7 +121,9 @@ public class AddressesInformationManager {
 
     }
 
-    public List<FormattedAddress> findPrivateAddresses(){
+    public List<FormattedAddress> findPrivateAddresses(List<FormattedAddress> validatedAddressList){
+
+        List<FormattedAddress> privateAddressList = new ArrayList<>();
 
         for(int i =0; i<validatedAddressList.size(); i++){
 

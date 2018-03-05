@@ -11,8 +11,8 @@ public class AddressFormatter {
     public FormattedAddress tryToFormatAddress(String address){
         try{
             return formatAddress(address);
-        }catch(StringIndexOutOfBoundsException e){
-            System.out.println("Can't format this address: "+address);
+        }catch(StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException e){
+//            System.out.println("Can't format this address: "+address);
             return addInvalidAddress(address);
         }
     }

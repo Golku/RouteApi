@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class CorrectedAddresses {
 
     private String routeCode;
-    private ArrayList<String> invalidAddressesList;
     private ArrayList<String> correctedAddressesList;
 
     public String getRouteCode() {
@@ -16,14 +15,6 @@ public class CorrectedAddresses {
         this.routeCode = routeCode;
     }
 
-    public ArrayList<String> getInvalidAddressesList() {
-        return invalidAddressesList;
-    }
-
-    public void setInvalidAddressesList(ArrayList<String> invalidAddressesList) {
-        this.invalidAddressesList = invalidAddressesList;
-    }
-
     public ArrayList<String> getCorrectedAddressesList() {
         return correctedAddressesList;
     }
@@ -31,5 +22,4 @@ public class CorrectedAddresses {
     public void setCorrectedAddressesList(ArrayList<String> correctedAddressesList) {
         this.correctedAddressesList = correctedAddressesList;
     }
-
 }

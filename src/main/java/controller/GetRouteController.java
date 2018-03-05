@@ -25,24 +25,8 @@ public class GetRouteController {
             if (unOrganizedRoute.isOrganizingInProgress()) {
                 apiResponse.setOrganizingInProgress(true);
             } else {
-
                 apiResponse.setOrganizingInProgress(false);
-
-                if (unOrganizedRoute.getWrongAddressesList().size() > 0) {
-
-                    apiResponse.setRouteHasInvalidAddresses(true);
-
-                    ArrayList<String> invalidAddresses = new ArrayList<>();
-
-                    for(int i=0; i<unOrganizedRoute.getWrongAddressesList().size(); i++){
-                        invalidAddresses.add(unOrganizedRoute.getWrongAddressesList().get(i).getRawAddress());
-                    }
-
-                    apiResponse.setInvalidAddresses(invalidAddresses);
-
-                } else {
-                    apiResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
-                }
+                apiResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
             }
         }else{
             apiResponse.setRouteIsNull(true);

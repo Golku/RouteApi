@@ -34,8 +34,9 @@ public class SubmitRoute {
             }
         }).start();
 
+        apiResponse.setRequestType("submit route");
         apiResponse.setRouteIsNull(false);
-        apiResponse.setOrganizingInProgress(true);
+        apiResponse.setAddressValidatingInProgress(true);
 
         return apiResponse;
     }

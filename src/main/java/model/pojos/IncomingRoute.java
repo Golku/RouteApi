@@ -7,7 +7,7 @@ public class IncomingRoute {
 
     private String routeCode;
     private String origin;
-    private List<String> addressList = new ArrayList<>();
+    private ArrayList<String> addressList;
 
     public String getRouteCode() {
         return routeCode;
@@ -25,11 +25,11 @@ public class IncomingRoute {
         this.origin = origin;
     }
 
-    public List<String> getAddressList() {
+    public ArrayList<String> getAddressList() {
         return addressList;
     }
 
-    public void setAddressList(List<String> addressList) {
+    public void setAddressList(ArrayList<String> addressList) {
         this.addressList = addressList;
     }
 }

@@ -75,7 +75,7 @@ public class RoutesOrganizer {
 
     }
 
-    public void getDriveInformation(List<FormattedAddress> addressList){
+    private void getDriveInformation(List<FormattedAddress> addressList){
 
         Boolean organisingInProgress = true;
 

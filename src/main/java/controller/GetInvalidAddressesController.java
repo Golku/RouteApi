@@ -28,7 +28,7 @@ public class GetInvalidAddressesController {
 
                 if (!unOrganizedRoute.getAddressValidatingInProgress()) {
 
-                    apiResponse.setOrganizingInProgress(false);
+                    apiResponse.setAddressValidatingInProgress(false);
 
                     if (unOrganizedRoute.getHasInvalidAddresses()) {
 
@@ -47,7 +47,7 @@ public class GetInvalidAddressesController {
                     }
 
                 }else{
-                    apiResponse.setOrganizingInProgress(true);
+                    apiResponse.setAddressValidatingInProgress(true);
                 }
 
             }else{
@@ -56,6 +56,8 @@ public class GetInvalidAddressesController {
         }else{
             apiResponse.setRouteIsNull(true);
         }
+
+        apiResponse.setRequestType("get invalid addresses");
 
         return apiResponse;
     }

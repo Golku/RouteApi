@@ -12,8 +12,8 @@ import java.io.IOException;
 
 public class GoogleMapsApi {
 
-    GeoApiContext context;
-    AddressFormatter addressFormatter;
+    private GeoApiContext context;
+    private AddressFormatter addressFormatter;
 
     public GoogleMapsApi(AddressFormatter addressFormatter) {
         this.addressFormatter = addressFormatter;
@@ -40,11 +40,7 @@ public class GoogleMapsApi {
                 formattedAddress = addressFormatter.addInvalidAddress(address);
             }
 
-        } catch (ApiException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ApiException | IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -62,27 +58,18 @@ public class GoogleMapsApi {
 
         try {
             resultsDistanceMatrix = DistanceMatrixApi.getDistanceMatrix(context, originArray, destinationArray).await();
-        } catch (ApiException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ApiException | IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
         //Improve logic to prevent errors when resultsDistanceMatrix == null! FIX THIS!
-        if(resultsDistanceMatrix == null){
-
-        }else{
-
+        if(resultsDistanceMatrix != null){
             singleDrive.setOriginFormattedAddress(addressFormatter.formatAddress(resultsDistanceMatrix.originAddresses[0]));
             singleDrive.setDestinationFormattedAddress(addressFormatter.formatAddress(resultsDistanceMatrix.destinationAddresses[0]));
-
             singleDrive.setDriveDistanceHumanReadable(resultsDistanceMatrix.rows[0].elements[0].distance.humanReadable);
             singleDrive.setDriveDistanceInMeters(resultsDistanceMatrix.rows[0].elements[0].distance.inMeters);
             singleDrive.setDriveDurationHumanReadable(resultsDistanceMatrix.rows[0].elements[0].duration.humanReadable);
             singleDrive.setDriveDurationInSeconds(resultsDistanceMatrix.rows[0].elements[0].duration.inSeconds);
-
         }
 
         return singleDrive;
