@@ -17,7 +17,7 @@ public class AddressesInformationManager {
 
     private GoogleMapsApi googleMapsApi;
 
-    private final String root_url = "http://192.168.0.16/map/v1/";
+    private final String root_url = "http://192.168.0.14/map/v1/";
     private final String url_getAddressInfo = root_url + "getAddressBusinessInfo.php";
 
     public AddressesInformationManager(GoogleMapsApi googleMapsApiInstance) {
