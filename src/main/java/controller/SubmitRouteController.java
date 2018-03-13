@@ -1,7 +1,11 @@
 package controller;
 
+import com.google.gson.Gson;
 import model.*;
 import model.pojos.*;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +18,23 @@ public class SubmitRouteController {
     private AddressesInformationManager addressesInformationManager;
 
     public SubmitRouteController() {
+
         AddressFormatter addressFormatter = new AddressFormatter();
-        GoogleMapsApi googleMapsApi = new GoogleMapsApi(addressFormatter);
+        Gson gson = new Gson();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
+                .client(okHttpClient)
+                .baseUrl("http://192.168.101.218/map/v1/")
+                .addConverterFactory(GsonConverterFactory.create(gson));
+        Retrofit retrofit = retrofitBuilder.build();
+        DatabaseService databaseService = retrofit.create(DatabaseService.class);
+
+        GoogleMapsApi googleMapsApi = new GoogleMapsApi(addressFormatter, databaseService);
         this.routesManager = new RoutesManager();
         this.routesOrganizer = new RoutesOrganizer(googleMapsApi);
-        this.addressesInformationManager = new AddressesInformationManager(googleMapsApi);
+        this.addressesInformationManager = new AddressesInformationManager(googleMapsApi, databaseService);
+
     }
 
     public void calculateRoute(IncomingRoute route){

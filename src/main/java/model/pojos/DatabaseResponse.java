@@ -5,6 +5,8 @@ public class DatabaseResponse {
     private boolean error;
     private String errorMessage;
     private int business;
+    private boolean informationAvailable;
+    private TravelInformation travelInformation;
 
     public int getBusiness() {
         return business;
@@ -30,4 +32,19 @@ public class DatabaseResponse {
         this.errorMessage = errorMessage;
     }
 
+    public boolean isInformationAvailable() {
+        return informationAvailable;
+    }
+
+    public void setInformationAvailable(boolean informationAvailable) {
+        this.informationAvailable = informationAvailable;
+    }
+
+    public TravelInformation getTravelInformation() {
+        return travelInformation;
+    }
+
+    public void setTravelInformation(TravelInformation travelInformation) {
+        this.travelInformation = travelInformation;
+    }
 }

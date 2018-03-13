@@ -9,10 +9,11 @@ public class SingleDrive {
 
     private boolean destinationIsABusiness;
 
-    private long driveDurationInSeconds;
     private String driveDurationHumanReadable;
-    private long driveDistanceInMeters;
+    private long driveDurationInSeconds;
+
     private String driveDistanceHumanReadable;
+    private long driveDistanceInMeters;
 
     private long deliveryTimeInMillis;
     private String deliveryTimeHumanReadable;

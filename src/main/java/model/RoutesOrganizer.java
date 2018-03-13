@@ -18,7 +18,6 @@ public class RoutesOrganizer {
 
     private int packageDeliveryTime;
     private SimpleDateFormat sdf;
-    private String deliveryTimeString;
     private long date;
     private long deliveryTime;
     private long deliveryTimeSum;
@@ -130,7 +129,7 @@ public class RoutesOrganizer {
             }
 
             deliveryTime = date + (shortestDrive.getDriveDurationInSeconds()*1000) + packageDeliveryTime + deliveryTimeSum;
-            deliveryTimeString = sdf.format(deliveryTime);
+            String deliveryTimeString = sdf.format(deliveryTime);
             deliveryTimeSum = deliveryTimeSum +(shortestDrive.getDriveDurationInSeconds()*1000)+ packageDeliveryTime;
 
             shortestDrive.setDeliveryTimeInMillis(deliveryTime);

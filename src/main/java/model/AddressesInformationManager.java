@@ -1,12 +1,8 @@
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import model.pojos.DatabaseResponse;
 import model.pojos.FormattedAddress;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import retrofit2.Call;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,11 +13,11 @@ public class AddressesInformationManager {
 
     private GoogleMapsApi googleMapsApi;
 
-    private final String root_url = "http://192.168.0.16/map/v1/";
-    private final String url_getAddressInfo = root_url + "getAddressBusinessInfo.php";
+    private DatabaseService databaseService;
 
-    public AddressesInformationManager(GoogleMapsApi googleMapsApiInstance) {
+    public AddressesInformationManager(GoogleMapsApi googleMapsApiInstance, DatabaseService databaseService) {
         this.googleMapsApi = googleMapsApiInstance;
+        this.databaseService = databaseService;
     }
 
     public Map<String, List<FormattedAddress>> validateAddresses(List<String> addressList){
@@ -65,42 +61,25 @@ public class AddressesInformationManager {
 
         List<FormattedAddress> businessAddressList = new ArrayList<>();
 
-        final Gson gson = new Gson();
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-
         for (int i=0; i<validatedAddressList.size(); i++) {
 
             String street = validatedAddressList.get(i).getStreet();
             String postCode = validatedAddressList.get(i).getPostCode();
             String city = validatedAddressList.get(i).getCity();
 
-            Request request = new Request.Builder()
-                    .url(url_getAddressInfo + "?"
-                            + "street_name=" + street +"&"
-                            + "post_code=" + postCode +"&"
-                            + "city=" + city
-                    )
-                    .get()
-                    .build();
-
-            Response response;
-            String responseString = null;
-
-            try {
-                response = okHttpClient.newCall(request).execute();
-                responseString = response.body().string();
-            } catch (IOException e) {
-//                e.printStackTrace();
-                System.out.println("Database request failed for: " + street +", "+ postCode +" "+ city);
-            }
+            Call<DatabaseResponse> call = databaseService.getAddressBusinessInfo(
+                    street,
+                    postCode,
+                    city
+            );
 
             DatabaseResponse databaseResponse = null;
 
-            try{
-                databaseResponse = gson.fromJson(responseString, DatabaseResponse.class);
-            }catch (JsonSyntaxException e){
-                System.out.println("Response failed: "+ e);
+            try {
+                databaseResponse = call.execute().body();
+            } catch (IOException e) {
+//                e.printStackTrace();
+                System.out.println("Database request failed for: " + street +", "+ postCode +" "+ city);
             }
 
             if(databaseResponse != null) {
