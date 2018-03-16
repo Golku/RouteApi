@@ -18,7 +18,6 @@ public class SubmitRoute {
     @Consumes(MediaType.APPLICATION_JSON)
     public ApiResponse submitRouteForOrganizing(final IncomingRoute route) {
 
-
         ApiResponse apiResponse = new ApiResponse();
 
         new Thread(new Runnable() {
@@ -45,8 +44,7 @@ public class SubmitRoute {
         }).start();
 
         apiResponse.setRequestType("submit route");
-        apiResponse.setRouteIsNull(false);
-        apiResponse.setAddressValidatingInProgress(true);
+        apiResponse.setRouteState(1);
 
         return apiResponse;
     }

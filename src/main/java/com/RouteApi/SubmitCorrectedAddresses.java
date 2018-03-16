@@ -31,9 +31,8 @@ public class SubmitCorrectedAddresses {
             }
         }).start();
 
-        apiResponse.setRequestType("correct addresses");
-        apiResponse.setRouteIsNull(false);
-        apiResponse.setAddressValidatingInProgress(true);
+        apiResponse.setRequestType("submit correct addresses");
+        apiResponse.setRouteState(1);
 
         return apiResponse;
     }

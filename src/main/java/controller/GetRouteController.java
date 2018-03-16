@@ -10,29 +10,51 @@ public class GetRouteController {
 
     private RoutesManager routesManager;
 
-    public GetRouteController () {
+    public GetRouteController() {
         this.routesManager = new RoutesManager();
     }
 
-    public ApiResponse getRoute (String routeCode){
+    public ApiResponse checkForRouteState(String routeCode) {
 
         ApiResponse apiResponse = new ApiResponse();
 
-        UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(routeCode);
+        if (!routeCode.isEmpty()) {
 
-        if(unOrganizedRoute != null) {
+            UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(routeCode);
 
-            apiResponse.setRouteIsNull(false);
+            if (unOrganizedRoute != null) {
 
-            if (unOrganizedRoute.isOrganizingInProgress()) {
-                apiResponse.setOrganizingInProgress(true);
+                int routeState = unOrganizedRoute.getRouteState();
+
+                if(routeState == 3) {
+
+                    apiResponse.setRouteState(routeState);
+                    apiResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
+
+                }else if(routeState == 4){
+
+                    ArrayList<String> invalidAddresses = new ArrayList<>();
+
+                    for (int i = 0; i < unOrganizedRoute.getWrongAddressesList().size(); i++) {
+                        invalidAddresses.add(unOrganizedRoute.getWrongAddressesList().get(i).getRawAddress());
+                    }
+
+                    apiResponse.setRouteState(routeState);
+                    apiResponse.setInvalidAddresses(invalidAddresses);
+
+                }else{
+                    apiResponse.setRouteState(routeState);
+                }
+
             } else {
-                apiResponse.setOrganizingInProgress(false);
-                apiResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
+                apiResponse.setRouteState(5);
             }
-        }else{
-            apiResponse.setRouteIsNull(true);
+        } else {
+            apiResponse.setRouteState(5);
         }
+
+        apiResponse.setRequestType("get invalid addresses");
+
         return apiResponse;
     }
 

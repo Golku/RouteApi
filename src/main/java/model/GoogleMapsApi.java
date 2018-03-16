@@ -80,7 +80,7 @@ public class GoogleMapsApi {
         try {
             databaseResponse = call.execute().body();
             if (databaseResponse != null) {
-                System.out.println(databaseResponse.getErrorMessage());
+//                System.out.println(databaseResponse.getErrorMessage());
             }
         } catch (IOException e) {
 //                e.printStackTrace();
@@ -156,7 +156,7 @@ public class GoogleMapsApi {
             try {
                 databaseResponse = call.execute().body();
                 if (databaseResponse != null) {
-                    System.out.println(databaseResponse.getErrorMessage());
+//                    System.out.println(databaseResponse.getErrorMessage());
                 }
             } catch (IOException e) {
 //                e.printStackTrace();

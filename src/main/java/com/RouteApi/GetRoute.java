@@ -1,32 +1,31 @@
 package com.RouteApi;
 
 import controller.GetRouteController;
-import controller.SubmitRouteController;
 import model.pojos.ApiResponse;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-/**
- * Root resource (exposed at "myresource" path)
- */
+
 @Path("/getroute")
 public class GetRoute {
 
-    private GetRouteController controller = new GetRouteController();
+    GetRouteController controller = new GetRouteController();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiResponse retrieveSingleOrganizedRoute() {
-        return controller.getRoute("");
+    public ApiResponse getRouteState() {
+        return controller.checkForRouteState("");
     }
 
     @GET
     @Path("/{routeCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiResponse retrieveSingleOrganizedRoute(@PathParam("routeCode") String routeCode) {
-        return controller.getRoute(routeCode);
+    public ApiResponse getInvalidAddresses(@PathParam("routeCode") String routeCode) {
+        return controller.checkForRouteState(routeCode);
     }
 
 }
-
