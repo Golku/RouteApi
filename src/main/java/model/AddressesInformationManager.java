@@ -89,7 +89,7 @@ public class AddressesInformationManager {
                         businessAddressList.add(validatedAddressList.get(i));
                     }
                 } else {
-                    System.out.println(databaseResponse.getErrorMessage());
+//                    System.out.println(databaseResponse.getErrorMessage());
                 }
             }else{
                 System.out.println("Database response is null");

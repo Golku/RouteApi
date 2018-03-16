@@ -1,6 +1,6 @@
 package com.RouteApi;
 
-import controller.GetInvalidAddressesController;
+import controller.RouteStateController;
 import model.pojos.ApiResponse;
 
 import javax.ws.rs.GET;
@@ -10,14 +10,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 
-@Path("/getinvalidaddresses")
-public class GetInvalidAddresses {
+@Path("/getroutestate")
+public class GetRouteState {
 
-    GetInvalidAddressesController controller = new GetInvalidAddressesController();
+    RouteStateController controller = new RouteStateController();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiResponse getInvalidAddresses() {
+    public ApiResponse getRouteState() {
         return controller.checkForInvalidAddresses("");
     }
 

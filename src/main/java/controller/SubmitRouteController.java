@@ -25,7 +25,7 @@ public class SubmitRouteController {
         OkHttpClient okHttpClient = new OkHttpClient();
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .client(okHttpClient)
-                .baseUrl("http://192.168.101.218/map/v1/")
+                .baseUrl("http://192.168.0.16/map/v1/")
                 .addConverterFactory(GsonConverterFactory.create(gson));
         Retrofit retrofit = retrofitBuilder.build();
         DatabaseService databaseService = retrofit.create(DatabaseService.class);

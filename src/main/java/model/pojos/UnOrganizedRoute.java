@@ -6,9 +6,7 @@ public class UnOrganizedRoute {
 
     private String routeCode;
     private String origin;
-    private boolean addressValidatingInProgress;
-    private boolean organizingInProgress;
-    private boolean hasInvalidAddresses;
+    private String routeState;
 
     private List<FormattedAddress> allValidatedAddressesList;
     private List<FormattedAddress> privateAddressList;

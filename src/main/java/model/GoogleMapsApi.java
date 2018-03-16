@@ -25,7 +25,7 @@ public class GoogleMapsApi {
     public GoogleMapsApi(AddressFormatter addressFormatter, DatabaseService databaseService) {
         this.addressFormatter = addressFormatter;
         this.databaseService = databaseService;
-        this.date = System.currentTimeMillis();
+        this.date = System.currentTimeMillis()+ 432000000;
         //If there are many threads making api request with this key, you might hit the query per second limit! FIX THIS!
         this.context = new GeoApiContext.Builder()
                 .apiKey("AIzaSyDfhBotxQl1zCKKFSPlbrtipKeV1Yzpg54")
@@ -79,20 +79,21 @@ public class GoogleMapsApi {
 
         try {
             databaseResponse = call.execute().body();
-            System.out.println("database response good!");
+            if (databaseResponse != null) {
+                System.out.println(databaseResponse.getErrorMessage());
+            }
         } catch (IOException e) {
 //                e.printStackTrace();
             System.out.println("Database request failed for: " + origin + " - " + destination);
         }
 
         if(databaseResponse != null){
-            System.out.println("response not null");
             if(databaseResponse.isInformationAvailable()){
-                System.out.println("information available");
+
                 long refreshDate = databaseResponse.getTravelInformation().getRefreshDate();
 
                 if(date < refreshDate) {
-                    System.out.println("no need to refresh");
+
                     singleDrive = new SingleDrive();
 
                     String originAddress = databaseResponse.getTravelInformation().getOriginAddress();
@@ -109,12 +110,7 @@ public class GoogleMapsApi {
                     singleDrive.setDriveDurationHumanReadable(driveDurationHumanReadable);
                     singleDrive.setDriveDurationInSeconds(driveDurationInSeconds);
 
-                    System.out.println("Got travel information from db");
-                }else{
-                    System.out.println("refresh needed");
                 }
-            }else{
-                System.out.println("No travel info available in db");
             }
         }
 
@@ -124,6 +120,7 @@ public class GoogleMapsApi {
     private SingleDrive getDriveInfoFromGoogleApi(){
 
         SingleDrive singleDrive = null;
+        DatabaseResponse databaseResponse;
         DistanceMatrix resultsDistanceMatrix = null;
 
         String[] originArray = {origin};
@@ -139,14 +136,12 @@ public class GoogleMapsApi {
         //Improve logic to prevent errors when resultsDistanceMatrix == null! FIX THIS!
         if(resultsDistanceMatrix != null){
             singleDrive = new SingleDrive();
-            singleDrive.setOriginFormattedAddress(addressFormatter.formatAddress(resultsDistanceMatrix.originAddresses[0]));
-            singleDrive.setDestinationFormattedAddress(addressFormatter.formatAddress(resultsDistanceMatrix.destinationAddresses[0]));
+            singleDrive.setOriginFormattedAddress(addressFormatter.tryToFormatAddress(resultsDistanceMatrix.originAddresses[0]));
+            singleDrive.setDestinationFormattedAddress(addressFormatter.tryToFormatAddress(resultsDistanceMatrix.destinationAddresses[0]));
             singleDrive.setDriveDistanceHumanReadable(resultsDistanceMatrix.rows[0].elements[0].distance.humanReadable);
             singleDrive.setDriveDistanceInMeters(resultsDistanceMatrix.rows[0].elements[0].distance.inMeters);
             singleDrive.setDriveDurationHumanReadable(resultsDistanceMatrix.rows[0].elements[0].duration.humanReadable);
             singleDrive.setDriveDurationInSeconds(resultsDistanceMatrix.rows[0].elements[0].duration.inSeconds);
-
-            System.out.println("Got travel information from google api");
 
             Call<DatabaseResponse> call = databaseService.addTravelInformation(
                     origin,
@@ -155,12 +150,14 @@ public class GoogleMapsApi {
                     singleDrive.getDriveDistanceInMeters(),
                     singleDrive.getDriveDurationHumanReadable(),
                     singleDrive.getDriveDurationInSeconds(),
-                    date + 432000000 //current date + 5 days
+                    date + 432000000 //current date + 5 days in milliseconds
             );
 
             try {
-                call.execute();
-                System.out.println("address added to db");
+                databaseResponse = call.execute().body();
+                if (databaseResponse != null) {
+                    System.out.println(databaseResponse.getErrorMessage());
+                }
             } catch (IOException e) {
 //                e.printStackTrace();
                 System.out.println("unable to add travel information to db: " + origin + " - " + destination);

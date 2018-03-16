@@ -18,20 +18,30 @@ public class SubmitRoute {
     @Consumes(MediaType.APPLICATION_JSON)
     public ApiResponse submitRouteForOrganizing(final IncomingRoute route) {
 
+
         ApiResponse apiResponse = new ApiResponse();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                beginRouteOrganizing();
+                try {
+                    while (!Thread.currentThread().isInterrupted()) {
+                        beginRouteOrganizing();
+                        Thread.currentThread().interrupt();
+                        Thread.sleep(1000);
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("thread stopped");
+                }
             }
 
             private void beginRouteOrganizing() {
                 SubmitRouteController submitRouteController = new SubmitRouteController();
                 submitRouteController.calculateRoute(route);
-                //find a way to stop the thread after it's done
-                //organizing the route. Doing this will prevent memory leak.
+                System.out.println("Done calculating the route");
             }
+
         }).start();
 
         apiResponse.setRequestType("submit route");

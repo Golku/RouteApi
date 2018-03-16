@@ -12,7 +12,7 @@ public class RoutesOrganizer {
 
     private GoogleMapsApi googleMapsApi;
 
-    public String origin;
+    private String origin;
 
     private List<SingleDrive> organizedRouteClosestAddress = new ArrayList<>();
 
@@ -41,16 +41,9 @@ public class RoutesOrganizer {
 
     public List<SingleDrive> organizeRouteClosestAddress(UnOrganizedRoute unorganizedRoute) {
 
-        List<FormattedAddress> businessAddressList = new ArrayList<>();
-        List<FormattedAddress> privateAddressList = new ArrayList<>();
+        List<FormattedAddress> privateAddressList = new ArrayList<>(unorganizedRoute.getPrivateAddressList());
 
-        for (int i = 0; i < unorganizedRoute.getPrivateAddressList().size(); i++) {
-            privateAddressList.add(unorganizedRoute.getPrivateAddressList().get(i));
-        }
-
-        for (int i = 0; i < unorganizedRoute.getBusinessAddressList().size(); i++) {
-            businessAddressList.add(unorganizedRoute.getBusinessAddressList().get(i));
-        }
+        List<FormattedAddress> businessAddressList = new ArrayList<>(unorganizedRoute.getBusinessAddressList());
 
 //        System.out.println(unorganizedRoute.getBusinessAddressList().size());
 //        System.out.println(unorganizedRoute.getPrivateAddressList().size());

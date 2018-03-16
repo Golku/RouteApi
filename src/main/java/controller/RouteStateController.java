@@ -6,15 +6,15 @@ import model.pojos.UnOrganizedRoute;
 
 import java.util.ArrayList;
 
-public class GetInvalidAddressesController {
+public class RouteStateController {
 
     private RoutesManager routesManager;
 
-    public GetInvalidAddressesController() {
+    public RouteStateController() {
         this.routesManager = new RoutesManager();
     }
 
-    public ApiResponse checkForInvalidAddresses(String routeCode){
+    public ApiResponse checkForRouteState(String routeCode){
 
         ApiResponse apiResponse = new ApiResponse();
 
