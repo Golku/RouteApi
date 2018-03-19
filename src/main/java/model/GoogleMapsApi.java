@@ -25,7 +25,8 @@ public class GoogleMapsApi {
     public GoogleMapsApi(AddressFormatter addressFormatter, DatabaseService databaseService) {
         this.addressFormatter = addressFormatter;
         this.databaseService = databaseService;
-        this.date = System.currentTimeMillis()+ 432000000;
+        this.date = System.currentTimeMillis();
+
         //If there are many threads making api request with this key, you might hit the query per second limit! FIX THIS!
         this.context = new GeoApiContext.Builder()
                 .apiKey("AIzaSyDfhBotxQl1zCKKFSPlbrtipKeV1Yzpg54")
@@ -48,9 +49,10 @@ public class GoogleMapsApi {
             }else{
                 formattedAddress = addressFormatter.addInvalidAddress(address);
             }
+
         } catch (ApiException | IOException | InterruptedException e) {
 //            e.printStackTrace();
-            System.out.println("Can't validate the address");
+            System.out.println("GeoCodingApi was unable to validate the address");
         }
 
         return formattedAddress;

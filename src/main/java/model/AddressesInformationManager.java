@@ -20,41 +20,38 @@ public class AddressesInformationManager {
         this.databaseService = databaseService;
     }
 
-    public Map<String, List<FormattedAddress>> validateAddresses(List<String> addressList){
+    public Map<String, List<FormattedAddress>> validateAddressList(List<String> addressList){
 
         Map<String, List<FormattedAddress>> validatedAddressLists = new HashMap<>();
         List<FormattedAddress> validatedAddressList = new ArrayList<>();
         List<FormattedAddress> wrongAddressList = new ArrayList<>();
 
-        for(int i=0; i<addressList.size(); i++){
+        for (String address : addressList) {
 
-            FormattedAddress verifiedAddress = googleMapsApi.validatedAddress(addressList.get(i));
+            FormattedAddress verifiedAddress = googleMapsApi.validatedAddress(address);
 
-            if(verifiedAddress != null) {
+            if (verifiedAddress != null) {
 
                 if (verifiedAddress.isInvalid()) {
-                    System.out.println("Wrong: " + verifiedAddress.getRawAddress());
+//                    System.out.println("Wrong address: " + verifiedAddress.getRawAddress());
                     wrongAddressList.add(verifiedAddress);
                 } else {
 
                     String country = verifiedAddress.getCountry();
 
                     if (country.equals("Netherlands")) {
-                        System.out.println("Validated: " + verifiedAddress.getRawAddress());
+//                        System.out.println("Validated: " + verifiedAddress.getFormattedAddress());
                         validatedAddressList.add(verifiedAddress);
                     } else {
 //                    Send the original inputed address to the client as well
-//                    addressList.get(i);
-                        System.out.println("Wrong: " + verifiedAddress.getRawAddress());
+//                        System.out.println("Wrong country: " + verifiedAddress.getRawAddress());
                         wrongAddressList.add(verifiedAddress);
                     }
 
                 }
-
-            }else{
-                System.out.println("The address is null");
+            } else {
+                System.out.println("GoogleMapsApi/validatedAddress returned null");
             }
-
         }
 
         validatedAddressLists.put("validAddresses", validatedAddressList);
@@ -67,11 +64,11 @@ public class AddressesInformationManager {
 
         List<FormattedAddress> businessAddressList = new ArrayList<>();
 
-        for (int i=0; i<validatedAddressList.size(); i++) {
+        for (FormattedAddress formattedAddress : validatedAddressList) {
 
-            String street = validatedAddressList.get(i).getStreet();
-            String postCode = validatedAddressList.get(i).getPostCode();
-            String city = validatedAddressList.get(i).getCity();
+            String street = formattedAddress.getStreet();
+            String postCode = formattedAddress.getPostCode();
+            String city = formattedAddress.getCity();
 
             Call<DatabaseResponse> call = databaseService.getAddressBusinessInfo(
                     street,
@@ -85,14 +82,14 @@ public class AddressesInformationManager {
                 databaseResponse = call.execute().body();
             } catch (IOException e) {
 //                e.printStackTrace();
-                System.out.println("Database request failed for: " + street +", "+ postCode +" "+ city);
+                System.out.println("Database request failed for: " + street + ", " + postCode + " " + city);
             }
 
-            if(databaseResponse != null) {
+            if (databaseResponse != null) {
                 if (!databaseResponse.isError()) {
                     if (databaseResponse.getBusiness() == 1) {
-                        validatedAddressList.get(i).setIsBusiness(true);
-                        businessAddressList.add(validatedAddressList.get(i));
+                        formattedAddress.setIsBusiness(true);
+                        businessAddressList.add(formattedAddress);
                     }
                 } else {
 //                    System.out.println(databaseResponse.getErrorMessage());
@@ -108,10 +105,10 @@ public class AddressesInformationManager {
 
         List<FormattedAddress> privateAddressList = new ArrayList<>();
 
-        for(int i =0; i<validatedAddressList.size(); i++){
+        for (FormattedAddress formattedAddress : validatedAddressList) {
 
-            if(!validatedAddressList.get(i).getIsBusiness()){
-                privateAddressList.add(validatedAddressList.get(i));
+            if (!formattedAddress.getIsBusiness()) {
+                privateAddressList.add(formattedAddress);
             }
 
         }

@@ -1,5 +1,6 @@
 package model.pojos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UnOrganizedRoute {
@@ -7,15 +8,12 @@ public class UnOrganizedRoute {
     private String routeCode;
     private String origin;
     private int routeState;
+    private ArrayList<String> addressList;
 
     private List<FormattedAddress> allValidatedAddressesList;
     private List<FormattedAddress> privateAddressList;
     private List<FormattedAddress> businessAddressList;
     private List<FormattedAddress> wrongAddressesList;
-
-    public UnOrganizedRoute(String routeCode) {
-        this.routeCode = routeCode;
-    }
 
     public String getRouteCode() {
         return routeCode;
@@ -39,6 +37,14 @@ public class UnOrganizedRoute {
 
     public void setRouteState(int routeState) {
         this.routeState = routeState;
+    }
+
+    public ArrayList<String> getAddressList() {
+        return addressList;
+    }
+
+    public void setAddressList(ArrayList<String> addressList) {
+        this.addressList = addressList;
     }
 
     public List<FormattedAddress> getAllValidatedAddressesList() {

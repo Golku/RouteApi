@@ -13,9 +13,10 @@ public class RoutesManager {
     private static Map<String, UnOrganizedRoute> unorganizedRoutes = new HashMap<>();
     private static Map<String, OrganizedRoute> organizedRoutes = new HashMap<>();
 
-    public void createUnorganizedRoute(String routeCode){
-        UnOrganizedRoute unOrganizedRoute = new UnOrganizedRoute(routeCode);
+    public void createUnorganizedRoute(UnOrganizedRoute unOrganizedRoute){
+        String routeCode = unOrganizedRoute.getRouteCode();
         unorganizedRoutes.put(routeCode, unOrganizedRoute);
+        System.out.println("Routes size: " + unorganizedRoutes.size());
     }
 
     public void createOrganizedRoute(String routeCode, List<SingleDrive> organizedRouteList){

@@ -1,8 +1,8 @@
 package com.RouteApi;
 
-import controller.SubmitRouteController;
-import model.pojos.IncomingRoute;
+import controller.Controller;
 import model.pojos.ApiResponse;
+import model.pojos.UnOrganizedRoute;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -16,7 +16,7 @@ public class SubmitRoute {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public ApiResponse submitRouteForOrganizing(final IncomingRoute route) {
+    public ApiResponse submitRouteForOrganizing(final UnOrganizedRoute route) {
 
         ApiResponse apiResponse = new ApiResponse();
 
@@ -25,20 +25,20 @@ public class SubmitRoute {
             public void run() {
                 try {
                     while (!Thread.currentThread().isInterrupted()) {
-                        beginRouteOrganizing();
+                        processRoute();
                         Thread.currentThread().interrupt();
                         Thread.sleep(1000);
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    System.out.println("thread stopped");
+//                    System.out.println("thread stopped");
                 }
             }
 
-            private void beginRouteOrganizing() {
-                SubmitRouteController submitRouteController = new SubmitRouteController();
-                submitRouteController.calculateRoute(route);
-                System.out.println("Done calculating the route");
+            private void processRoute() {
+                Controller controller = new Controller();
+                controller.createRoute(route);
+//                System.out.println("Done calculating the route");
             }
 
         }).start();

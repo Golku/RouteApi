@@ -45,38 +45,24 @@ public class SubmitRouteController {
 
     }
 
-    public void calculateRoute(IncomingRoute route){
-
-        routesManager.createUnorganizedRoute(route.getRouteCode());
-
-        UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(route.getRouteCode());
-
-        unOrganizedRoute.setRouteState(1);
-
-        unOrganizedRoute.setOrigin(route.getOrigin());
-
-        validateAddressList("create", unOrganizedRoute, route.getAddressList());
-
-        if(unOrganizedRoute.getWrongAddressesList().size()>0){
-            unOrganizedRoute.setRouteState(4);
-        }else{
-            organizeRoute(unOrganizedRoute);
-        }
-//        System.out.println("Validate addresses list size: " +unOrganizedRoute.getAllValidatedAddressesList().size());
-//        System.out.println("Invalid addresses list size: "+ unOrganizedRoute.getWrongAddressesList().size());
+//    public void calculateRoute(IncomingRoute route){
 //
-//        System.out.println("");
+//        routesManager.createUnorganizedRoute(route.getRouteCode());
 //
-//        System.out.println("Valid");
-//        for(int i = 0; i<unOrganizedRoute.getAllValidatedAddressesList().size(); i++){
-//            System.out.println(unOrganizedRoute.getAllValidatedAddressesList().get(i).getRawAddress());
-//            System.out.println(unOrganizedRoute.getAllValidatedAddressesList().get(i).getFormattedAddress());
+//        UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(route.getRouteCode());
+//
+//        unOrganizedRoute.setRouteState(1);
+//
+//        unOrganizedRoute.setOrigin(route.getOrigin());
+//
+//        validateAddressList("create", unOrganizedRoute, route.getAddressList());
+//
+//        if(unOrganizedRoute.getWrongAddressesList().size()>0){
+//            unOrganizedRoute.setRouteState(4);
+//        }else{
+//            organizeRoute(unOrganizedRoute);
 //        }
-//        System.out.println("Wrong");
-//        for(int i = 0; i<unOrganizedRoute.getWrongAddressesList().size(); i++){
-//            System.out.println(unOrganizedRoute.getWrongAddressesList().get(i).getRawAddress());
-//        }
-    }
+//    }
 
     public void checkSubmittedAddresses(CorrectedAddresses correctedAddresses){
 
@@ -100,7 +86,7 @@ public class SubmitRouteController {
 
     private void validateAddressList(String type, UnOrganizedRoute unOrganizedRoute, ArrayList<String> addressesList) {
 
-        Map<String, List<FormattedAddress>> validatedAddressLists = addressesInformationManager.validateAddresses(addressesList);
+        Map<String, List<FormattedAddress>> validatedAddressLists = addressesInformationManager.validateAddressList(addressesList);
 
         if(type.equals("create")){
             unOrganizedRoute.setAllValidatedAddressesList(validatedAddressLists.get("validAddresses"));
@@ -147,13 +133,13 @@ public class SubmitRouteController {
 
     private void sortAddressList(UnOrganizedRoute unOrganizedRoute){
 
-        List<FormattedAddress> validatedAddressList = unOrganizedRoute.getAllValidatedAddressesList();
-
-        List<FormattedAddress> businessAddresses = addressesInformationManager.findBusinessAddresses(validatedAddressList);
-        List<FormattedAddress> privateAddresses = addressesInformationManager.findPrivateAddresses(validatedAddressList);
-
-        unOrganizedRoute.setBusinessAddressList(businessAddresses);
-        unOrganizedRoute.setPrivateAddressList(privateAddresses);
+//        List<FormattedAddress> validatedAddressList = unOrganizedRoute.getAllValidatedAddressesList();
+//
+//        List<FormattedAddress> businessAddresses = addressesInformationManager.findBusinessAddresses(validatedAddressList);
+//        List<FormattedAddress> privateAddresses = addressesInformationManager.findPrivateAddresses(validatedAddressList);
+//
+//        unOrganizedRoute.setBusinessAddressList(businessAddresses);
+//        unOrganizedRoute.setPrivateAddressList(privateAddresses);
     }
 
 }
