@@ -23,8 +23,8 @@ public class AddressesInformationManager {
     public Map<String, List<FormattedAddress>> validateAddressList(List<String> addressList){
 
         Map<String, List<FormattedAddress>> validatedAddressLists = new HashMap<>();
-        List<FormattedAddress> validatedAddressList = new ArrayList<>();
-        List<FormattedAddress> wrongAddressList = new ArrayList<>();
+        List<FormattedAddress> validAddressList = new ArrayList<>();
+        List<FormattedAddress> invalidAddressList = new ArrayList<>();
 
         for (String address : addressList) {
 
@@ -34,18 +34,18 @@ public class AddressesInformationManager {
 
                 if (verifiedAddress.isInvalid()) {
 //                    System.out.println("Wrong address: " + verifiedAddress.getRawAddress());
-                    wrongAddressList.add(verifiedAddress);
+                    invalidAddressList.add(verifiedAddress);
                 } else {
 
                     String country = verifiedAddress.getCountry();
 
                     if (country.equals("Netherlands")) {
 //                        System.out.println("Validated: " + verifiedAddress.getFormattedAddress());
-                        validatedAddressList.add(verifiedAddress);
+                        validAddressList.add(verifiedAddress);
                     } else {
-//                    Send the original inputed address to the client as well
+//                        Send the original inputed address to the client as well
 //                        System.out.println("Wrong country: " + verifiedAddress.getRawAddress());
-                        wrongAddressList.add(verifiedAddress);
+                        invalidAddressList.add(verifiedAddress);
                     }
 
                 }
@@ -54,17 +54,17 @@ public class AddressesInformationManager {
             }
         }
 
-        validatedAddressLists.put("validAddresses", validatedAddressList);
-        validatedAddressLists.put("wrongAddresses", wrongAddressList);
+        validatedAddressLists.put("validAddresses", validAddressList);
+        validatedAddressLists.put("invalidAddresses", invalidAddressList);
 
         return validatedAddressLists;
     }
 
-    public List<FormattedAddress> findBusinessAddresses(List<FormattedAddress> validatedAddressList) {
+    public List<FormattedAddress> findBusinessAddresses(List<FormattedAddress> validAddressList) {
 
         List<FormattedAddress> businessAddressList = new ArrayList<>();
 
-        for (FormattedAddress formattedAddress : validatedAddressList) {
+        for (FormattedAddress formattedAddress : validAddressList) {
 
             String street = formattedAddress.getStreet();
             String postCode = formattedAddress.getPostCode();

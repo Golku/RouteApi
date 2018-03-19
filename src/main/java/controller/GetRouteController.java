@@ -2,6 +2,7 @@ package controller;
 
 import model.*;
 import model.pojos.ApiResponse;
+import model.pojos.FormattedAddress;
 import model.pojos.UnOrganizedRoute;
 
 import java.util.ArrayList;
@@ -35,8 +36,8 @@ public class GetRouteController {
 
                     ArrayList<String> invalidAddresses = new ArrayList<>();
 
-                    for (int i = 0; i < unOrganizedRoute.getWrongAddressesList().size(); i++) {
-                        invalidAddresses.add(unOrganizedRoute.getWrongAddressesList().get(i).getRawAddress());
+                    for (FormattedAddress invalidAddress : unOrganizedRoute.getInvalidAddressesList()) {
+                        invalidAddresses.add(invalidAddress.getRawAddress());
                     }
 
                     apiResponse.setRouteState(routeState);

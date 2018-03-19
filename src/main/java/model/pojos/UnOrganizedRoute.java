@@ -10,10 +10,10 @@ public class UnOrganizedRoute {
     private int routeState;
     private ArrayList<String> addressList;
 
-    private List<FormattedAddress> allValidatedAddressesList;
+    private List<FormattedAddress> validAddressesList;
     private List<FormattedAddress> privateAddressList;
     private List<FormattedAddress> businessAddressList;
-    private List<FormattedAddress> wrongAddressesList;
+    private List<FormattedAddress> invalidAddressesList;
 
     public String getRouteCode() {
         return routeCode;
@@ -47,12 +47,12 @@ public class UnOrganizedRoute {
         this.addressList = addressList;
     }
 
-    public List<FormattedAddress> getAllValidatedAddressesList() {
-        return allValidatedAddressesList;
+    public List<FormattedAddress> getAllValidAddressesList() {
+        return validAddressesList;
     }
 
-    public void setAllValidatedAddressesList(List<FormattedAddress> allValidatedAddressesList) {
-        this.allValidatedAddressesList = allValidatedAddressesList;
+    public void setAllValidAddressesList(List<FormattedAddress> allValidAddressesList) {
+        this.validAddressesList = allValidAddressesList;
     }
 
     public List<FormattedAddress> getPrivateAddressList() {
@@ -71,11 +71,11 @@ public class UnOrganizedRoute {
         this.businessAddressList = businessAddressList;
     }
 
-    public List<FormattedAddress> getWrongAddressesList() {
-        return wrongAddressesList;
+    public List<FormattedAddress> getInvalidAddressesList() {
+        return invalidAddressesList;
     }
 
-    public void setWrongAddressesList(List<FormattedAddress> wrongAddressesList) {
-        this.wrongAddressesList = wrongAddressesList;
+    public void setInvalidAddressesList(List<FormattedAddress> invalidAddressesList) {
+        this.invalidAddressesList = invalidAddressesList;
     }
 }

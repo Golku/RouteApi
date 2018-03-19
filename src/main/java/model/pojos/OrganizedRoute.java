@@ -7,14 +7,14 @@ public class OrganizedRoute {
     private String routeCode;
     private int privateAddressesCount;
     private int businessAddressesCount;
-    private int wrongAddressesCount;
+    private int invalidAddressesCount;
     private List<SingleDrive> routeList;
 
     public OrganizedRoute(String routeCode, int privateAddressesCount, int businessAddressesCount, int wrongAddressesCount, List<SingleDrive> routeList) {
         this.routeCode = routeCode;
         this.privateAddressesCount = privateAddressesCount;
         this.businessAddressesCount = businessAddressesCount;
-        this.wrongAddressesCount = wrongAddressesCount;
+        this.invalidAddressesCount = wrongAddressesCount;
         this.routeList = routeList;
     }
 
@@ -42,12 +42,12 @@ public class OrganizedRoute {
         this.businessAddressesCount = businessAddressesCount;
     }
 
-    public int getWrongAddressesCount() {
-        return wrongAddressesCount;
+    public int getInvalidAddressesCount() {
+        return invalidAddressesCount;
     }
 
-    public void setWrongAddressesCount(int wrongAddressesCount) {
-        this.wrongAddressesCount = wrongAddressesCount;
+    public void setInvalidAddressesCount(int wrongAddressesCount) {
+        this.invalidAddressesCount = wrongAddressesCount;
     }
 
     public List<SingleDrive> getRouteList() {

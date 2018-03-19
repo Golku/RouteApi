@@ -16,20 +16,19 @@ public class RoutesManager {
     public void createUnorganizedRoute(UnOrganizedRoute unOrganizedRoute){
         String routeCode = unOrganizedRoute.getRouteCode();
         unorganizedRoutes.put(routeCode, unOrganizedRoute);
-        System.out.println("Routes size: " + unorganizedRoutes.size());
     }
 
     public void createOrganizedRoute(String routeCode, List<SingleDrive> organizedRouteList){
 
         int privateAddressesCount = getUnorganizedRoute(routeCode).getPrivateAddressList().size();
         int businessAddressesCount = getUnorganizedRoute(routeCode).getBusinessAddressList().size();
-        int wrongAddressesCount = getUnorganizedRoute(routeCode).getWrongAddressesList().size();
+        int invalidAddressesCount = getUnorganizedRoute(routeCode).getInvalidAddressesList().size();
 
         OrganizedRoute organizedRoute = new OrganizedRoute(
                 routeCode,
                 privateAddressesCount,
                 businessAddressesCount,
-                wrongAddressesCount,
+                invalidAddressesCount,
                 organizedRouteList
         );
 

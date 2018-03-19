@@ -82,9 +82,6 @@ public class GoogleMapsApi {
 
         try {
             databaseResponse = call.execute().body();
-            if (databaseResponse != null) {
-//                System.out.println(databaseResponse.getErrorMessage());
-            }
         } catch (IOException e) {
 //                e.printStackTrace();
             System.out.println("Database request failed for: " + origin + " - " + destination);
@@ -99,19 +96,25 @@ public class GoogleMapsApi {
 
                     singleDrive = new SingleDrive();
 
-                    String originAddress = databaseResponse.getTravelInformation().getOriginAddress();
-                    String destinationAddress = databaseResponse.getTravelInformation().getDestinationAddress();
-                    String driveDistanceHumanReadable = databaseResponse.getTravelInformation().getDistanceHumanReadable();
-                    long driveDistanceInMeters = databaseResponse.getTravelInformation().getDistanceInMeters();
-                    String driveDurationHumanReadable = databaseResponse.getTravelInformation().getDurationHumanReadable();
-                    long driveDurationInSeconds = databaseResponse.getTravelInformation().getDurationInSeconds();
+                    try {
+                        String originAddress = databaseResponse.getTravelInformation().getOriginAddress();
+                        String destinationAddress = databaseResponse.getTravelInformation().getDestinationAddress();
+                        String driveDistanceHumanReadable = databaseResponse.getTravelInformation().getDistanceHumanReadable();
+                        long driveDistanceInMeters = databaseResponse.getTravelInformation().getDistanceInMeters();
+                        String driveDurationHumanReadable = databaseResponse.getTravelInformation().getDurationHumanReadable();
+                        long driveDurationInSeconds = databaseResponse.getTravelInformation().getDurationInSeconds();
 
-                    singleDrive.setOriginFormattedAddress(addressFormatter.tryToFormatAddress(originAddress));
-                    singleDrive.setDestinationFormattedAddress(addressFormatter.tryToFormatAddress(destinationAddress));
-                    singleDrive.setDriveDistanceHumanReadable(driveDistanceHumanReadable);
-                    singleDrive.setDriveDistanceInMeters(driveDistanceInMeters);
-                    singleDrive.setDriveDurationHumanReadable(driveDurationHumanReadable);
-                    singleDrive.setDriveDurationInSeconds(driveDurationInSeconds);
+                        singleDrive.setOriginFormattedAddress(addressFormatter.tryToFormatAddress(originAddress));
+                        singleDrive.setDestinationFormattedAddress(addressFormatter.tryToFormatAddress(destinationAddress));
+                        singleDrive.setDriveDistanceHumanReadable(driveDistanceHumanReadable);
+                        singleDrive.setDriveDistanceInMeters(driveDistanceInMeters);
+                        singleDrive.setDriveDurationHumanReadable(driveDurationHumanReadable);
+                        singleDrive.setDriveDurationInSeconds(driveDurationInSeconds);
+                    }catch (NullPointerException e){
+                        System.out.println("Null object at GoogleMapsApi.java at block 83");
+                        singleDrive = null;
+                    }
+
 
                 }
             }
@@ -123,7 +126,6 @@ public class GoogleMapsApi {
     private SingleDrive getDriveInfoFromGoogleApi(){
 
         SingleDrive singleDrive = null;
-        DatabaseResponse databaseResponse;
         DistanceMatrix resultsDistanceMatrix = null;
 
         String[] originArray = {origin};
@@ -136,32 +138,38 @@ public class GoogleMapsApi {
             System.out.println("Distance matrix api request failed for: " + origin + " - " + destination);
         }
 
-        //Improve logic to prevent errors when resultsDistanceMatrix == null! FIX THIS!
         if(resultsDistanceMatrix != null){
-            singleDrive = new SingleDrive();
-            singleDrive.setOriginFormattedAddress(addressFormatter.tryToFormatAddress(resultsDistanceMatrix.originAddresses[0]));
-            singleDrive.setDestinationFormattedAddress(addressFormatter.tryToFormatAddress(resultsDistanceMatrix.destinationAddresses[0]));
-            singleDrive.setDriveDistanceHumanReadable(resultsDistanceMatrix.rows[0].elements[0].distance.humanReadable);
-            singleDrive.setDriveDistanceInMeters(resultsDistanceMatrix.rows[0].elements[0].distance.inMeters);
-            singleDrive.setDriveDurationHumanReadable(resultsDistanceMatrix.rows[0].elements[0].duration.humanReadable);
-            singleDrive.setDriveDurationInSeconds(resultsDistanceMatrix.rows[0].elements[0].duration.inSeconds);
 
-            Call<DatabaseResponse> call = databaseService.addTravelInformation(
-                    origin,
-                    destination,
-                    singleDrive.getDriveDistanceHumanReadable(),
-                    singleDrive.getDriveDistanceInMeters(),
-                    singleDrive.getDriveDurationHumanReadable(),
-                    singleDrive.getDriveDurationInSeconds(),
-                    date + 432000000 //current date + 5 days in milliseconds
-            );
+            singleDrive = new SingleDrive();
+            Call<DatabaseResponse> call = null;
 
             try {
-                databaseResponse = call.execute().body();
-                if (databaseResponse != null) {
-//                    System.out.println(databaseResponse.getErrorMessage());
+                singleDrive.setOriginFormattedAddress(addressFormatter.tryToFormatAddress(resultsDistanceMatrix.originAddresses[0]));
+                singleDrive.setDestinationFormattedAddress(addressFormatter.tryToFormatAddress(resultsDistanceMatrix.destinationAddresses[0]));
+                singleDrive.setDriveDistanceHumanReadable(resultsDistanceMatrix.rows[0].elements[0].distance.humanReadable);
+                singleDrive.setDriveDistanceInMeters(resultsDistanceMatrix.rows[0].elements[0].distance.inMeters);
+                singleDrive.setDriveDurationHumanReadable(resultsDistanceMatrix.rows[0].elements[0].duration.humanReadable);
+                singleDrive.setDriveDurationInSeconds(resultsDistanceMatrix.rows[0].elements[0].duration.inSeconds);
+
+                call = databaseService.addTravelInformation(
+                        origin,
+                        destination,
+                        singleDrive.getDriveDistanceHumanReadable(),
+                        singleDrive.getDriveDistanceInMeters(),
+                        singleDrive.getDriveDurationHumanReadable(),
+                        singleDrive.getDriveDurationInSeconds(),
+                        date + 432000000 //current date + 5 days in milliseconds
+                );
+            }catch (NullPointerException e){
+                System.out.println("Null object at GoogleMapsApi.java at block 146");
+                singleDrive = null;
+            }
+
+            try {
+                if (call != null) {
+                    call.execute();
                 }
-            } catch (IOException e) {
+            } catch (IOException e){
 //                e.printStackTrace();
                 System.out.println("unable to add travel information to db: " + origin + " - " + destination);
             }

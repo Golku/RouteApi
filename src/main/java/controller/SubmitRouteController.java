@@ -66,21 +66,21 @@ public class SubmitRouteController {
 
     public void checkSubmittedAddresses(CorrectedAddresses correctedAddresses){
 
-        UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(correctedAddresses.getRouteCode());
-
-        unOrganizedRoute.setRouteState(1);
-
-        if(correctedAddresses.getCorrectedAddressesList().size()>0) {
-            validateAddressList("add", unOrganizedRoute, correctedAddresses.getCorrectedAddressesList());
-        }else{
-            unOrganizedRoute.getWrongAddressesList().clear();
-        }
-
-        if(unOrganizedRoute.getWrongAddressesList().size()>0){
-            unOrganizedRoute.setRouteState(4);
-        }else{
-            organizeRoute(unOrganizedRoute);
-        }
+//        UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(correctedAddresses.getRouteCode());
+//
+//        unOrganizedRoute.setRouteState(1);
+//
+//        if(correctedAddresses.getCorrectedAddressesList().size()>0) {
+//            validateAddressList("add", unOrganizedRoute, correctedAddresses.getCorrectedAddressesList());
+//        }else{
+//            unOrganizedRoute.getWrongAddressesList().clear();
+//        }
+//
+//        if(unOrganizedRoute.getWrongAddressesList().size()>0){
+//            unOrganizedRoute.setRouteState(4);
+//        }else{
+//            organizeRoute(unOrganizedRoute);
+//        }
 
     }
 
@@ -89,30 +89,30 @@ public class SubmitRouteController {
         Map<String, List<FormattedAddress>> validatedAddressLists = addressesInformationManager.validateAddressList(addressesList);
 
         if(type.equals("create")){
-            unOrganizedRoute.setAllValidatedAddressesList(validatedAddressLists.get("validAddresses"));
+            unOrganizedRoute.setAllValidAddressesList(validatedAddressLists.get("validAddresses"));
         }else if(type.equals("add")){
             List<FormattedAddress> currentValidatedAddressList = validatedAddressLists.get("validAddresses");
-            List<FormattedAddress> routeValidatedAddressList = unOrganizedRoute.getAllValidatedAddressesList();
+            List<FormattedAddress> routeValidatedAddressList = unOrganizedRoute.getAllValidAddressesList();
             routeValidatedAddressList.addAll(currentValidatedAddressList);
         }
 
-        unOrganizedRoute.setWrongAddressesList(validatedAddressLists.get("wrongAddresses"));
+//        unOrganizedRoute.setWrongAddressesList(validatedAddressLists.get("wrongAddresses"));
 
     }
 
     private void organizeRoute(UnOrganizedRoute unOrganizedRoute){
 
-        unOrganizedRoute.setRouteState(2);
-
-        sortAddressList(unOrganizedRoute);
-
-        routesOrganizer.setOrigin(unOrganizedRoute.getOrigin());
-
-        List<SingleDrive> organizedRouteList = routesOrganizer.organizeRouteClosestAddress(unOrganizedRoute);
-
-        routesManager.createOrganizedRoute(unOrganizedRoute.getRouteCode(), organizedRouteList);
-
-        unOrganizedRoute.setRouteState(3);
+//        unOrganizedRoute.setRouteState(2);
+//
+//        sortAddressList(unOrganizedRoute);
+//
+//        routesOrganizer.setOrigin(unOrganizedRoute.getOrigin());
+//
+//        List<SingleDrive> organizedRouteList = routesOrganizer.organizeRouteClosestAddress(unOrganizedRoute);
+//
+//        routesManager.createOrganizedRoute(unOrganizedRoute.getRouteCode(), organizedRouteList);
+//
+//        unOrganizedRoute.setRouteState(3);
 
 //        System.out.println("private addresses: " + singleOrganizedRoute.getPrivateAddressesCount());
 //        System.out.println("business addresses: " + singleOrganizedRoute.getBusinessAddressesCount());
@@ -133,7 +133,7 @@ public class SubmitRouteController {
 
     private void sortAddressList(UnOrganizedRoute unOrganizedRoute){
 
-//        List<FormattedAddress> validatedAddressList = unOrganizedRoute.getAllValidatedAddressesList();
+//        List<FormattedAddress> validatedAddressList = unOrganizedRoute.getAllValidAddressesList();
 //
 //        List<FormattedAddress> businessAddresses = addressesInformationManager.findBusinessAddresses(validatedAddressList);
 //        List<FormattedAddress> privateAddresses = addressesInformationManager.findPrivateAddresses(validatedAddressList);

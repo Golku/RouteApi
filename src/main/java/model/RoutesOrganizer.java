@@ -35,11 +35,9 @@ public class RoutesOrganizer {
 
     }
 
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }
-
     public List<SingleDrive> organizeRouteClosestAddress(UnOrganizedRoute unorganizedRoute) {
+
+        this.origin = unorganizedRoute.getOrigin();
 
         List<FormattedAddress> privateAddressList = new ArrayList<>(unorganizedRoute.getPrivateAddressList());
 
@@ -76,21 +74,23 @@ public class RoutesOrganizer {
         long driveDuration;
         long shortestDriveDuration = 0;
 
-        List<SingleDrive> singleDriveList = new ArrayList<>();
+        List<SingleDrive> DrivesList = new ArrayList<>();
         SingleDrive shortestDrive = new SingleDrive();
 
         //System.out.println("Origin: "+origin);
 
         while(organisingInProgress){
 
-            for(int i=0; i< addressList.size(); i++){
+            for (FormattedAddress formattedaddress : addressList) {
 
-                destination = addressList.get(i).getFormattedAddress();
+                destination = formattedaddress.getFormattedAddress();
 
 //                System.out.println("call Origin: "+origin);
 //                System.out.println("call Destination: "+destination);
 //                System.out.println("");
 
+
+//                single drive might be returned as null. FiX THIS!!
                 SingleDrive singleDrive = googleMapsApi.getDriveInformation(origin, destination);
 
 //                System.out.println("formatted raw Origin: "+singleDrive.getOriginFormattedAddress().getRawAddress());
@@ -99,24 +99,24 @@ public class RoutesOrganizer {
 //                System.out.println("formatted Destination: "+singleDrive.getDestinationFormattedAddress().getFormattedAddress());
 //                System.out.println("");
 
-                if(addressList.get(i).getIsBusiness()){
+                if (formattedaddress.getIsBusiness()) {
                     singleDrive.setDestinationIsABusiness(true);
                 }
 
-                singleDriveList.add(singleDrive);
+                DrivesList.add(singleDrive);
             }
 
-            for(int i=0; i<singleDriveList.size(); i++){
+            for(int i = 0; i< DrivesList.size(); i++){
 
-                driveDuration = singleDriveList.get(i).getDriveDurationInSeconds();
+                driveDuration = DrivesList.get(i).getDriveDurationInSeconds();
 
                 if(i==0){
-                    shortestDriveDuration = singleDriveList.get(i).getDriveDurationInSeconds();
+                    shortestDriveDuration = DrivesList.get(i).getDriveDurationInSeconds();
                 }
 
-                if(driveDuration <= shortestDriveDuration){
+                if(driveDuration < shortestDriveDuration){
                     shortestDriveDuration = driveDuration;
-                    shortestDrive = singleDriveList.get(i);
+                    shortestDrive = DrivesList.get(i);
                 }
 
             }
@@ -131,7 +131,7 @@ public class RoutesOrganizer {
             organizedRouteClosestAddress.add(shortestDrive);
             origin = shortestDrive.getDestinationFormattedAddress().getFormattedAddress();
 
-            singleDriveList.clear();
+            DrivesList.clear();
 
             for(int i=0; i<addressList.size(); i++){
 
