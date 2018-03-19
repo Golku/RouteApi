@@ -27,7 +27,7 @@ public class GetRouteController {
 
                 int routeState = unOrganizedRoute.getRouteState();
 
-                if(routeState == 3) {
+                if(routeState == 6) {
 
                     apiResponse.setRouteState(routeState);
                     apiResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
@@ -48,10 +48,10 @@ public class GetRouteController {
                 }
 
             } else {
-                apiResponse.setRouteState(5);
+                apiResponse.setRouteState(0);
             }
         } else {
-            apiResponse.setRouteState(5);
+            apiResponse.setRouteState(0);
         }
 
         apiResponse.setRequestType("get route");

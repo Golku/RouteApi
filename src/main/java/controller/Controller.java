@@ -17,12 +17,13 @@ import java.util.Map;
 public class Controller {
 
     /*
-     * routeState 0 = Route was submitted with no addresses
-     * routeState 1 = Validating the addresses
-     * routeState 2 = Route is being organized
-     * routeState 3 = Route is ready
+     * routeState 0 = Route does not exist
+     * routeState 1 = Route was submitted with no addresses
+     * routeState 2 = Validating the addresses
+     * routeState 3 = Route is being organized
      * routeState 4 = Route has invalid addresses
-     * routeState 5 = Route does not exist
+     * routeState 5 = Route can not be organized
+     * routeState 6 = Route is ready
      * */
 
     private RoutesManager routesManager;
@@ -57,7 +58,7 @@ public class Controller {
 
         if(route.getAddressList().size() <= 0){
             System.out.println("Route list is empty");
-            unOrganizedRoute.setRouteState(0);
+            unOrganizedRoute.setRouteState(1);
             System.out.println("routeState: " + unOrganizedRoute.getRouteState());
             return;
         }
@@ -78,17 +79,17 @@ public class Controller {
 
     private void addressValidation(int action, ArrayList<String> addressList){
 
-        unOrganizedRoute.setRouteState(1);
+        unOrganizedRoute.setRouteState(2);
 
         System.out.println("addressValidation");
 
         System.out.println("routeState: " + unOrganizedRoute.getRouteState());
 
-        try{
-            Thread.sleep(5000);
-        }catch (InterruptedException e){
-
-        }
+//        try{
+//            Thread.sleep(5000);
+//        }catch (InterruptedException e){
+//
+//        }
 
         Map<String, List<FormattedAddress>> validatedAddressLists = addressesInformationManager.validateAddressList(addressList);
 
@@ -139,15 +140,27 @@ public class Controller {
     }
 
     private void organizedRoute(){
-        unOrganizedRoute.setRouteState(2);
+        unOrganizedRoute.setRouteState(3);
         System.out.println("organizedRoute");
         System.out.println("routeState: " + unOrganizedRoute.getRouteState());
 
+//        try{
+//            Thread.sleep(5000);
+//        }catch (InterruptedException e){
+//
+//        }
+
         List<SingleDrive> organizedRouteList = routesOrganizer.organizeRouteClosestAddress(unOrganizedRoute);
 
-        routesManager.createOrganizedRoute(unOrganizedRoute.getRouteCode(), organizedRouteList);
-
-        unOrganizedRoute.setRouteState(3);
+        //fix this to check for a null object instead of the size
+        if(organizedRouteList.size()>0){
+            routesManager.createOrganizedRoute(unOrganizedRoute.getRouteCode(), organizedRouteList);
+            unOrganizedRoute.setRouteState(6);
+            System.out.println("routeState: " + unOrganizedRoute.getRouteState());
+        }else{
+            unOrganizedRoute.setRouteState(5);
+            System.out.println("routeState: " + unOrganizedRoute.getRouteState());
+        }
 
     }
 }

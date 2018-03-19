@@ -14,7 +14,7 @@ public class RoutesOrganizer {
 
     private String origin;
 
-    private List<SingleDrive> organizedRouteClosestAddress = new ArrayList<>();
+    private List<SingleDrive> organizedRouteClosestAddress;
 
     private int packageDeliveryTime;
     private SimpleDateFormat sdf;
@@ -38,6 +38,7 @@ public class RoutesOrganizer {
     public List<SingleDrive> organizeRouteClosestAddress(UnOrganizedRoute unorganizedRoute) {
 
         this.origin = unorganizedRoute.getOrigin();
+        this.organizedRouteClosestAddress = new ArrayList<>();
 
         List<FormattedAddress> privateAddressList = new ArrayList<>(unorganizedRoute.getPrivateAddressList());
 
@@ -49,11 +50,20 @@ public class RoutesOrganizer {
 //        System.out.println(privateAddressList.size());
 
         if (businessAddressList.size() > 0) {
-            getDriveInformation(businessAddressList);
+            try {
+                getDriveInformation(businessAddressList);
+            }catch (NullPointerException e){
+                e.printStackTrace();
+                System.out.println("Null object at RouteOrganizer.java at block 53");
+            }
         }
 
         if (privateAddressList.size() > 0){
-            getDriveInformation(privateAddressList);
+            try {
+                getDriveInformation(privateAddressList);
+            }catch (NullPointerException e){
+                System.out.println("Null object at RouteOrganizer.java at block 60");
+            }
         }
 
 //        System.out.println(unorganizedRoute.getBusinessAddressList().size());
@@ -62,7 +72,6 @@ public class RoutesOrganizer {
 //        System.out.println(privateAddressList.size());
 
         return organizedRouteClosestAddress;
-
     }
 
     private void getDriveInformation(List<FormattedAddress> addressList){
