@@ -49,7 +49,8 @@ public class GoogleMapsApi {
                 formattedAddress = addressFormatter.addInvalidAddress(address);
             }
         } catch (ApiException | IOException | InterruptedException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            System.out.println("Can't validate the address");
         }
 
         return formattedAddress;

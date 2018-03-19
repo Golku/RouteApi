@@ -53,7 +53,7 @@ public class GetRouteController {
             apiResponse.setRouteState(5);
         }
 
-        apiResponse.setRequestType("get invalid addresses");
+        apiResponse.setRequestType("get route");
 
         return apiResponse;
     }

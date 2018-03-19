@@ -30,23 +30,29 @@ public class AddressesInformationManager {
 
             FormattedAddress verifiedAddress = googleMapsApi.validatedAddress(addressList.get(i));
 
-            if(verifiedAddress.isInvalid()) {
-                System.out.println("Wrong: "+verifiedAddress.getRawAddress());
-                wrongAddressList.add(verifiedAddress);
-            }else{
+            if(verifiedAddress != null) {
 
-                String country = verifiedAddress.getCountry();
+                if (verifiedAddress.isInvalid()) {
+                    System.out.println("Wrong: " + verifiedAddress.getRawAddress());
+                    wrongAddressList.add(verifiedAddress);
+                } else {
 
-                if(country.equals("Netherlands")){
-                    System.out.println("Validated: "+verifiedAddress.getRawAddress());
-                    validatedAddressList.add(verifiedAddress);
-                }else{
+                    String country = verifiedAddress.getCountry();
+
+                    if (country.equals("Netherlands")) {
+                        System.out.println("Validated: " + verifiedAddress.getRawAddress());
+                        validatedAddressList.add(verifiedAddress);
+                    } else {
 //                    Send the original inputed address to the client as well
 //                    addressList.get(i);
-                    System.out.println("Wrong: "+verifiedAddress.getRawAddress());
-                    wrongAddressList.add(verifiedAddress);
+                        System.out.println("Wrong: " + verifiedAddress.getRawAddress());
+                        wrongAddressList.add(verifiedAddress);
+                    }
+
                 }
 
+            }else{
+                System.out.println("The address is null");
             }
 
         }
@@ -91,8 +97,6 @@ public class AddressesInformationManager {
                 } else {
 //                    System.out.println(databaseResponse.getErrorMessage());
                 }
-            }else{
-                System.out.println("Database response is null");
             }
         }
 
