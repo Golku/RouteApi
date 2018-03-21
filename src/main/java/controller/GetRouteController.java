@@ -27,12 +27,14 @@ public class GetRouteController {
 
                 int routeState = unOrganizedRoute.getRouteState();
 
-                if(routeState == 6) {
+                if(routeState == 7) {
 
                     apiResponse.setRouteState(routeState);
                     apiResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
 
                 }else if(routeState == 4){
+
+                    apiResponse.setRouteState(routeState);
 
                     ArrayList<String> invalidAddresses = new ArrayList<>();
 
@@ -40,7 +42,6 @@ public class GetRouteController {
                         invalidAddresses.add(invalidAddress.getRawAddress());
                     }
 
-                    apiResponse.setRouteState(routeState);
                     apiResponse.setInvalidAddresses(invalidAddresses);
 
                 }else{

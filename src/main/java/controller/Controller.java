@@ -19,11 +19,12 @@ public class Controller {
     /*
      * routeState 0 = Route does not exist
      * routeState 1 = Route was submitted with no addresses
-     * routeState 2 = Validating the addresses
-     * routeState 3 = Route is being organized
+     * routeState 2 = In queue to be process
+     * routeState 3 = Validating the addresses
      * routeState 4 = Route has invalid addresses
-     * routeState 5 = Route can not be organized
-     * routeState 6 = Route is ready
+     * routeState 5 = Route is being organized
+     * routeState 6 = Route can not be organized
+     * routeState 7 = Route is ready
      * */
 
     private RoutesManager routesManager;
@@ -53,11 +54,17 @@ public class Controller {
     }
 
     public void createRoute(UnOrganizedRoute route){
+
+        if(route.getRouteCode().isEmpty()){
+            System.out.println("No route identifier provided");
+            return;
+        }
+
         routesManager.createUnorganizedRoute(route);
         this.unOrganizedRoute = routesManager.getUnorganizedRoute(route.getRouteCode());
 
         if(route.getAddressList().size() <= 0){
-            System.out.println("Route list is empty");
+            System.out.println("Route address list is empty");
             unOrganizedRoute.setRouteState(1);
             System.out.println("routeState: " + unOrganizedRoute.getRouteState());
             return;
@@ -68,8 +75,15 @@ public class Controller {
     }
 
     public void correctedAddresses(CorrectedAddresses correctedAddresses){
+
+        if(correctedAddresses.getRouteCode().isEmpty()){
+            System.out.println("No route identifier provided");
+            return;
+        }
+
+        this.unOrganizedRoute = routesManager.getUnorganizedRoute(correctedAddresses.getRouteCode());
+
         if(correctedAddresses.getCorrectedAddressesList().size()>0) {
-            this.unOrganizedRoute = routesManager.getUnorganizedRoute(correctedAddresses.getRouteCode());
             addressValidation(2, correctedAddresses.getCorrectedAddressesList());
         }else{
 //            unOrganizedRoute.getWrongAddressesList().clear();
@@ -79,7 +93,7 @@ public class Controller {
 
     private void addressValidation(int action, ArrayList<String> addressList){
 
-        unOrganizedRoute.setRouteState(2);
+        unOrganizedRoute.setRouteState(3);
 
         System.out.println("addressValidation");
 
@@ -91,19 +105,20 @@ public class Controller {
 //
 //        }
 
-        Map<String, List<FormattedAddress>> validatedAddressLists = addressesInformationManager.validateAddressList(addressList);
+//        The formattedAddress list can be returned empty. Find a way to FIX THIS!!!
+        Map<String, List<FormattedAddress>> validatedAddressMap = addressesInformationManager.validateAddressList(addressList);
 
         if(action == 1){
-            unOrganizedRoute.setAllValidAddressesList(validatedAddressLists.get("validAddresses"));
+            unOrganizedRoute.setValidAddressesList(validatedAddressMap.get("validAddresses"));
         }else if(action == 2){
-            List<FormattedAddress> currentValidatedAddressList = validatedAddressLists.get("validAddresses");
-            List<FormattedAddress> routeValidatedAddressList = unOrganizedRoute.getAllValidAddressesList();
+            List<FormattedAddress> currentValidatedAddressList = validatedAddressMap.get("validAddresses");
+            List<FormattedAddress> routeValidatedAddressList = unOrganizedRoute.getValidAddressesList();
             routeValidatedAddressList.addAll(currentValidatedAddressList);
         }
 
-        unOrganizedRoute.setInvalidAddressesList(validatedAddressLists.get("invalidAddresses"));
+        unOrganizedRoute.setInvalidAddressesList(validatedAddressMap.get("invalidAddresses"));
 
-        for(FormattedAddress validAddress : unOrganizedRoute.getAllValidAddressesList()){
+        for(FormattedAddress validAddress : unOrganizedRoute.getValidAddressesList()){
             System.out.println("valid address: " + validAddress.getFormattedAddress());
         }
 
@@ -122,7 +137,9 @@ public class Controller {
     private void sortAddresses(){
         System.out.println("sortAddresses");
         System.out.println("routeState: " + unOrganizedRoute.getRouteState());
-        List<FormattedAddress> validAddressesList = unOrganizedRoute.getAllValidAddressesList();
+
+        List<FormattedAddress> validAddressesList = unOrganizedRoute.getValidAddressesList();
+//        This two list can be empty, find a way to FIX THIS!!
         List<FormattedAddress> businessAddresses = addressesInformationManager.findBusinessAddresses(validAddressesList);
         List<FormattedAddress> privateAddresses = addressesInformationManager.findPrivateAddresses(validAddressesList);
         unOrganizedRoute.setBusinessAddressList(businessAddresses);
@@ -136,11 +153,12 @@ public class Controller {
             System.out.println("private address: " + privateAddress.getFormattedAddress());
         }
 
+//        Don't call this function if privateAddresses and businessAddresses list are empty
         organizedRoute();
     }
 
     private void organizedRoute(){
-        unOrganizedRoute.setRouteState(3);
+        unOrganizedRoute.setRouteState(5);
         System.out.println("organizedRoute");
         System.out.println("routeState: " + unOrganizedRoute.getRouteState());
 
@@ -152,13 +170,15 @@ public class Controller {
 
         List<SingleDrive> organizedRouteList = routesOrganizer.organizeRouteClosestAddress(unOrganizedRoute);
 
-        //fix this to check for a null object instead of the size
+//        System.out.println("Organized route size: " + organizedRouteList.size());
+
+//        fix this to check for a null object instead of the size
         if(organizedRouteList.size()>0){
             routesManager.createOrganizedRoute(unOrganizedRoute.getRouteCode(), organizedRouteList);
-            unOrganizedRoute.setRouteState(6);
+            unOrganizedRoute.setRouteState(7);
             System.out.println("routeState: " + unOrganizedRoute.getRouteState());
         }else{
-            unOrganizedRoute.setRouteState(5);
+            unOrganizedRoute.setRouteState(6);
             System.out.println("routeState: " + unOrganizedRoute.getRouteState());
         }
 

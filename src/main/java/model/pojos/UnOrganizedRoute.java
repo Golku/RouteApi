@@ -47,11 +47,11 @@ public class UnOrganizedRoute {
         this.addressList = addressList;
     }
 
-    public List<FormattedAddress> getAllValidAddressesList() {
+    public List<FormattedAddress> getValidAddressesList() {
         return validAddressesList;
     }
 
-    public void setAllValidAddressesList(List<FormattedAddress> allValidAddressesList) {
+    public void setValidAddressesList(List<FormattedAddress> allValidAddressesList) {
         this.validAddressesList = allValidAddressesList;
     }
 

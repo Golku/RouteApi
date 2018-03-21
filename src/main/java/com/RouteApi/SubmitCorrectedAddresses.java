@@ -1,13 +1,13 @@
 package com.RouteApi;
 
-import controller.SubmitRouteController;
+import controller.Controller;
 import model.pojos.ApiResponse;
 import model.pojos.CorrectedAddresses;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-@Path("/invalidaddressessubmition")
+@Path("/correctedaddressessubmition")
 public class SubmitCorrectedAddresses {
 
     @POST
@@ -24,15 +24,15 @@ public class SubmitCorrectedAddresses {
             }
 
             private void beginCorrectedAddressesCheck() {
-                SubmitRouteController controller = new SubmitRouteController();
-                controller.checkSubmittedAddresses(correctedAddresses);
+                Controller controller = new Controller();
+                controller.correctedAddresses(correctedAddresses);
                 //find a way to stop the thread after it's done
                 //organizing the route. Doing this will prevent memory leak.
             }
         }).start();
 
         apiResponse.setRequestType("submit correct addresses");
-        apiResponse.setRouteState(1);
+        apiResponse.setRouteState(2);
 
         return apiResponse;
     }

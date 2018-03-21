@@ -29,32 +29,40 @@ public class RoutesOrganizer {
         sdf = new SimpleDateFormat("kk:mm");
         date = System.currentTimeMillis();
 
+        origin = "";
         packageDeliveryTime = 120000;
         deliveryTimeSum = 0;
         deliveryTime = 0;
-
     }
 
     public List<SingleDrive> organizeRouteClosestAddress(UnOrganizedRoute unorganizedRoute) {
 
-        this.origin = unorganizedRoute.getOrigin();
+        if(unorganizedRoute.getOrigin() == null || unorganizedRoute.getOrigin().isEmpty()){
+            this.origin = "vrij-harnasch 21, den hoorn";
+        }else{
+            this.origin = unorganizedRoute.getOrigin();
+        }
+
+//        System.out.println("First origin: "+origin);
+
         this.organizedRouteClosestAddress = new ArrayList<>();
 
         List<FormattedAddress> privateAddressList = new ArrayList<>(unorganizedRoute.getPrivateAddressList());
 
         List<FormattedAddress> businessAddressList = new ArrayList<>(unorganizedRoute.getBusinessAddressList());
 
-//        System.out.println(unorganizedRoute.getBusinessAddressList().size());
-//        System.out.println(unorganizedRoute.getPrivateAddressList().size());
-//        System.out.println(businessAddressList.size());
-//        System.out.println(privateAddressList.size());
+//        System.out.println("unorganizedRoute business list size: "+unorganizedRoute.getBusinessAddressList().size());
+//        System.out.println("unorganizedRoute private list size: "+unorganizedRoute.getPrivateAddressList().size());
+//        System.out.println("temp business list size: " + businessAddressList.size());
+//        System.out.println("temp private list size: "+privateAddressList.size());
+//        System.out.println("");
 
         if (businessAddressList.size() > 0) {
             try {
                 getDriveInformation(businessAddressList);
             }catch (NullPointerException e){
-                e.printStackTrace();
-                System.out.println("Null object at RouteOrganizer.java at block 53");
+//                e.printStackTrace();
+                System.out.println("Null object at RouteOrganizer.java at block 56");
             }
         }
 
@@ -62,7 +70,7 @@ public class RoutesOrganizer {
             try {
                 getDriveInformation(privateAddressList);
             }catch (NullPointerException e){
-                System.out.println("Null object at RouteOrganizer.java at block 60");
+                System.out.println("Null object at RouteOrganizer.java at block 65");
             }
         }
 
@@ -86,18 +94,15 @@ public class RoutesOrganizer {
         List<SingleDrive> DrivesList = new ArrayList<>();
         SingleDrive shortestDrive = new SingleDrive();
 
-        //System.out.println("Origin: "+origin);
-
         while(organisingInProgress){
 
-            for (FormattedAddress formattedaddress : addressList) {
+            for (int i=0; i<addressList.size(); i++) {
 
-                destination = formattedaddress.getFormattedAddress();
+                destination = addressList.get(i).getFormattedAddress();
 
 //                System.out.println("call Origin: "+origin);
 //                System.out.println("call Destination: "+destination);
 //                System.out.println("");
-
 
 //                single drive might be returned as null. FiX THIS!!
                 SingleDrive singleDrive = googleMapsApi.getDriveInformation(origin, destination);
@@ -106,11 +111,13 @@ public class RoutesOrganizer {
 //                System.out.println("formatted Origin: "+singleDrive.getOriginFormattedAddress().getFormattedAddress());
 //                System.out.println("formatted raw Destination: "+singleDrive.getDestinationFormattedAddress().getRawAddress());
 //                System.out.println("formatted Destination: "+singleDrive.getDestinationFormattedAddress().getFormattedAddress());
-//                System.out.println("");
 
-                if (formattedaddress.getIsBusiness()) {
+                if (addressList.get(i).getIsBusiness()) {
+//                    System.out.println("Destination is a business");
                     singleDrive.setDestinationIsABusiness(true);
                 }
+
+//                System.out.println("");
 
                 DrivesList.add(singleDrive);
             }
@@ -123,7 +130,7 @@ public class RoutesOrganizer {
                     shortestDriveDuration = DrivesList.get(i).getDriveDurationInSeconds();
                 }
 
-                if(driveDuration < shortestDriveDuration){
+                if(driveDuration <= shortestDriveDuration){
                     shortestDriveDuration = driveDuration;
                     shortestDrive = DrivesList.get(i);
                 }
@@ -138,7 +145,12 @@ public class RoutesOrganizer {
             shortestDrive.setDeliveryTimeHumanReadable(deliveryTimeString);
 
             organizedRouteClosestAddress.add(shortestDrive);
+
+//            System.out.println("shortDrive destination: " + shortestDrive.getDestinationFormattedAddress().getFormattedAddress());
+
             origin = shortestDrive.getDestinationFormattedAddress().getFormattedAddress();
+
+//            System.out.println("Origin: " + origin);
 
             DrivesList.clear();
 

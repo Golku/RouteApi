@@ -49,8 +49,6 @@ public class AddressesInformationManager {
                     }
 
                 }
-            } else {
-                System.out.println("GoogleMapsApi/validatedAddress returned null");
             }
         }
 

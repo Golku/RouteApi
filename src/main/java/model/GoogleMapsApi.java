@@ -52,7 +52,7 @@ public class GoogleMapsApi {
 
         } catch (ApiException | IOException | InterruptedException e) {
 //            e.printStackTrace();
-            System.out.println("GeoCodingApi was unable to validate the address");
+            System.out.println("GeoCodingApi in GoogleMapsApi.java was unable to validate the address");
         }
 
         return formattedAddress;
