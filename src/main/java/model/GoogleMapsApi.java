@@ -200,7 +200,6 @@ public class GoogleMapsApi {
                 System.out.println("unable to add travel information to db: " + origin + " - " + destination);
             }
         }
-
         return singleDrive;
     }
 
