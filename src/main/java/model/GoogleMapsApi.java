@@ -23,14 +23,10 @@ public class GoogleMapsApi {
     private String destination;
     private long date;
 
-    private ArrayList<FormattedAddress> formattedAddressesList;
-
     public GoogleMapsApi(AddressFormatter addressFormatter, DatabaseService databaseService) {
         this.addressFormatter = addressFormatter;
         this.databaseService = databaseService;
         this.date = System.currentTimeMillis();
-
-        this.formattedAddressesList = new ArrayList<>();
 
         //If there are many threads making api request with this key, you might hit the query per second limit! FIX THIS!
         this.context = new GeoApiContext.Builder()
@@ -53,7 +49,6 @@ public class GoogleMapsApi {
                 formattedAddress = addressFormatter.tryToFormatAddress(verifiedAddress);
                 formattedAddress.setLat(resultsGeo[0].geometry.location.lat);
                 formattedAddress.setLng(resultsGeo[0].geometry.location.lng);
-                formattedAddressesList.add(formattedAddress);
             }else{
                 formattedAddress = addressFormatter.addInvalidAddress(address);
             }
@@ -77,21 +72,7 @@ public class GoogleMapsApi {
             singleDrive = getDriveInfoFromGoogleApi();
         }
 
-        if(singleDrive != null){
-            for(FormattedAddress formattedAddress : formattedAddressesList){
-                if(singleDrive.getOriginFormattedAddress().getFormattedAddress().equals(formattedAddress.getFormattedAddress())){
-                    singleDrive.getOriginFormattedAddress().setLat(formattedAddress.getLat());
-                    singleDrive.getOriginFormattedAddress().setLng(formattedAddress.getLng());
-                }
-                if(singleDrive.getDestinationFormattedAddress().getFormattedAddress().equals(formattedAddress.getFormattedAddress())){
-                    singleDrive.getDestinationFormattedAddress().setLat(formattedAddress.getLat());
-                    singleDrive.getDestinationFormattedAddress().setLng(formattedAddress.getLng());
-                }
-            }
-        }
-
         return singleDrive;
-
     }
 
     private SingleDrive getDriveInfoFromDb(){

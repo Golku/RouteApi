@@ -27,7 +27,7 @@ public class GetRouteController {
 
                 int routeState = unOrganizedRoute.getRouteState();
 
-                if(routeState == 7) {
+                if(routeState == 8) {
 
                     apiResponse.setRouteState(routeState);
                     apiResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
@@ -44,6 +44,9 @@ public class GetRouteController {
 
                     apiResponse.setInvalidAddresses(invalidAddresses);
 
+                }else if (routeState == 5){
+                    apiResponse.setRouteState(routeState);
+                    apiResponse.setUnOrganizedRoute(unOrganizedRoute);
                 }else{
                     apiResponse.setRouteState(routeState);
                 }

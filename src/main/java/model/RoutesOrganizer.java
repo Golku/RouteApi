@@ -79,6 +79,7 @@ public class RoutesOrganizer {
 //        System.out.println(businessAddressList.size());
 //        System.out.println(privateAddressList.size());
 
+        //This list can be returned empty if getDriveInformation() fails. FIX THIS!!!
         return organizedRouteClosestAddress;
     }
 
@@ -112,10 +113,18 @@ public class RoutesOrganizer {
 //                System.out.println("formatted raw Destination: "+singleDrive.getDestinationFormattedAddress().getRawAddress());
 //                System.out.println("formatted Destination: "+singleDrive.getDestinationFormattedAddress().getFormattedAddress());
 
-                if (formattedAddress.getIsBusiness()) {
+                if(singleDrive != null){
+                    singleDrive.getDestinationFormattedAddress().setLat(formattedAddress.getLat());
+                    singleDrive.getDestinationFormattedAddress().setLng(formattedAddress.getLng());
+
+                    if (formattedAddress.getIsBusiness()) {
 //                    System.out.println("Destination is a business");
-                    singleDrive.setDestinationIsABusiness(true);
+                        singleDrive.setDestinationIsABusiness(true);
+                    }
                 }
+
+
+
 
 //                System.out.println("");
 

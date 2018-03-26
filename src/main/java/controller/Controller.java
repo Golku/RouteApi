@@ -19,9 +19,10 @@ public class Controller {
      * routeState 2 = In queue to be process
      * routeState 3 = Validating the addresses
      * routeState 4 = Route has invalid addresses
-     * routeState 5 = Route is being organized
-     * routeState 6 = Route can not be organized
-     * routeState 7 = Route is ready
+     * routeState 5 = Route ready to be build
+     * routeState 6 = Route is being organized
+     * routeState 7 = Route can not be organized
+     * routeState 8 = Route is ready
      * */
 
     private GoogleMapsApi googleMapsApi;
@@ -51,7 +52,7 @@ public class Controller {
 
     }
 
-    public SingleDrive getDriveInformation(SingleDriveRequest request){
+    public SingleDrive getDriveInformation(TravelInformationRequest request){
         return googleMapsApi.getDriveInformation(request.getOrigin(), request.getDestination());
     }
 
@@ -156,11 +157,13 @@ public class Controller {
         }
 
 //        Don't call this function if privateAddresses and businessAddresses list are empty
-        organizedRoute();
+//        organizedRoute();
+        unOrganizedRoute.setRouteState(5);
+        System.out.println("routeState: " + unOrganizedRoute.getRouteState());
     }
 
     private void organizedRoute(){
-        unOrganizedRoute.setRouteState(5);
+        unOrganizedRoute.setRouteState(6);
         System.out.println("organizedRoute");
         System.out.println("routeState: " + unOrganizedRoute.getRouteState());
 
@@ -177,10 +180,10 @@ public class Controller {
 //        fix this to check for a null object instead of the size
         if(organizedRouteList.size()>0){
             routesManager.createOrganizedRoute(unOrganizedRoute.getRouteCode(), organizedRouteList);
-            unOrganizedRoute.setRouteState(7);
+            unOrganizedRoute.setRouteState(8);
             System.out.println("routeState: " + unOrganizedRoute.getRouteState());
         }else{
-            unOrganizedRoute.setRouteState(6);
+            unOrganizedRoute.setRouteState(7);
             System.out.println("routeState: " + unOrganizedRoute.getRouteState());
         }
 
