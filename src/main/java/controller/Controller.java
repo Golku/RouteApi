@@ -2,10 +2,7 @@ package controller;
 
 import com.google.gson.Gson;
 import model.*;
-import model.pojos.CorrectedAddresses;
-import model.pojos.FormattedAddress;
-import model.pojos.SingleDrive;
-import model.pojos.UnOrganizedRoute;
+import model.pojos.*;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -27,6 +24,7 @@ public class Controller {
      * routeState 7 = Route is ready
      * */
 
+    private GoogleMapsApi googleMapsApi;
     private RoutesManager routesManager;
     private RoutesOrganizer routesOrganizer;
     private AddressesInformationManager addressesInformationManager;
@@ -46,11 +44,15 @@ public class Controller {
         DatabaseService databaseService = retrofit.create(DatabaseService.class);
 
         AddressFormatter addressFormatter = new AddressFormatter();
-        GoogleMapsApi googleMapsApi = new GoogleMapsApi(addressFormatter, databaseService);
+        this.googleMapsApi = new GoogleMapsApi(addressFormatter, databaseService);
         this.routesManager = new RoutesManager();
         this.routesOrganizer = new RoutesOrganizer(googleMapsApi);
         this.addressesInformationManager = new AddressesInformationManager(googleMapsApi, databaseService);
 
+    }
+
+    public SingleDrive getDriveInformation(SingleDriveRequest request){
+        return googleMapsApi.getDriveInformation(request.getOrigin(), request.getDestination());
     }
 
     public void createRoute(UnOrganizedRoute route){

@@ -62,7 +62,7 @@ public class RoutesOrganizer {
                 getDriveInformation(businessAddressList);
             }catch (NullPointerException e){
 //                e.printStackTrace();
-                System.out.println("Null object at RouteOrganizer.java at block 56");
+                System.out.println("Null object at RouteOrganizer.java at block 61");
             }
         }
 
@@ -70,7 +70,7 @@ public class RoutesOrganizer {
             try {
                 getDriveInformation(privateAddressList);
             }catch (NullPointerException e){
-                System.out.println("Null object at RouteOrganizer.java at block 65");
+                System.out.println("Null object at RouteOrganizer.java at block 69");
             }
         }
 
@@ -96,9 +96,9 @@ public class RoutesOrganizer {
 
         while(organisingInProgress){
 
-            for (int i=0; i<addressList.size(); i++) {
+            for (FormattedAddress formattedAddress : addressList) {
 
-                destination = addressList.get(i).getFormattedAddress();
+                destination = formattedAddress.getFormattedAddress();
 
 //                System.out.println("call Origin: "+origin);
 //                System.out.println("call Destination: "+destination);
@@ -112,7 +112,7 @@ public class RoutesOrganizer {
 //                System.out.println("formatted raw Destination: "+singleDrive.getDestinationFormattedAddress().getRawAddress());
 //                System.out.println("formatted Destination: "+singleDrive.getDestinationFormattedAddress().getFormattedAddress());
 
-                if (addressList.get(i).getIsBusiness()) {
+                if (formattedAddress.getIsBusiness()) {
 //                    System.out.println("Destination is a business");
                     singleDrive.setDestinationIsABusiness(true);
                 }

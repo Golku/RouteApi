@@ -7,6 +7,7 @@ public class ApiResponse {
 
     private String requestType;
     private int routeState;
+    private SingleDrive singleDrive;
     private OrganizedRoute organizedRoute;
     private ArrayList<String> invalidAddresses;
 
@@ -24,6 +25,14 @@ public class ApiResponse {
 
     public void setRouteState(int routeState) {
         this.routeState = routeState;
+    }
+
+    public SingleDrive getSingleDrive() {
+        return singleDrive;
+    }
+
+    public void setSingleDrive(SingleDrive singleDrive) {
+        this.singleDrive = singleDrive;
     }
 
     public OrganizedRoute getOrganizedRoute() {

@@ -8,6 +8,8 @@ public class FormattedAddress {
     private String postCode;
     private String city;
     private String country;
+    private double lat;
+    private double lng;
     private boolean isBusiness;
     private boolean isInvalid;
 
@@ -57,6 +59,22 @@ public class FormattedAddress {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 
     public boolean getIsBusiness() {

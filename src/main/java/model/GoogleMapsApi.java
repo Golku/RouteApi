@@ -12,6 +12,7 @@ import retrofit2.Call;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class GoogleMapsApi {
 
@@ -22,10 +23,14 @@ public class GoogleMapsApi {
     private String destination;
     private long date;
 
+    private ArrayList<FormattedAddress> formattedAddressesList;
+
     public GoogleMapsApi(AddressFormatter addressFormatter, DatabaseService databaseService) {
         this.addressFormatter = addressFormatter;
         this.databaseService = databaseService;
         this.date = System.currentTimeMillis();
+
+        this.formattedAddressesList = new ArrayList<>();
 
         //If there are many threads making api request with this key, you might hit the query per second limit! FIX THIS!
         this.context = new GeoApiContext.Builder()
@@ -46,6 +51,9 @@ public class GoogleMapsApi {
             if(resultsGeo.length > 0){
                 verifiedAddress = resultsGeo[0].formattedAddress;
                 formattedAddress = addressFormatter.tryToFormatAddress(verifiedAddress);
+                formattedAddress.setLat(resultsGeo[0].geometry.location.lat);
+                formattedAddress.setLng(resultsGeo[0].geometry.location.lng);
+                formattedAddressesList.add(formattedAddress);
             }else{
                 formattedAddress = addressFormatter.addInvalidAddress(address);
             }
@@ -67,6 +75,19 @@ public class GoogleMapsApi {
 
         if (singleDrive == null) {
             singleDrive = getDriveInfoFromGoogleApi();
+        }
+
+        if(singleDrive != null){
+            for(FormattedAddress formattedAddress : formattedAddressesList){
+                if(singleDrive.getOriginFormattedAddress().getFormattedAddress().equals(formattedAddress.getFormattedAddress())){
+                    singleDrive.getOriginFormattedAddress().setLat(formattedAddress.getLat());
+                    singleDrive.getOriginFormattedAddress().setLng(formattedAddress.getLng());
+                }
+                if(singleDrive.getDestinationFormattedAddress().getFormattedAddress().equals(formattedAddress.getFormattedAddress())){
+                    singleDrive.getDestinationFormattedAddress().setLat(formattedAddress.getLat());
+                    singleDrive.getDestinationFormattedAddress().setLng(formattedAddress.getLng());
+                }
+            }
         }
 
         return singleDrive;
@@ -110,8 +131,10 @@ public class GoogleMapsApi {
                         singleDrive.setDriveDistanceInMeters(driveDistanceInMeters);
                         singleDrive.setDriveDurationHumanReadable(driveDurationHumanReadable);
                         singleDrive.setDriveDurationInSeconds(driveDurationInSeconds);
+
+                        System.out.println("Travel information from db for: " + origin + " - " + destination);
                     }catch (NullPointerException e){
-                        System.out.println("Null object at GoogleMapsApi.java at block 83");
+                        System.out.println("Null object at GoogleMapsApi.java at block 99");
                         singleDrive = null;
                     }
 
@@ -160,6 +183,8 @@ public class GoogleMapsApi {
                         singleDrive.getDriveDurationInSeconds(),
                         date + 432000000 //current date + 5 days in milliseconds
                 );
+
+                System.out.println("Travel information from maps api for: " + origin + " - " + destination);
             }catch (NullPointerException e){
                 System.out.println("Null object at GoogleMapsApi.java at block 146");
                 singleDrive = null;
@@ -168,6 +193,7 @@ public class GoogleMapsApi {
             try {
                 if (call != null) {
                     call.execute();
+                    System.out.println("Travel information added to database");
                 }
             } catch (IOException e){
 //                e.printStackTrace();
