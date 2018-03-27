@@ -109,7 +109,7 @@ public class Controller {
 //        }
 
 //        The formattedAddress list can be returned empty. Find a way to FIX THIS!!!
-        Map<String, List<FormattedAddress>> validatedAddressMap = addressesInformationManager.validateAddressList(addressList);
+        Map<String, ArrayList<FormattedAddress>> validatedAddressMap = addressesInformationManager.validateAddressList(addressList);
 
         if(action == 1){
             unOrganizedRoute.setValidAddressesList(validatedAddressMap.get("validAddresses"));

@@ -20,11 +20,11 @@ public class AddressesInformationManager {
         this.databaseService = databaseService;
     }
 
-    public Map<String, List<FormattedAddress>> validateAddressList(List<String> addressList){
+    public Map<String, ArrayList<FormattedAddress>> validateAddressList(List<String> addressList){
 
-        Map<String, List<FormattedAddress>> validatedAddressLists = new HashMap<>();
-        List<FormattedAddress> validAddressList = new ArrayList<>();
-        List<FormattedAddress> invalidAddressList = new ArrayList<>();
+        Map<String, ArrayList<FormattedAddress>> validatedAddressLists = new HashMap<>();
+        ArrayList<FormattedAddress> validAddressList = new ArrayList<>();
+        ArrayList<FormattedAddress> invalidAddressList = new ArrayList<>();
 
         for (String address : addressList) {
 

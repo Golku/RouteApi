@@ -10,7 +10,7 @@ public class UnOrganizedRoute {
     private int routeState;
     private ArrayList<String> addressList;
 
-    private List<FormattedAddress> validAddressesList;
+    private ArrayList<FormattedAddress> validAddressesList;
     private List<FormattedAddress> privateAddressList;
     private List<FormattedAddress> businessAddressList;
     private List<FormattedAddress> invalidAddressesList;
@@ -47,12 +47,12 @@ public class UnOrganizedRoute {
         this.addressList = addressList;
     }
 
-    public List<FormattedAddress> getValidAddressesList() {
+    public ArrayList<FormattedAddress> getValidAddressesList() {
         return validAddressesList;
     }
 
-    public void setValidAddressesList(List<FormattedAddress> allValidAddressesList) {
-        this.validAddressesList = allValidAddressesList;
+    public void setValidAddressesList(ArrayList<FormattedAddress> validAddressesList) {
+        this.validAddressesList = validAddressesList;
     }
 
     public List<FormattedAddress> getPrivateAddressList() {

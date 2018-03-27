@@ -8,7 +8,7 @@ public class ApiResponse {
     private String requestType;
     private int routeState;
     private SingleDrive singleDrive;
-    private UnOrganizedRoute unOrganizedRoute;
+    private ArrayList<FormattedAddress> validAddresses;
     private OrganizedRoute organizedRoute;
     private ArrayList<String> invalidAddresses;
 
@@ -36,12 +36,12 @@ public class ApiResponse {
         this.singleDrive = singleDrive;
     }
 
-    public UnOrganizedRoute getUnOrganizedRoute() {
-        return unOrganizedRoute;
+    public ArrayList<FormattedAddress> getValidAddresses() {
+        return validAddresses;
     }
 
-    public void setUnOrganizedRoute(UnOrganizedRoute unOrganizedRoute) {
-        this.unOrganizedRoute = unOrganizedRoute;
+    public void setValidAddresses(ArrayList<FormattedAddress> validAddresses) {
+        this.validAddresses = validAddresses;
     }
 
     public OrganizedRoute getOrganizedRoute() {
