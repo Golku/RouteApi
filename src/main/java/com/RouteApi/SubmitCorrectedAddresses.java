@@ -31,7 +31,6 @@ public class SubmitCorrectedAddresses {
             }
         }).start();
 
-        apiResponse.setRequestType("submit correct addresses");
         apiResponse.setRouteState(2);
 
         return apiResponse;

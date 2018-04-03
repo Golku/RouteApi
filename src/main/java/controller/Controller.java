@@ -94,7 +94,7 @@ public class Controller {
         }
     }
 
-    private void addressValidation(int action, ArrayList<String> addressList){
+    private void addressValidation(int action, List<String> addressList){
 
         unOrganizedRoute.setRouteState(3);
 

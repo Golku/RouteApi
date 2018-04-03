@@ -46,7 +46,7 @@ public class GetRouteController {
 
                 }else if (routeState == 5){
                     apiResponse.setRouteState(routeState);
-                    apiResponse.setValidAddresses(unOrganizedRoute.getValidAddressesList());
+                    apiResponse.setUnOrganizedRoute(unOrganizedRoute);
                 }else{
                     apiResponse.setRouteState(routeState);
                 }
@@ -57,8 +57,6 @@ public class GetRouteController {
         } else {
             apiResponse.setRouteState(0);
         }
-
-        apiResponse.setRequestType("get route");
 
         return apiResponse;
     }

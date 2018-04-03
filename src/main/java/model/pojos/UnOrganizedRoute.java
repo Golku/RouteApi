@@ -8,9 +8,9 @@ public class UnOrganizedRoute {
     private String routeCode;
     private String origin;
     private int routeState;
-    private ArrayList<String> addressList;
+    private List<String> addressList;
 
-    private ArrayList<FormattedAddress> validAddressesList;
+    private List<FormattedAddress> validAddressesList;
     private List<FormattedAddress> privateAddressList;
     private List<FormattedAddress> businessAddressList;
     private List<FormattedAddress> invalidAddressesList;
@@ -39,19 +39,19 @@ public class UnOrganizedRoute {
         this.routeState = routeState;
     }
 
-    public ArrayList<String> getAddressList() {
+    public List<String> getAddressList() {
         return addressList;
     }
 
-    public void setAddressList(ArrayList<String> addressList) {
+    public void setAddressList(List<String> addressList) {
         this.addressList = addressList;
     }
 
-    public ArrayList<FormattedAddress> getValidAddressesList() {
+    public List<FormattedAddress> getValidAddressesList() {
         return validAddressesList;
     }
 
-    public void setValidAddressesList(ArrayList<FormattedAddress> validAddressesList) {
+    public void setValidAddressesList(List<FormattedAddress> validAddressesList) {
         this.validAddressesList = validAddressesList;
     }
 

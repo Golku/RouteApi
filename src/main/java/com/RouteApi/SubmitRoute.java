@@ -43,7 +43,6 @@ public class SubmitRoute {
 
         }).start();
 
-        apiResponse.setRequestType("submit route");
         apiResponse.setRouteState(2);
 
         return apiResponse;
