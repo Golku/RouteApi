@@ -1,11 +1,12 @@
 package controller;
 
-import model.*;
-import model.pojos.ApiResponse;
+import model.RoutesManager;
+import model.pojos.RouteResponse;
 import model.pojos.FormattedAddress;
 import model.pojos.UnOrganizedRoute;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GetRouteController {
 
@@ -15,9 +16,9 @@ public class GetRouteController {
         this.routesManager = new RoutesManager();
     }
 
-    public ApiResponse checkForRouteState(String routeCode) {
+    public RouteResponse checkForRouteState(String routeCode) {
 
-        ApiResponse apiResponse = new ApiResponse();
+        RouteResponse routeResponse = new RouteResponse();
 
         if (!routeCode.isEmpty()) {
 
@@ -29,36 +30,36 @@ public class GetRouteController {
 
                 if(routeState == 8) {
 
-                    apiResponse.setRouteState(routeState);
-                    apiResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
+                    routeResponse.setRouteState(routeState);
+                    routeResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
 
                 }else if(routeState == 4){
 
-                    apiResponse.setRouteState(routeState);
+                    routeResponse.setRouteState(routeState);
 
-                    ArrayList<String> invalidAddresses = new ArrayList<>();
+                    List<String> invalidAddresses = new ArrayList<>();
 
                     for (FormattedAddress invalidAddress : unOrganizedRoute.getInvalidAddressesList()) {
                         invalidAddresses.add(invalidAddress.getRawAddress());
                     }
 
-                    apiResponse.setInvalidAddresses(invalidAddresses);
+                    routeResponse.setInvalidAddresses(invalidAddresses);
 
                 }else if (routeState == 5){
-                    apiResponse.setRouteState(routeState);
-                    apiResponse.setUnOrganizedRoute(unOrganizedRoute);
+                    routeResponse.setRouteState(routeState);
+                    routeResponse.setUnOrganizedRoute(unOrganizedRoute);
                 }else{
-                    apiResponse.setRouteState(routeState);
+                    routeResponse.setRouteState(routeState);
                 }
 
             } else {
-                apiResponse.setRouteState(0);
+                routeResponse.setRouteState(0);
             }
         } else {
-            apiResponse.setRouteState(0);
+            routeResponse.setRouteState(0);
         }
 
-        return apiResponse;
+        return routeResponse;
     }
 
 }

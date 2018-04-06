@@ -1,7 +1,7 @@
 package com.RouteApi;
 
 import controller.GetRouteController;
-import model.pojos.ApiResponse;
+import model.pojos.RouteResponse;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,14 +17,14 @@ public class GetRoute {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiResponse getRouteState() {
+    public RouteResponse getRouteState() {
         return controller.checkForRouteState("");
     }
 
     @GET
     @Path("/{routeCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiResponse getInvalidAddresses(@PathParam("routeCode") String routeCode) {
+    public RouteResponse getInvalidAddresses(@PathParam("routeCode") String routeCode) {
         return controller.checkForRouteState(routeCode);
     }
 

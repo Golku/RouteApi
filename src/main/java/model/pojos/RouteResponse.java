@@ -1,15 +1,13 @@
 package model.pojos;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ApiResponse {
+public class RouteResponse {
 
     private int routeState;
-    private SingleDrive singleDrive;
     private UnOrganizedRoute unOrganizedRoute;
     private OrganizedRoute organizedRoute;
-    private ArrayList<String> invalidAddresses;
+    private List<String> invalidAddresses;
 
     public int getRouteState() {
         return routeState;
@@ -17,14 +15,6 @@ public class ApiResponse {
 
     public void setRouteState(int routeState) {
         this.routeState = routeState;
-    }
-
-    public SingleDrive getSingleDrive() {
-        return singleDrive;
-    }
-
-    public void setSingleDrive(SingleDrive singleDrive) {
-        this.singleDrive = singleDrive;
     }
 
     public UnOrganizedRoute getUnOrganizedRoute() {
@@ -43,11 +33,11 @@ public class ApiResponse {
         this.organizedRoute = organizedRoute;
     }
 
-    public ArrayList<String> getInvalidAddresses() {
+    public List<String> getInvalidAddresses() {
         return invalidAddresses;
     }
 
-    public void setInvalidAddresses(ArrayList<String> invalidAddresses) {
+    public void setInvalidAddresses(List<String> invalidAddresses) {
         this.invalidAddresses = invalidAddresses;
     }
 }

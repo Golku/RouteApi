@@ -1,7 +1,7 @@
 package com.RouteApi;
 
 import controller.Controller;
-import model.pojos.ApiResponse;
+import model.pojos.RouteResponse;
 import model.pojos.CorrectedAddresses;
 
 import javax.ws.rs.*;
@@ -13,9 +13,9 @@ public class SubmitCorrectedAddresses {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public ApiResponse submitCorrectedAddresses(final CorrectedAddresses correctedAddresses) {
+    public RouteResponse submitCorrectedAddresses(final CorrectedAddresses correctedAddresses) {
 
-        ApiResponse apiResponse = new ApiResponse();
+        RouteResponse routeResponse = new RouteResponse();
 
         new Thread(new Runnable() {
             @Override
@@ -31,9 +31,9 @@ public class SubmitCorrectedAddresses {
             }
         }).start();
 
-        apiResponse.setRouteState(2);
+        routeResponse.setRouteState(2);
 
-        return apiResponse;
+        return routeResponse;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.RouteApi;
 
 import controller.Controller;
-import model.pojos.ApiResponse;
+import model.pojos.RouteResponse;
 import model.pojos.UnOrganizedRoute;
 
 import javax.ws.rs.Consumes;
@@ -16,9 +16,9 @@ public class SubmitRoute {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public ApiResponse submitRouteForOrganizing(final UnOrganizedRoute route) {
+    public RouteResponse submitRouteForOrganizing(final UnOrganizedRoute route) {
 
-        ApiResponse apiResponse = new ApiResponse();
+        RouteResponse routeResponse = new RouteResponse();
 
         new Thread(new Runnable() {
             @Override
@@ -43,9 +43,9 @@ public class SubmitRoute {
 
         }).start();
 
-        apiResponse.setRouteState(2);
+        routeResponse.setRouteState(2);
 
-        return apiResponse;
+        return routeResponse;
     }
 
 }

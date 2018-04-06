@@ -6,8 +6,6 @@ import model.pojos.*;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +50,7 @@ public class Controller {
 
     }
 
-    public SingleDrive getDriveInformation(TravelInformationRequest request){
+    public SingleDrive getDriveInformation(SingleDriveRequest request){
         return googleMapsApi.getDriveInformation(request.getOrigin(), request.getDestination());
     }
 
@@ -109,7 +107,7 @@ public class Controller {
 //        }
 
 //        The formattedAddress list can be returned empty. Find a way to FIX THIS!!!
-        Map<String, ArrayList<FormattedAddress>> validatedAddressMap = addressesInformationManager.validateAddressList(addressList);
+        Map<String, List<FormattedAddress>> validatedAddressMap = addressesInformationManager.validateAddressList(addressList);
 
         if(action == 1){
             unOrganizedRoute.setValidAddressesList(validatedAddressMap.get("validAddresses"));

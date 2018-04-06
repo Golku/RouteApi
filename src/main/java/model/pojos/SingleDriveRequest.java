@@ -1,6 +1,6 @@
 package model.pojos;
 
-public class TravelInformationRequest {
+public class SingleDriveRequest {
 
     private String origin;
     private String destination;
