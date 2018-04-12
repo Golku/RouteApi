@@ -2,26 +2,13 @@ package model.pojos;
 
 import java.util.List;
 
-public class OrganizedRoute {
+public class Route {
 
     private String routeCode;
     private List<FormattedAddress> addressList;
     private List<FormattedAddress> privateAddressList;
     private List<FormattedAddress> businessAddressList;
     private List<SingleDrive> routeList;
-
-    public OrganizedRoute(String routeCode,
-                          List<FormattedAddress> addressList,
-                          List<FormattedAddress> privateAddressList,
-                          List<FormattedAddress> businessAddressList,
-                          List<SingleDrive> routeList) {
-
-        this.routeCode = routeCode;
-        this.addressList = addressList;
-        this.privateAddressList = privateAddressList;
-        this.businessAddressList = businessAddressList;
-        this.routeList = routeList;
-    }
 
     public String getRouteCode() {
         return routeCode;

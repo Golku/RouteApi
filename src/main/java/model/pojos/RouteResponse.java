@@ -5,8 +5,7 @@ import java.util.List;
 public class RouteResponse {
 
     private int routeState;
-    private UnOrganizedRoute unOrganizedRoute;
-    private OrganizedRoute organizedRoute;
+    private Route route;
     private List<String> invalidAddresses;
 
     public int getRouteState() {
@@ -17,20 +16,12 @@ public class RouteResponse {
         this.routeState = routeState;
     }
 
-    public UnOrganizedRoute getUnOrganizedRoute() {
-        return unOrganizedRoute;
+    public Route getRoute() {
+        return route;
     }
 
-    public void setUnOrganizedRoute(UnOrganizedRoute unOrganizedRoute) {
-        this.unOrganizedRoute = unOrganizedRoute;
-    }
-
-    public OrganizedRoute getOrganizedRoute() {
-        return organizedRoute;
-    }
-
-    public void setOrganizedRoute(OrganizedRoute organizedRoute) {
-        this.organizedRoute = organizedRoute;
+    public void setRoute(Route route) {
+        this.route = route;
     }
 
     public List<String> getInvalidAddresses() {

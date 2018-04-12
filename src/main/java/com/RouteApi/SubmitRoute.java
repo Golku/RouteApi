@@ -1,8 +1,8 @@
 package com.RouteApi;
 
 import controller.Controller;
+import model.pojos.IncomingRoute;
 import model.pojos.RouteResponse;
-import model.pojos.UnOrganizedRoute;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -16,7 +16,7 @@ public class SubmitRoute {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public RouteResponse submitRouteForOrganizing(final UnOrganizedRoute route) {
+    public RouteResponse submitRouteForOrganizing(final IncomingRoute route) {
 
         RouteResponse routeResponse = new RouteResponse();
 

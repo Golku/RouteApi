@@ -2,7 +2,7 @@ package model;
 
 import model.pojos.FormattedAddress;
 import model.pojos.SingleDrive;
-import model.pojos.UnOrganizedRoute;
+import model.pojos.UnorganizedRoute;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class RoutesOrganizer {
         deliveryTime = 0;
     }
 
-    public List<SingleDrive> organizeRouteClosestAddress(UnOrganizedRoute unorganizedRoute) {
+    public List<SingleDrive> organizeRouteClosestAddress(UnorganizedRoute unorganizedRoute) {
 
         if(unorganizedRoute.getOrigin() == null || unorganizedRoute.getOrigin().isEmpty()){
             this.origin = "vrij-harnasch 21, den hoorn";

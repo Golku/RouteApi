@@ -1,9 +1,10 @@
 package controller;
 
 import model.RoutesManager;
+import model.pojos.Route;
 import model.pojos.RouteResponse;
 import model.pojos.FormattedAddress;
-import model.pojos.UnOrganizedRoute;
+import model.pojos.UnorganizedRoute;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,16 +23,27 @@ public class GetRouteController {
 
         if (!routeCode.isEmpty()) {
 
-            UnOrganizedRoute unOrganizedRoute = routesManager.getUnorganizedRoute(routeCode);
+            UnorganizedRoute unorganizedRoute = routesManager.getUnorganizedRoute(routeCode);
 
-            if (unOrganizedRoute != null) {
+            if (unorganizedRoute != null) {
 
-                int routeState = unOrganizedRoute.getRouteState();
+                int routeState = unorganizedRoute.getRouteState();
 
-                if(routeState == 8) {
+                if(routeState == 7) {
+
+                    Route route = new Route();
+
+                    route.setRouteCode(unorganizedRoute.getRouteCode());
+                    route.setAddressList(unorganizedRoute.getAddressList());
+                    route.setPrivateAddressList(unorganizedRoute.getPrivateAddressList());
+                    route.setBusinessAddressList(unorganizedRoute.getBusinessAddressList());
+
+                    if(routesManager.getOrganizedRoute(routeCode) != null) {
+                        route.setRouteList(routesManager.getOrganizedRoute(routeCode).getRouteList());
+                    }
 
                     routeResponse.setRouteState(routeState);
-                    routeResponse.setOrganizedRoute(routesManager.getOrganizedRoute(routeCode));
+                    routeResponse.setRoute(route);
 
                 }else if(routeState == 4){
 
@@ -39,15 +51,12 @@ public class GetRouteController {
 
                     List<String> invalidAddresses = new ArrayList<>();
 
-                    for (FormattedAddress invalidAddress : unOrganizedRoute.getInvalidAddressesList()) {
+                    for (FormattedAddress invalidAddress : unorganizedRoute.getInvalidAddressesList()) {
                         invalidAddresses.add(invalidAddress.getRawAddress());
                     }
 
                     routeResponse.setInvalidAddresses(invalidAddresses);
 
-                }else if (routeState == 5){
-                    routeResponse.setRouteState(routeState);
-                    routeResponse.setUnOrganizedRoute(unOrganizedRoute);
                 }else{
                     routeResponse.setRouteState(routeState);
                 }
