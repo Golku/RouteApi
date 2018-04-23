@@ -1,8 +1,8 @@
 package model;
 
 import model.pojos.FormattedAddress;
+import model.pojos.Route;
 import model.pojos.SingleDrive;
-import model.pojos.UnorganizedRoute;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,21 +35,23 @@ public class RoutesOrganizer {
         deliveryTime = 0;
     }
 
-    public List<SingleDrive> organizeRouteClosestAddress(UnorganizedRoute unorganizedRoute) {
+    public List<SingleDrive> organizeRouteClosestAddress(Route route) {
 
-        if(unorganizedRoute.getOrigin() == null || unorganizedRoute.getOrigin().isEmpty()){
-            this.origin = "vrij-harnasch 21, den hoorn";
-        }else{
-            this.origin = unorganizedRoute.getOrigin();
-        }
+//        UnorganizedRoute unorganizedRoute = null;
+//
+//        if(unorganizedRoute.getOrigin() == null || unorganizedRoute.getOrigin().isEmpty()){
+//            this.origin = "vrij-harnasch 21, den hoorn";
+//        }else{
+//            this.origin = unorganizedRoute.getOrigin();
+//        }
 
 //        System.out.println("First origin: "+origin);
 
         this.organizedRouteClosestAddress = new ArrayList<>();
 
-        List<FormattedAddress> privateAddressList = new ArrayList<>(unorganizedRoute.getPrivateAddressList());
+        List<FormattedAddress> privateAddressList = null;
 
-        List<FormattedAddress> businessAddressList = new ArrayList<>(unorganizedRoute.getBusinessAddressList());
+        List<FormattedAddress> businessAddressList = null;
 
 //        System.out.println("unorganizedRoute business list size: "+unorganizedRoute.getBusinessAddressList().size());
 //        System.out.println("unorganizedRoute private list size: "+unorganizedRoute.getPrivateAddressList().size());
@@ -79,7 +81,7 @@ public class RoutesOrganizer {
 //        System.out.println(businessAddressList.size());
 //        System.out.println(privateAddressList.size());
 
-        //This list can be returned empty if getDriveInformation() fails. FIX THIS!!!
+        //This list can be returned empty if DriveInfoController() fails. FIX THIS!!!
         return organizedRouteClosestAddress;
     }
 

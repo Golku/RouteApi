@@ -17,17 +17,15 @@ public class RouteController {
     /*
      * routeState 0 = Route does not exist
      * routeState 1 = Route was submitted with no addresses
-     * routeState 3 = Validating the addresses
-     * routeState 4 = Route has invalid addresses
-     * routeState 5 = Route is being organized
-     * routeState 6 = Route can not be organized
-     * routeState 7 = Route is ready
+     * routeState 2 = Validating the addresses
+     * routeState 3 = Route is being organized
+     * routeState 4 = Route can not be organized
+     * routeState 5 = Route is ready
      * */
 
-    private GoogleMapsApi googleMapsApi;
     private RouteManager routeManager;
-    private AddressesInformationManager addressesInformationManager;
     private RoutesOrganizer routesOrganizer;
+    private AddressesInformationManager addressesInformationManager;
 
     private Route userRoute;
 
@@ -45,19 +43,28 @@ public class RouteController {
 
         DatabaseService databaseService = retrofit.create(DatabaseService.class);
 
-        googleMapsApi = new GoogleMapsApi(databaseService);
+        GoogleMapsApi googleMapsApi = new GoogleMapsApi(databaseService);
+        routeManager = new RouteManager();
         routesOrganizer = new RoutesOrganizer(googleMapsApi);
         addressesInformationManager = new AddressesInformationManager(googleMapsApi, databaseService);
     }
 
-    public SingleDrive getDriveInformation(SingleDriveRequest request){
-        return googleMapsApi.getDriveInformation(request.getOrigin(), request.getDestination());
+    public Route fetchRoute(String username){
+        Route route = routeManager.getRoute(username);
+
+        if(route == null){
+            route = new Route();
+            route.setRouteState(0);
+        }
+
+        return route;
     }
 
     public void createRoute(IncomingRoute route){
 
         if(route.getRouteCode().isEmpty() || route.getUsername().isEmpty()){
             System.out.println("No userRoute identifier provided");
+            //log occurrences of this case
             return;
         }
 
@@ -89,9 +96,6 @@ public class RouteController {
 
         if(correctedAddresses.getCorrectedAddressesList().size()>0) {
             addressValidation(2, correctedAddresses.getCorrectedAddressesList());
-        }else{
-//            unorganizedRoute.getWrongAddressesList().clear();
-            sortAddresses();
         }
     }
 
@@ -137,41 +141,17 @@ public class RouteController {
             userRoute.setInvalidAddressList(invalidAddressesList);
 
             System.out.println("routeState: " + userRoute.getRouteState());
-        }else{
-            sortAddresses();
-        }
-    }
-
-    private void sortAddresses(){
-        System.out.println("sortAddresses");
-        System.out.println("routeState: " + unorganizedRoute.getRouteState());
-
-        List<FormattedAddress> validAddressesList = unorganizedRoute.getAddressList();
-//        This two list can be empty, find a way to FIX THIS!!
-        List<FormattedAddress> businessAddresses = addressesInformationManager.findBusinessAddresses(validAddressesList);
-        List<FormattedAddress> privateAddresses = addressesInformationManager.findPrivateAddresses(validAddressesList);
-        unorganizedRoute.setBusinessAddressList(businessAddresses);
-        unorganizedRoute.setPrivateAddressList(privateAddresses);
-
-        for(FormattedAddress businessAddress : unorganizedRoute.getBusinessAddressList()){
-            System.out.println("business address: " + businessAddress.getFormattedAddress());
         }
 
-        for(FormattedAddress privateAddress : unorganizedRoute.getPrivateAddressList()){
-            System.out.println("private address: " + privateAddress.getFormattedAddress());
-        }
-
-//        Don't call this function if privateAddresses and businessAddresses list are empty
-//        organizedRoute();
-        unorganizedRoute.setRouteState(7);
-        System.out.println("routeState: " + unorganizedRoute.getRouteState());
+        userRoute.setRouteState(7);
+        System.out.println("routeState: " + userRoute.getRouteState());
 //        organizedRoute();
     }
 
     private void organizedRoute(){
-        unorganizedRoute.setRouteState(5);
+        userRoute.setRouteState(5);
         System.out.println("organizedRoute");
-        System.out.println("routeState: " + unorganizedRoute.getRouteState());
+        System.out.println("routeState: " + userRoute.getRouteState());
 
 //        try{
 //            Thread.sleep(5000);
@@ -179,18 +159,17 @@ public class RouteController {
 //
 //        }
 
-        List<SingleDrive> organizedRouteList = routesOrganizer.organizeRouteClosestAddress(unorganizedRoute);
+        List<SingleDrive> organizedRouteList = routesOrganizer.organizeRouteClosestAddress(userRoute);
 
 //        System.out.println("Organized userRoute size: " + organizedRouteList.size());
 
 //        fix this to check for a null object instead of the size
         if(organizedRouteList.size()>0){
-            routeManager.createOrganizedRoute(unorganizedRoute.getRouteCode(), organizedRouteList);
-            unorganizedRoute.setRouteState(7);
-            System.out.println("routeState: " + unorganizedRoute.getRouteState());
+            userRoute.setRouteState(7);
+            System.out.println("routeState: " + userRoute.getRouteState());
         }else{
-            unorganizedRoute.setRouteState(6);
-            System.out.println("routeState: " + unorganizedRoute.getRouteState());
+            userRoute.setRouteState(6);
+            System.out.println("routeState: " + userRoute.getRouteState());
         }
 
     }

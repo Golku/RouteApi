@@ -1,12 +1,8 @@
 package model;
 
 import model.pojos.Container;
-import model.pojos.OrganizedRoute;
-import model.pojos.SingleDrive;
-import model.pojos.UnorganizedRoute;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ContainerManager {

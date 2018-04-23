@@ -13,13 +13,11 @@ import javax.ws.rs.core.MediaType;
 @Path("/getcontainer")
 public class GetContainer {
 
-    private ContainerController containerController = new ContainerController();
-
     @GET
     @Path("/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Container getContainer(@PathParam("username") String username) {
-        return containerController.fetchContainer(username);
+        ContainerController controller = new ContainerController();
+        return controller.fetchContainer(username);
     }
-
 }
