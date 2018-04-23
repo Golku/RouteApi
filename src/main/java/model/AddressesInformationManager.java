@@ -32,22 +32,15 @@ public class AddressesInformationManager {
 
             if (verifiedAddress != null) {
 
-                if (verifiedAddress.isInvalid()) {
-//                    System.out.println("Wrong address: " + verifiedAddress.getRawAddress());
+                String country = verifiedAddress.getCountry();
+
+//                Send the original inputed address to the client as well
+//                System.out.println("Wrong country: " + verifiedAddress.getRawAddress());
+
+                if (verifiedAddress.isInvalid() || !country.equals("Netherlands")) {
                     invalidAddressList.add(verifiedAddress);
                 } else {
-
-                    String country = verifiedAddress.getCountry();
-
-                    if (country.equals("Netherlands")) {
-//                        System.out.println("Validated: " + verifiedAddress.getFormattedAddress());
-                        validAddressList.add(verifiedAddress);
-                    } else {
-//                        Send the original inputed address to the client as well
-//                        System.out.println("Wrong country: " + verifiedAddress.getRawAddress());
-                        invalidAddressList.add(verifiedAddress);
-                    }
-
+                    validAddressList.add(verifiedAddress);
                 }
             }
         }

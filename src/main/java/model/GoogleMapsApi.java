@@ -23,13 +23,13 @@ public class GoogleMapsApi {
     private String destination;
     private long date;
 
-    public GoogleMapsApi(AddressFormatter addressFormatter, DatabaseService databaseService) {
-        this.addressFormatter = addressFormatter;
+    public GoogleMapsApi(DatabaseService databaseService) {
+        date = System.currentTimeMillis();
+        addressFormatter = new AddressFormatter();
         this.databaseService = databaseService;
-        this.date = System.currentTimeMillis();
 
         //If there are many threads making api request with this key, you might hit the query per second limit! FIX THIS!
-        this.context = new GeoApiContext.Builder()
+        context = new GeoApiContext.Builder()
                 .apiKey("AIzaSyDfhBotxQl1zCKKFSPlbrtipKeV1Yzpg54")
                 .build();
     }

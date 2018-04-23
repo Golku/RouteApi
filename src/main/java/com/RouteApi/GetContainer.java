@@ -1,8 +1,7 @@
 package com.RouteApi;
 
-import controller.Controller;
+import controller.ContainerController;
 import model.pojos.Container;
-import model.pojos.RouteResponse;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -14,13 +13,13 @@ import javax.ws.rs.core.MediaType;
 @Path("/getcontainer")
 public class GetContainer {
 
-    private Controller controller = new Controller();
+    private ContainerController containerController = new ContainerController();
 
     @GET
     @Path("/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Container getContainer(@PathParam("username") String username) {
-        return controller.fetchContainer(username);
+        return containerController.fetchContainer(username);
     }
 
 }

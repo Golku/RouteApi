@@ -4,15 +4,15 @@ import java.util.List;
 
 public class CorrectedAddresses {
 
-    private String routeCode;
+    private String username;
     private List<String> correctedAddressesList;
 
-    public String getRouteCode() {
-        return routeCode;
+    public String getUsername() {
+        return username;
     }
 
-    public void setRouteCode(String routeCode) {
-        this.routeCode = routeCode;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public List<String> getCorrectedAddressesList() {

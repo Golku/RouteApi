@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ContainerManager {
 
-    //Change this two to vectors to make it usable with more threads
+    //Change this to a vectors to make it usable with more threads
     private static Map<String, Container> containers = new HashMap<>();
 
     public Container createContainer(String username){

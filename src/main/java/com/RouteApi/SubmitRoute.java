@@ -1,6 +1,6 @@
 package com.RouteApi;
 
-import controller.Controller;
+import controller.ContainerController;
 import model.pojos.IncomingRoute;
 import model.pojos.RouteResponse;
 
@@ -36,8 +36,8 @@ public class SubmitRoute {
             }
 
             private void processRoute() {
-                Controller controller = new Controller();
-                controller.createRoute(route);
+                ContainerController containerController = new ContainerController();
+                containerController.createRoute(route);
 //                System.out.println("Done calculating the route");
             }
 

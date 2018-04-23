@@ -1,6 +1,6 @@
 package com.RouteApi;
 
-import controller.Controller;
+import controller.ContainerController;
 import model.pojos.SingleDriveResponse;
 import model.pojos.SingleDriveRequest;
 
@@ -19,9 +19,9 @@ public class getDriveInformation {
     public SingleDriveResponse getTravelInformation(final SingleDriveRequest request) {
         SingleDriveResponse singleDriveResponse = new SingleDriveResponse();
 
-        Controller controller = new Controller();
+        ContainerController containerController = new ContainerController();
 
-        singleDriveResponse.setSingleDrive(controller.getDriveInformation(request));
+        singleDriveResponse.setSingleDrive(containerController.getDriveInformation(request));
 
         return singleDriveResponse;
     }

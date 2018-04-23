@@ -1,6 +1,6 @@
 package com.RouteApi;
 
-import controller.Controller;
+import controller.ContainerController;
 import model.pojos.RouteResponse;
 import model.pojos.CorrectedAddresses;
 
@@ -24,8 +24,8 @@ public class SubmitCorrectedAddresses {
             }
 
             private void beginCorrectedAddressesCheck() {
-                Controller controller = new Controller();
-                controller.correctedAddresses(correctedAddresses);
+                ContainerController containerController = new ContainerController();
+                containerController.correctedAddresses(correctedAddresses);
                 //find a way to stop the thread after it's done
                 //organizing the route. Doing this will prevent memory leak.
             }

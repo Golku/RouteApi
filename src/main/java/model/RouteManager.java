@@ -15,8 +15,10 @@ public class RouteManager {
     private static Map<String, UnorganizedRoute> unorganizedRoutes = new HashMap<>();
     private static Map<String, OrganizedRoute> organizedRoutes = new HashMap<>();
 
-    public void createRoute(String username){
+    public void createRoute(String username, String routeCode){
         Route route = new Route();
+        route.setUsername(username);
+        route.setRouteCode(routeCode);
         routes.put(username, route);
     }
 
