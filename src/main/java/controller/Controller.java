@@ -23,9 +23,10 @@ public class Controller {
      * */
 
     private GoogleMapsApi googleMapsApi;
-    private RoutesManager routesManager;
-    private RoutesOrganizer routesOrganizer;
+    private ContainerManager containerManager;
+    private RouteManager routeManager;
     private AddressesInformationManager addressesInformationManager;
+    private RoutesOrganizer routesOrganizer;
 
     private UnorganizedRoute unorganizedRoute;
 
@@ -43,7 +44,7 @@ public class Controller {
 
         AddressFormatter addressFormatter = new AddressFormatter();
         this.googleMapsApi = new GoogleMapsApi(addressFormatter, databaseService);
-        this.routesManager = new RoutesManager();
+        this.containerManager = new ContainerManager();
         this.routesOrganizer = new RoutesOrganizer(googleMapsApi);
         this.addressesInformationManager = new AddressesInformationManager(googleMapsApi, databaseService);
 
@@ -55,13 +56,13 @@ public class Controller {
 
     public void createRoute(IncomingRoute route){
 
-        if(route.getRouteCode().isEmpty()){
+        if(route.getRouteCode().isEmpty() || route.getUsername().isEmpty()){
             System.out.println("No route identifier provided");
             return;
         }
 
-        routesManager.createUnorganizedRoute(route.getRouteCode());
-        this.unorganizedRoute = routesManager.getUnorganizedRoute(route.getRouteCode());
+        routeManager.createRoute(route.getRouteCode());
+        this.unorganizedRoute = routeManager.getUnorganizedRoute(route.getRouteCode());
 
         if(route.getAddressList().size() <= 0){
             System.out.println("Route address list is empty");
@@ -81,7 +82,7 @@ public class Controller {
             return;
         }
 
-        this.unorganizedRoute = routesManager.getUnorganizedRoute(correctedAddresses.getRouteCode());
+        this.unorganizedRoute = routeManager.getUnorganizedRoute(correctedAddresses.getRouteCode());
 
         if(correctedAddresses.getCorrectedAddressesList().size()>0) {
             addressValidation(2, correctedAddresses.getCorrectedAddressesList());
@@ -177,7 +178,7 @@ public class Controller {
 
 //        fix this to check for a null object instead of the size
         if(organizedRouteList.size()>0){
-            routesManager.createOrganizedRoute(unorganizedRoute.getRouteCode(), organizedRouteList);
+            routeManager.createOrganizedRoute(unorganizedRoute.getRouteCode(), organizedRouteList);
             unorganizedRoute.setRouteState(7);
             System.out.println("routeState: " + unorganizedRoute.getRouteState());
         }else{
@@ -185,5 +186,23 @@ public class Controller {
             System.out.println("routeState: " + unorganizedRoute.getRouteState());
         }
 
+    }
+
+    public Container fetchContainer(String username) {
+        Container container = containerManager.getContainer(username);
+
+        if (container == null){
+            container = containerManager.createContainer(username);
+            Route route = routeManager.getRoute(username);
+            if(route != null){
+                container.setRoute(route);
+            }
+        }
+
+        return container;
+    }
+
+    private Route fetchRoute(String username){
+        return routeManager.getRoute(username);
     }
 }

@@ -4,11 +4,22 @@ import java.util.List;
 
 public class Route {
 
+    private String username;
     private String routeCode;
+    private int routeState;
     private List<FormattedAddress> addressList;
-    private List<FormattedAddress> privateAddressList;
-    private List<FormattedAddress> businessAddressList;
+    private int privateAddressCount;
+    private int businessAddressCount;
     private List<SingleDrive> routeList;
+    private List<String> invalidAddresses;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getRouteCode() {
         return routeCode;
@@ -16,6 +27,14 @@ public class Route {
 
     public void setRouteCode(String routeCode) {
         this.routeCode = routeCode;
+    }
+
+    public int getRouteState() {
+        return routeState;
+    }
+
+    public void setRouteState(int routeState) {
+        this.routeState = routeState;
     }
 
     public List<FormattedAddress> getAddressList() {
@@ -26,20 +45,20 @@ public class Route {
         this.addressList = addressList;
     }
 
-    public List<FormattedAddress> getPrivateAddressList() {
-        return privateAddressList;
+    public int getPrivateAddressCount() {
+        return privateAddressCount;
     }
 
-    public void setPrivateAddressList(List<FormattedAddress> privateAddressList) {
-        this.privateAddressList = privateAddressList;
+    public void setPrivateAddressCount(int privateAddressCount) {
+        this.privateAddressCount = privateAddressCount;
     }
 
-    public List<FormattedAddress> getBusinessAddressList() {
-        return businessAddressList;
+    public int getBusinessAddressCount() {
+        return businessAddressCount;
     }
 
-    public void setBusinessAddressList(List<FormattedAddress> businessAddressList) {
-        this.businessAddressList = businessAddressList;
+    public void setBusinessAddressCount(int businessAddressCount) {
+        this.businessAddressCount = businessAddressCount;
     }
 
     public List<SingleDrive> getRouteList() {
@@ -48,5 +67,13 @@ public class Route {
 
     public void setRouteList(List<SingleDrive> routeList) {
         this.routeList = routeList;
+    }
+
+    public List<String> getInvalidAddresses() {
+        return invalidAddresses;
+    }
+
+    public void setInvalidAddresses(List<String> invalidAddresses) {
+        this.invalidAddresses = invalidAddresses;
     }
 }

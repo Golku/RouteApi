@@ -4,9 +4,17 @@ import java.util.List;
 
 public class IncomingRoute {
 
+    private String username;
     private String routeCode;
-    private String origin;
     private List<String> addressList;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getRouteCode() {
         return routeCode;
@@ -14,14 +22,6 @@ public class IncomingRoute {
 
     public void setRouteCode(String routeCode) {
         this.routeCode = routeCode;
-    }
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(String origin) {
-        this.origin = origin;
     }
 
     public List<String> getAddressList() {
