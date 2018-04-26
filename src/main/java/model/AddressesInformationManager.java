@@ -5,41 +5,41 @@ import model.pojos.FormattedAddress;
 import retrofit2.Call;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class AddressesInformationManager {
 
     private GoogleMapsApi googleMapsApi;
-
+    private AddressFormatter addressFormatter;
     private DatabaseService databaseService;
 
-    public AddressesInformationManager(GoogleMapsApi googleMapsApiInstance, DatabaseService databaseService) {
+    public AddressesInformationManager(GoogleMapsApi googleMapsApiInstance, DatabaseService databaseService, AddressFormatter addressFormatter) {
         this.googleMapsApi = googleMapsApiInstance;
         this.databaseService = databaseService;
+        this.addressFormatter = addressFormatter;
     }
 
     public FormattedAddress validateAddress(String address) {
+        //Log the address send for validation and the one received
 
-        FormattedAddress verifiedAddress = googleMapsApi.validatedAddress(address);
+        FormattedAddress formattedAddress = new FormattedAddress();
+        formattedAddress.setRawAddress(address);
 
-        if (verifiedAddress != null) {
+        googleMapsApi.verifyAddress(formattedAddress);
 
-            String country = verifiedAddress.getCountry();
+        if(!formattedAddress.isInvalid()) {
+            addressFormatter.orderAddress(formattedAddress);
+        }
 
-            if (verifiedAddress.isInvalid() || !country.equals("Netherlands")) {
-                invalidAddressList.add(verifiedAddress);
-            } else {
-                validAddressList.add(verifiedAddress);
+        if(!formattedAddress.isInvalid()){
+            if(!formattedAddress.getCountry().equals("Netherlands")){
+                formattedAddress.setInvalid(true);
             }
         }
 
-        return verifiedAddress;
+        return formattedAddress;
     }
 
-    public void getAddressType(FormattedAddress address) {
+    public void setAddressType(FormattedAddress address) {
 
         String street = address.getStreet();
         String postCode = address.getPostCode();
@@ -56,7 +56,6 @@ public class AddressesInformationManager {
         try {
             databaseResponse = call.execute().body();
         } catch (IOException e) {
-//                e.printStackTrace();
             System.out.println("Database request failed for: " + street + ", " + postCode + " " + city);
         }
 

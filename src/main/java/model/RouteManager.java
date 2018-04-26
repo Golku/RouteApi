@@ -1,6 +1,7 @@
 package model;
 
 import model.pojos.Route;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ public class RouteManager {
         Route route = new Route();
         route.setUsername(username);
         route.setRouteCode(routeCode);
+        route.setAddressList(new ArrayList<>());
         routes.put(username, route);
     }
 

@@ -23,9 +23,9 @@ public class GoogleMapsApi {
     private String destination;
     private long date;
 
-    public GoogleMapsApi(DatabaseService databaseService) {
+    public GoogleMapsApi(DatabaseService databaseService, AddressFormatter addressFormatter) {
         date = System.currentTimeMillis();
-        addressFormatter = new AddressFormatter();
+        this.addressFormatter = addressFormatter;
         this.databaseService = databaseService;
 
         //If there are many threads making api request with this key, you might hit the query per second limit! FIX THIS!
@@ -34,28 +34,24 @@ public class GoogleMapsApi {
                 .build();
     }
 
-    public FormattedAddress validatedAddress(String address){
+    public void verifyAddress(FormattedAddress address){
 
         GeocodingResult[] resultsGeo;
-        FormattedAddress formattedAddress = null;
 
         try {
-            resultsGeo =  GeocodingApi.geocode(context, address).await();
+            resultsGeo =  GeocodingApi.geocode(context, address.getRawAddress()).await();
 
             if(resultsGeo.length > 0){
-                formattedAddress = addressFormatter.tryToFormatAddress(resultsGeo[0].formattedAddress);
-                formattedAddress.setLat(resultsGeo[0].geometry.location.lat);
-                formattedAddress.setLng(resultsGeo[0].geometry.location.lng);
+                address.setFormattedAddress(resultsGeo[0].formattedAddress);
+                address.setLat(resultsGeo[0].geometry.location.lat);
+                address.setLng(resultsGeo[0].geometry.location.lng);
             }else{
-                formattedAddress = addressFormatter.addInvalidAddress(address);
+                address.setInvalid(true);
             }
 
         } catch (ApiException | IOException | InterruptedException e) {
-//            e.printStackTrace();
-            System.out.println("GeoCodingApi in GoogleMapsApi.java was unable to validate the address");
+            System.out.println("verifyAddress in GoogleMapsApi.java was unable to validate: " + address);
         }
-
-        return formattedAddress;
     }
 
     public SingleDrive getDriveInformation(String origin, String destination){
@@ -103,8 +99,16 @@ public class GoogleMapsApi {
                         String driveDurationHumanReadable = databaseResponse.getTravelInformation().getDurationHumanReadable();
                         long driveDurationInSeconds = databaseResponse.getTravelInformation().getDurationInSeconds();
 
-                        singleDrive.setOriginFormattedAddress(addressFormatter.tryToFormatAddress(originAddress));
-                        singleDrive.setDestinationFormattedAddress(addressFormatter.tryToFormatAddress(destinationAddress));
+                        FormattedAddress originF = new FormattedAddress();
+                        originF.setFormattedAddress(originAddress);
+                        FormattedAddress destinationF = new FormattedAddress();
+                        destinationF.setFormattedAddress(destinationAddress);
+                        addressFormatter.orderAddress(originF);
+                        addressFormatter.orderAddress(destinationF);
+
+
+                        singleDrive.setOriginFormattedAddress(originF);
+                        singleDrive.setDestinationFormattedAddress(destinationF);
                         singleDrive.setDriveDistanceHumanReadable(driveDistanceHumanReadable);
                         singleDrive.setDriveDistanceInMeters(driveDistanceInMeters);
                         singleDrive.setDriveDurationHumanReadable(driveDurationHumanReadable);
@@ -145,8 +149,16 @@ public class GoogleMapsApi {
             Call<DatabaseResponse> call = null;
 
             try {
-                singleDrive.setOriginFormattedAddress(addressFormatter.tryToFormatAddress(resultsDistanceMatrix.originAddresses[0]));
-                singleDrive.setDestinationFormattedAddress(addressFormatter.tryToFormatAddress(resultsDistanceMatrix.destinationAddresses[0]));
+
+                FormattedAddress originF = new FormattedAddress();
+                originF.setFormattedAddress(resultsDistanceMatrix.originAddresses[0]);
+                FormattedAddress destinationF = new FormattedAddress();
+                destinationF.setFormattedAddress(resultsDistanceMatrix.destinationAddresses[0]);
+                addressFormatter.orderAddress(originF);
+                addressFormatter.orderAddress(destinationF);
+
+                singleDrive.setOriginFormattedAddress(originF);
+                singleDrive.setDestinationFormattedAddress(destinationF);
                 singleDrive.setDriveDistanceHumanReadable(resultsDistanceMatrix.rows[0].elements[0].distance.humanReadable);
                 singleDrive.setDriveDistanceInMeters(resultsDistanceMatrix.rows[0].elements[0].distance.inMeters);
                 singleDrive.setDriveDurationHumanReadable(resultsDistanceMatrix.rows[0].elements[0].duration.humanReadable);

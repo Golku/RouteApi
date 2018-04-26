@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import model.AddressFormatter;
 import model.AddressesInformationManager;
 import model.DatabaseService;
 import model.GoogleMapsApi;
@@ -29,17 +30,18 @@ public class DriveInfoController {
 
         DatabaseService databaseService = retrofit.create(DatabaseService.class);
 
-        googleMapsApi = new GoogleMapsApi(databaseService);
-        addressesInformationManager = new AddressesInformationManager(googleMapsApi, databaseService);
+        AddressFormatter addressFormatter = new AddressFormatter();
+        googleMapsApi = new GoogleMapsApi(databaseService, addressFormatter);
+        addressesInformationManager = new AddressesInformationManager(googleMapsApi, databaseService, addressFormatter);
     }
 
     public SingleDrive getDriveInformation(SingleDriveRequest request){
 
         SingleDrive singleDrive = googleMapsApi.getDriveInformation(request.getOrigin(), request.getDestination());
 
-        addressesInformationManager.getAddressType(singleDrive.getDestinationFormattedAddress());
+        addressesInformationManager.setAddressType(singleDrive.getDestinationFormattedAddress());
 
-        if(singleDrive.getDestinationFormattedAddress().getIsBusiness()){
+        if(singleDrive.getDestinationFormattedAddress().isBusiness()){
             singleDrive.setDestinationIsABusiness(true);
         }
 
