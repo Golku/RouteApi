@@ -21,35 +21,22 @@ public class AddressesInformationManager {
         this.databaseService = databaseService;
     }
 
-    public Map<String, List<FormattedAddress>> validateAddressList(List<String> addressList) {
+    public FormattedAddress validateAddress(String address) {
 
-        Map<String, List<FormattedAddress>> validatedAddressLists = new HashMap<>();
-        List<FormattedAddress> validAddressList = new ArrayList<>();
-        List<FormattedAddress> invalidAddressList = new ArrayList<>();
+        FormattedAddress verifiedAddress = googleMapsApi.validatedAddress(address);
 
-        for (String address : addressList) {
+        if (verifiedAddress != null) {
 
-            FormattedAddress verifiedAddress = googleMapsApi.validatedAddress(address);
+            String country = verifiedAddress.getCountry();
 
-            if (verifiedAddress != null) {
-
-                String country = verifiedAddress.getCountry();
-
-//                Send the original inputed address to the client as well
-//                System.out.println("Wrong country: " + verifiedAddress.getRawAddress());
-
-                if (verifiedAddress.isInvalid() || !country.equals("Netherlands")) {
-                    invalidAddressList.add(verifiedAddress);
-                } else {
-                    validAddressList.add(verifiedAddress);
-                }
+            if (verifiedAddress.isInvalid() || !country.equals("Netherlands")) {
+                invalidAddressList.add(verifiedAddress);
+            } else {
+                validAddressList.add(verifiedAddress);
             }
         }
 
-        validatedAddressLists.put("validAddresses", validAddressList);
-        validatedAddressLists.put("invalidAddresses", invalidAddressList);
-
-        return validatedAddressLists;
+        return verifiedAddress;
     }
 
     public void getAddressType(FormattedAddress address) {
@@ -76,7 +63,7 @@ public class AddressesInformationManager {
         if (databaseResponse != null) {
             if (!databaseResponse.isError()) {
                 if (databaseResponse.getBusiness() == 1) {
-                    address.setIsBusiness(true);
+                    address.setBusiness(true);
                 }
             }
         }

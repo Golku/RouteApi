@@ -36,17 +36,14 @@ public class GoogleMapsApi {
 
     public FormattedAddress validatedAddress(String address){
 
-        String verifiedAddress;
         GeocodingResult[] resultsGeo;
         FormattedAddress formattedAddress = null;
 
         try {
-
-            resultsGeo =  GeocodingApi.geocode(context,address).await();
+            resultsGeo =  GeocodingApi.geocode(context, address).await();
 
             if(resultsGeo.length > 0){
-                verifiedAddress = resultsGeo[0].formattedAddress;
-                formattedAddress = addressFormatter.tryToFormatAddress(verifiedAddress);
+                formattedAddress = addressFormatter.tryToFormatAddress(resultsGeo[0].formattedAddress);
                 formattedAddress.setLat(resultsGeo[0].geometry.location.lat);
                 formattedAddress.setLng(resultsGeo[0].geometry.location.lng);
             }else{
@@ -71,8 +68,6 @@ public class GoogleMapsApi {
         if (singleDrive == null) {
             singleDrive = getDriveInfoFromGoogleApi();
         }
-
-
 
         return singleDrive;
     }

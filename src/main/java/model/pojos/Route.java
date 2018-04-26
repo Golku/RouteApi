@@ -7,9 +7,7 @@ public class Route {
     private String username;
     private String routeCode;
     private int routeState;
-    private List<String> addressList;
-    private List<FormattedAddress> formattedAddressList;
-    private List<String> invalidAddressList;
+    private List<FormattedAddress> addressList;
     private int privateAddressCount;
     private int businessAddressCount;
     private int invalidAddressCount;
@@ -39,20 +37,12 @@ public class Route {
         this.routeState = routeState;
     }
 
-    public List<String> getAddressList() {
+    public List<FormattedAddress> getAddressList() {
         return addressList;
     }
 
-    public void setAddressList(List<String> addressList) {
+    public void setAddressList(List<FormattedAddress> addressList) {
         this.addressList = addressList;
-    }
-
-    public List<FormattedAddress> getFormattedAddressList() {
-        return formattedAddressList;
-    }
-
-    public void setFormattedAddressList(List<FormattedAddress> formattedAddressList) {
-        this.formattedAddressList = formattedAddressList;
     }
 
     public int getPrivateAddressCount() {
@@ -85,13 +75,5 @@ public class Route {
 
     public void setRouteList(List<SingleDrive> routeList) {
         this.routeList = routeList;
-    }
-
-    public List<String> getInvalidAddressList() {
-        return invalidAddressList;
-    }
-
-    public void setInvalidAddressList(List<String> invalidAddressList) {
-        this.invalidAddressList = invalidAddressList;
     }
 }

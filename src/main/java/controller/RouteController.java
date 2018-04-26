@@ -67,6 +67,8 @@ public class RouteController {
 
         //temporary
         route.setRouteCode("1");
+        //log this list
+        //route.getAddressList();
 
         if(route.getRouteCode().isEmpty() || route.getUsername().isEmpty()){
             System.out.println("No userRoute identifier provided");
@@ -76,7 +78,6 @@ public class RouteController {
 
         routeManager.createRoute(route.getUsername(), route.getRouteCode());
         userRoute = routeManager.getRoute(route.getUsername());
-
         containerController.putRouteInContainer(route.getUsername(), userRoute);
 
         if(route.getAddressList().size() <= 0){
@@ -86,11 +87,9 @@ public class RouteController {
             return;
         }
 
-        userRoute.setAddressList(route.getAddressList());
-
-        System.out.println("username: " + userRoute.getUsername());
+        System.out.println("Route username: " + userRoute.getUsername());
         System.out.println("routeCode: " + userRoute.getRouteCode());
-        addressValidation(1, userRoute.getAddressList());
+        addressValidation(1, route.getAddressList());
     }
 
     public void correctedAddresses(CorrectedAddresses correctedAddresses){
@@ -107,25 +106,23 @@ public class RouteController {
         }
     }
 
-    private void addressValidation(int action, List<String> addressList){
+    private void validateAddress(String address){
 
         userRoute.setRouteState(2);
 
         System.out.println("addressValidation");
         System.out.println("routeState: " + userRoute.getRouteState());
 
-//        The formattedAddress list can be returned empty. Find a way to FIX THIS!!!
-        Map<String, List<FormattedAddress>> validatedAddressMap = addressesInformationManager.validateAddressList(addressList);
-        List<FormattedAddress> validAddresses = validatedAddressMap.get("validAddresses");
-        List<FormattedAddress> invalidAddresses = validatedAddressMap.get("invalidAddresses");
+        //Log the address send for validation and the one received
+
 
         if(action == 1){
-            userRoute.setFormattedAddressList(validAddresses);
+            userRoute.setAddressList(validAddresses);
         }else if(action == 2){
-            userRoute.getFormattedAddressList().addAll(validAddresses);
+            userRoute.getAddressList().addAll(validAddresses);
         }
 
-        for(FormattedAddress validAddress : userRoute.getFormattedAddressList()){
+        for(FormattedAddress validAddress : userRoute.getAddressList()){
             addressesInformationManager.getAddressType(validAddress);
             System.out.println("valid address: " + validAddress.getFormattedAddress());
         }

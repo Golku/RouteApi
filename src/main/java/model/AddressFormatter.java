@@ -56,7 +56,7 @@ public class AddressFormatter {
                 formattedAddress.setPostCode("");
                 formattedAddress.setCity(address.split(",")[1].substring(1));
                 formattedAddress.setCountry("");
-                formattedAddress.setIsBusiness(false);
+                formattedAddress.setBusiness(false);
 
             }else {
 
@@ -73,7 +73,7 @@ public class AddressFormatter {
                 formattedAddress.setPostCode(address.split(",")[1].substring(1, 8));
                 formattedAddress.setCity(address.split(",")[1].substring(9));
                 formattedAddress.setCountry(address.split(",")[2].substring(1));
-                formattedAddress.setIsBusiness(false);
+                formattedAddress.setBusiness(false);
 
                 if (formattedAddress.getPostCode().substring(0, 4).matches("[0-9]+")) {
 

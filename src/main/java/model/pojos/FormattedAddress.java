@@ -77,11 +77,11 @@ public class FormattedAddress {
         this.lng = lng;
     }
 
-    public boolean getIsBusiness() {
+    public boolean isBusiness() {
         return isBusiness;
     }
 
-    public void setIsBusiness(boolean business) {
+    public void setBusiness(boolean business) {
         isBusiness = business;
     }
 
