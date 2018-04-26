@@ -7,6 +7,7 @@ import model.pojos.*;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class RouteController {
      * routeState 5 = Route is ready
      * */
 
+    private ContainerController containerController;
     private RouteManager routeManager;
     private RoutesOrganizer routesOrganizer;
     private AddressesInformationManager addressesInformationManager;
@@ -44,6 +46,7 @@ public class RouteController {
         DatabaseService databaseService = retrofit.create(DatabaseService.class);
 
         GoogleMapsApi googleMapsApi = new GoogleMapsApi(databaseService);
+        containerController = new ContainerController();
         routeManager = new RouteManager();
         routesOrganizer = new RoutesOrganizer(googleMapsApi);
         addressesInformationManager = new AddressesInformationManager(googleMapsApi, databaseService);
@@ -62,6 +65,9 @@ public class RouteController {
 
     public void createRoute(IncomingRoute route){
 
+        //temporary
+        route.setRouteCode("1");
+
         if(route.getRouteCode().isEmpty() || route.getUsername().isEmpty()){
             System.out.println("No userRoute identifier provided");
             //log occurrences of this case
@@ -70,6 +76,8 @@ public class RouteController {
 
         routeManager.createRoute(route.getUsername(), route.getRouteCode());
         userRoute = routeManager.getRoute(route.getUsername());
+
+        containerController.putRouteInContainer(route.getUsername(), userRoute);
 
         if(route.getAddressList().size() <= 0){
             System.out.println("Route address list is empty");
@@ -101,17 +109,10 @@ public class RouteController {
 
     private void addressValidation(int action, List<String> addressList){
 
-        userRoute.setRouteState(3);
+        userRoute.setRouteState(2);
 
         System.out.println("addressValidation");
-
         System.out.println("routeState: " + userRoute.getRouteState());
-
-//        try{
-//            Thread.sleep(5000);
-//        }catch (InterruptedException e){
-//
-//        }
 
 //        The formattedAddress list can be returned empty. Find a way to FIX THIS!!!
         Map<String, List<FormattedAddress>> validatedAddressMap = addressesInformationManager.validateAddressList(addressList);
@@ -125,11 +126,19 @@ public class RouteController {
         }
 
         for(FormattedAddress validAddress : userRoute.getFormattedAddressList()){
+            addressesInformationManager.getAddressType(validAddress);
             System.out.println("valid address: " + validAddress.getFormattedAddress());
         }
 
+        for(FormattedAddress validAddress : userRoute.getFormattedAddressList()){
+            if(validAddress.getIsBusiness()){
+                userRoute.setBusinessAddressCount(userRoute.getBusinessAddressCount()+1);
+            }else{
+                userRoute.setPrivateAddressCount(userRoute.getPrivateAddressCount()+1);
+            }
+        }
+
         if(invalidAddresses.size()>0){
-            userRoute.setRouteState(4);
 
             List<String> invalidAddressesList = new ArrayList<>();
 
@@ -139,14 +148,13 @@ public class RouteController {
             }
 
             userRoute.setInvalidAddressList(invalidAddressesList);
-
-            System.out.println("routeState: " + userRoute.getRouteState());
+            userRoute.setInvalidAddressCount(invalidAddressesList.size());
         }
 
-        userRoute.setRouteState(7);
+        userRoute.setRouteState(5);
         System.out.println("routeState: " + userRoute.getRouteState());
-//        organizedRoute();
     }
+
 
     private void organizedRoute(){
         userRoute.setRouteState(5);

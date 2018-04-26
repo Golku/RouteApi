@@ -20,6 +20,4 @@ public class ContainerManager {
     public Container getContainer(String username){
         return containers.get(username);
     }
-
-
 }

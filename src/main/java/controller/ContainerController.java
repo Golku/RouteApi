@@ -2,6 +2,7 @@ package controller;
 
 import model.ContainerManager;
 import model.pojos.Container;
+import model.pojos.Route;
 
 public class ContainerController {
 
@@ -19,5 +20,10 @@ public class ContainerController {
         }
 
         return container;
+    }
+
+    public void putRouteInContainer(String username, Route route){
+        Container container = fetchContainer(username);
+        container.setRoute(route);
     }
 }

@@ -3,6 +3,7 @@ package model;
 import model.pojos.DatabaseResponse;
 import model.pojos.FormattedAddress;
 import retrofit2.Call;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class AddressesInformationManager {
         this.databaseService = databaseService;
     }
 
-    public Map<String, List<FormattedAddress>> validateAddressList(List<String> addressList){
+    public Map<String, List<FormattedAddress>> validateAddressList(List<String> addressList) {
 
         Map<String, List<FormattedAddress>> validatedAddressLists = new HashMap<>();
         List<FormattedAddress> validAddressList = new ArrayList<>();
@@ -51,60 +52,33 @@ public class AddressesInformationManager {
         return validatedAddressLists;
     }
 
-    public List<FormattedAddress> findBusinessAddresses(List<FormattedAddress> validAddressList) {
+    public void getAddressType(FormattedAddress address) {
 
-        List<FormattedAddress> businessAddressList = new ArrayList<>();
+        String street = address.getStreet();
+        String postCode = address.getPostCode();
+        String city = address.getCity();
 
-        for (FormattedAddress formattedAddress : validAddressList) {
+        Call<DatabaseResponse> call = databaseService.getAddressBusinessInfo(
+                street,
+                postCode,
+                city
+        );
 
-            String street = formattedAddress.getStreet();
-            String postCode = formattedAddress.getPostCode();
-            String city = formattedAddress.getCity();
+        DatabaseResponse databaseResponse = null;
 
-            Call<DatabaseResponse> call = databaseService.getAddressBusinessInfo(
-                    street,
-                    postCode,
-                    city
-            );
-
-            DatabaseResponse databaseResponse = null;
-
-            try {
-                databaseResponse = call.execute().body();
-            } catch (IOException e) {
+        try {
+            databaseResponse = call.execute().body();
+        } catch (IOException e) {
 //                e.printStackTrace();
-                System.out.println("Database request failed for: " + street + ", " + postCode + " " + city);
-            }
+            System.out.println("Database request failed for: " + street + ", " + postCode + " " + city);
+        }
 
-            if (databaseResponse != null) {
-                if (!databaseResponse.isError()) {
-                    if (databaseResponse.getBusiness() == 1) {
-                        formattedAddress.setIsBusiness(true);
-                        businessAddressList.add(formattedAddress);
-                    }
-                } else {
-//                    System.out.println(databaseResponse.getErrorMessage());
+        if (databaseResponse != null) {
+            if (!databaseResponse.isError()) {
+                if (databaseResponse.getBusiness() == 1) {
+                    address.setIsBusiness(true);
                 }
             }
         }
-
-        return businessAddressList;
-
     }
-
-    public List<FormattedAddress> findPrivateAddresses(List<FormattedAddress> validatedAddressList){
-
-        List<FormattedAddress> privateAddressList = new ArrayList<>();
-
-        for (FormattedAddress formattedAddress : validatedAddressList) {
-
-            if (!formattedAddress.getIsBusiness()) {
-                privateAddressList.add(formattedAddress);
-            }
-
-        }
-
-        return privateAddressList;
-    }
-
 }

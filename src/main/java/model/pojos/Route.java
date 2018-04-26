@@ -9,10 +9,11 @@ public class Route {
     private int routeState;
     private List<String> addressList;
     private List<FormattedAddress> formattedAddressList;
+    private List<String> invalidAddressList;
     private int privateAddressCount;
     private int businessAddressCount;
+    private int invalidAddressCount;
     private List<SingleDrive> routeList;
-    private List<String> invalidAddressList;
 
     public String getUsername() {
         return username;
@@ -68,6 +69,14 @@ public class Route {
 
     public void setBusinessAddressCount(int businessAddressCount) {
         this.businessAddressCount = businessAddressCount;
+    }
+
+    public int getInvalidAddressCount() {
+        return invalidAddressCount;
+    }
+
+    public void setInvalidAddressCount(int invalidAddressCount) {
+        this.invalidAddressCount = invalidAddressCount;
     }
 
     public List<SingleDrive> getRouteList() {
