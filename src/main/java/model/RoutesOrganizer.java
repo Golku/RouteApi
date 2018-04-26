@@ -119,7 +119,7 @@ public class RoutesOrganizer {
                     singleDrive.getDestinationFormattedAddress().setLat(formattedAddress.getLat());
                     singleDrive.getDestinationFormattedAddress().setLng(formattedAddress.getLng());
 
-                    if (formattedAddress.getIsBusiness()) {
+                    if (formattedAddress.isBusiness()) {
 //                    System.out.println("Destination is a business");
                         singleDrive.setDestinationIsABusiness(true);
                     }

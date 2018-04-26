@@ -73,12 +73,12 @@ public class RouteController {
             return;
         }
 
-        System.out.println("Route username: " + userRoute.getUsername());
-        System.out.println("routeCode: " + userRoute.getRouteCode());
-
         routeManager.createRoute(route.getUsername(), route.getRouteCode());
         userRoute = routeManager.getRoute(route.getUsername());
         containerController.putRouteInContainer(route.getUsername(), userRoute);
+
+        System.out.println("Route username: " + userRoute.getUsername());
+        System.out.println("routeCode: " + userRoute.getRouteCode());
 
         if (route.getAddressList().size() <= 0) {
             System.out.println("Route address list is empty");
