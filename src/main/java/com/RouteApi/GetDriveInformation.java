@@ -1,8 +1,8 @@
 package com.RouteApi;
 
 import controller.DriveInfoController;
-import model.pojos.SingleDrive;
-import model.pojos.SingleDriveRequest;
+import model.pojos.Drive;
+import model.pojos.DriveRequest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -16,8 +16,8 @@ public class GetDriveInformation {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public SingleDrive getTravelInformation(SingleDriveRequest request) {
+    public Drive getTravelInformation(DriveRequest request) {
         DriveInfoController controller = new DriveInfoController();
-        return controller.getDriveInformation(request);
+        return controller.getDriveInfo(request);
     }
 }

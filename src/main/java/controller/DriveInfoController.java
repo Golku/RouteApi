@@ -1,51 +1,64 @@
 package controller;
 
-import com.google.gson.Gson;
 import model.AddressFormatter;
-import model.AddressesInformationManager;
-import model.DatabaseService;
+import model.DbManager;
 import model.GoogleMapsApi;
-import model.pojos.SingleDrive;
-import model.pojos.SingleDriveRequest;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import model.pojos.Address;
+import model.pojos.Drive;
+import model.pojos.DriveRequest;
 
-public class DriveInfoController {
+public class DriveInfoController extends BaseController {
 
-    GoogleMapsApi googleMapsApi;
-    AddressesInformationManager addressesInformationManager;
+    private GoogleMapsApi googleMapsApi;
+    private DbManager dbManager;
+    private AddressFormatter addressFormatter;
 
     public DriveInfoController() {
-        Gson gson = new Gson();
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-
-        Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
-                .client(okHttpClient)//192.168.0.16
-                .baseUrl("http://192.168.0.16/map/v1/")
-                .addConverterFactory(GsonConverterFactory.create(gson));
-
-        Retrofit retrofit = retrofitBuilder.build();
-
-        DatabaseService databaseService = retrofit.create(DatabaseService.class);
-
-        AddressFormatter addressFormatter = new AddressFormatter();
-        googleMapsApi = new GoogleMapsApi(databaseService, addressFormatter);
-        addressesInformationManager = new AddressesInformationManager(googleMapsApi, databaseService, addressFormatter);
+        googleMapsApi = getGoogleMapsApi();
+        dbManager = getDbManager();
+        addressFormatter = getAddressFormatter();
     }
 
-    public SingleDrive getDriveInformation(SingleDriveRequest request){
+    public Drive getDriveInfo(DriveRequest request) {
 
-        SingleDrive singleDrive = googleMapsApi.getDriveInformation(request.getOrigin(), request.getDestination());
+        Drive drive = new Drive();
 
-        addressesInformationManager.setAddressType(singleDrive.getDestinationFormattedAddress());
+        drive.setOriginAddress(buildAddress(request.getOrigin()));
+        drive.setDestinationAddress(buildAddress(request.getDestination()));
 
-        if(singleDrive.getDestinationFormattedAddress().isBusiness()){
-            singleDrive.setDestinationIsABusiness(true);
+        dbManager.getDriveInfo(drive);
+
+        if (!drive.isValid()) {
+            googleMapsApi.getDriveInfo(drive);
+            if (drive.isValid()) {
+                dbManager.addDriveInfo(drive);
+            }
         }
 
-        return singleDrive;
+        if (drive.isValid()) {
+            if (drive.getDestinationAddress().isBusiness()) {
+                drive.setDestinationIsABusiness(true);
+            }
+        }
+
+        return drive;
     }
 
+    private Address buildAddress(String addressString) {
+
+        Address address = new Address();
+        address.setAddress(addressString);
+
+        googleMapsApi.verifyAddress(address);
+
+        if (address.isValid()) {
+            addressFormatter.format(address);
+        }
+
+        if (address.isValid()) {
+            dbManager.getAddressInfo(address);
+        }
+
+        return address;
+    }
 }

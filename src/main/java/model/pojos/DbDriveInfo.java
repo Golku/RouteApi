@@ -1,7 +1,8 @@
 package model.pojos;
 
-public class TravelInformation {
+public class DbDriveInfo {
 
+    private boolean infoAvailable;
     private String originAddress;
     private String destinationAddress;
     private String distanceHumanReadable;
@@ -9,6 +10,14 @@ public class TravelInformation {
     private String durationHumanReadable;
     private long durationInSeconds;
     private long refreshDate;
+
+    public boolean isInfoAvailable() {
+        return infoAvailable;
+    }
+
+    public void setInfoAvailable(boolean infoAvailable) {
+        this.infoAvailable = infoAvailable;
+    }
 
     public String getOriginAddress() {
         return originAddress;

@@ -1,52 +1,35 @@
 package controller;
 
-import com.google.gson.Gson;
 import model.*;
 import model.pojos.*;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RouteController {
+public class RouteController extends BaseController{
 
     /*
      * routeState 0 = Route does not exist
      * routeState 1 = Route was submitted with no addresses
      * routeState 2 = Validating the addresses
      * routeState 3 = Route is being organized
-     * routeState 4 = Route can not be organized
-     * routeState 5 = Route is ready
+     * routeState 4 = Route is ready
      * */
 
-    private ContainerController containerController;
     private RouteManager routeManager;
-    private RoutesOrganizer routesOrganizer;
-    private AddressesInformationManager addressesInformationManager;
+    private ContainerManager containerManager;
+    private DbManager dbManager;
+    private GoogleMapsApi googleMapsApi;
+    private AddressFormatter addressFormatter;
 
     private Route userRoute;
 
     public RouteController() {
-        Gson gson = new Gson();
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-
-        Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
-                .client(okHttpClient)//192.168.0.16
-                .baseUrl("http://192.168.0.16/map/v1/")
-                .addConverterFactory(GsonConverterFactory.create(gson));
-
-        Retrofit retrofit = retrofitBuilder.build();
-
-        DatabaseService databaseService = retrofit.create(DatabaseService.class);
-
-        AddressFormatter addressFormatter = new AddressFormatter();
-        GoogleMapsApi googleMapsApi = new GoogleMapsApi(databaseService, addressFormatter);
-        containerController = new ContainerController();
-        routeManager = new RouteManager();
-        routesOrganizer = new RoutesOrganizer(googleMapsApi);
-        addressesInformationManager = new AddressesInformationManager(googleMapsApi, databaseService, addressFormatter);
+        routeManager = getRouteManager();
+        containerManager = getContainerManager();
+        googleMapsApi = getGoogleMapsApi();
+        dbManager = getDbManager();
+        addressFormatter = getAddressFormatter();
     }
 
     public Route fetchRoute(String username) {
@@ -74,30 +57,19 @@ public class RouteController {
         }
 
         routeManager.createRoute(route.getUsername(), route.getRouteCode());
+
         userRoute = routeManager.getRoute(route.getUsername());
-        containerController.putRouteInContainer(route.getUsername(), userRoute);
 
-        System.out.println("Route username: " + userRoute.getUsername());
-        System.out.println("routeCode: " + userRoute.getRouteCode());
+        containerManager.addRoute(route.getUsername(), userRoute);
 
-        if (route.getAddressList().size() <= 0) {
+        if (route.getAddressList() == null || route.getAddressList().isEmpty()) {
             System.out.println("Route address list is empty");
             userRoute.setRouteState(1);
             System.out.println("routeState: " + userRoute.getRouteState());
             return;
         }
 
-        userRoute.setRouteState(2);
-
-        System.out.println("addressValidation");
-        System.out.println("routeState: " + userRoute.getRouteState());
-
-        for (String address : route.getAddressList()) {
-            validateAddress(address);
-        }
-
-        userRoute.setRouteState(5);
-        System.out.println("routeState: " + userRoute.getRouteState());
+        validateAddressList(route.getAddressList());
     }
 
     public void correctedAddresses(CorrectedAddresses correctedAddresses) {
@@ -114,40 +86,74 @@ public class RouteController {
         }
     }
 
-    private void validateAddress(String address) {
+    private void validateAddressList(List<String> addressList) {
 
-        FormattedAddress verifiedAddress = addressesInformationManager.validateAddress(address);
+        userRoute.setRouteState(2);
 
-        if(!verifiedAddress.isInvalid()){
-            addressesInformationManager.setAddressType(verifiedAddress);
+        System.out.println("addressValidation");
+        System.out.println("routeState: " + userRoute.getRouteState());
+
+        List<Address> addresses = new ArrayList<>();
+
+        for(String addressString : addressList){
+            Address address = new Address();
+
+            address.setAddress(addressString);
+
+            googleMapsApi.verifyAddress(address);
+
+            addresses.add(address);
         }
 
-        userRoute.getAddressList().add(verifiedAddress);
+        userRoute.setAddressList(addresses);
+
+        formatAddressList();
+    }
+
+    private void formatAddressList(){
+        for(Address address: userRoute.getAddressList()){
+            if(address.isValid()) {
+                addressFormatter.format(address);
+            }
+        }
+        sortAddressList();
+    }
+
+    private void sortAddressList(){
+
+        for(Address address: userRoute.getAddressList()){
+            if(address.isValid()) {
+                dbManager.getAddressInfo(address);
+            }
+        }
+
+        userRoute.setRouteState(4);
+        System.out.println("routeState: " + userRoute.getRouteState());
     }
 
     private void organizedRoute() {
-        userRoute.setRouteState(5);
-        System.out.println("organizedRoute");
-        System.out.println("routeState: " + userRoute.getRouteState());
-
+//        userRoute.setRouteState(5);
+//        System.out.println("organizedRoute");
+//        System.out.println("routeState: " + userRoute.getRouteState());
+//
 //        try{
 //            Thread.sleep(5000);
 //        }catch (InterruptedException e){
 //
 //        }
-
-        List<SingleDrive> organizedRouteList = routesOrganizer.organizeRouteClosestAddress(userRoute);
-
+//
+//        List<Drive> organizedRouteList = routesOrganizer.organizeRouteClosestAddress(userRoute);
+//
 //        System.out.println("Organized userRoute size: " + organizedRouteList.size());
-
-//        fix this to check for a null object instead of the size
-        if (organizedRouteList.size() > 0) {
-            userRoute.setRouteState(7);
-            System.out.println("routeState: " + userRoute.getRouteState());
-        } else {
-            userRoute.setRouteState(6);
-            System.out.println("routeState: " + userRoute.getRouteState());
-        }
-
+//
+////        fix this to check for a null object instead of the size
+//        if (organizedRouteList.size() > 0) {
+//            userRoute.setRouteState(7);
+//            System.out.println("routeState: " + userRoute.getRouteState());
+//        } else {
+//            userRoute.setRouteState(6);
+//            System.out.println("routeState: " + userRoute.getRouteState());
+//        }
+//
     }
 }

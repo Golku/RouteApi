@@ -1,45 +1,45 @@
 package model.pojos;
 
-public class SingleDrive {
+public class Drive {
 
-    private FormattedAddress originFormattedAddress;
-    private FormattedAddress destinationFormattedAddress;
+    private boolean valid;
 
-    private String status;
+    private Address originAddress;
+    private Address destinationAddress;
 
     private boolean destinationIsABusiness;
 
-    private String driveDurationHumanReadable;
     private long driveDurationInSeconds;
+    private String driveDurationHumanReadable;
 
-    private String driveDistanceHumanReadable;
     private long driveDistanceInMeters;
+    private String driveDistanceHumanReadable;
 
     private long deliveryTimeInMillis;
     private String deliveryTimeHumanReadable;
 
-    public FormattedAddress getOriginFormattedAddress() {
-        return originFormattedAddress;
+    public boolean isValid() {
+        return valid;
     }
 
-    public void setOriginFormattedAddress(FormattedAddress originFormattedAddress) {
-        this.originFormattedAddress = originFormattedAddress;
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 
-    public FormattedAddress getDestinationFormattedAddress() {
-        return destinationFormattedAddress;
+    public Address getOriginAddress() {
+        return originAddress;
     }
 
-    public void setDestinationFormattedAddress(FormattedAddress destinationFormattedAddress) {
-        this.destinationFormattedAddress = destinationFormattedAddress;
+    public void setOriginAddress(Address originAddress) {
+        this.originAddress = originAddress;
     }
 
-    public String getStatus() {
-        return status;
+    public Address getDestinationAddress() {
+        return destinationAddress;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setDestinationAddress(Address destinationAddress) {
+        this.destinationAddress = destinationAddress;
     }
 
     public boolean getDestinationIsABusiness() {

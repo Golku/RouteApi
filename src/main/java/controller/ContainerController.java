@@ -4,26 +4,15 @@ import model.ContainerManager;
 import model.pojos.Container;
 import model.pojos.Route;
 
-public class ContainerController {
+public class ContainerController extends BaseController{
 
     private ContainerManager containerManager;
 
     public ContainerController() {
-        this.containerManager = new ContainerManager();
+        containerManager = getContainerManager();
     }
 
     public Container fetchContainer(String username) {
-        Container container = containerManager.getContainer(username);
-
-        if (container == null){
-            container = containerManager.createContainer(username);
-        }
-
-        return container;
-    }
-
-    public void putRouteInContainer(String username, Route route){
-        Container container = fetchContainer(username);
-        container.setRoute(route);
+        return containerManager.getContainer(username);
     }
 }

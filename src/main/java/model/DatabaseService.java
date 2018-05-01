@@ -1,6 +1,7 @@
 package model;
 
-import model.pojos.DatabaseResponse;
+import model.pojos.DbAddressInfo;
+import model.pojos.DbDriveInfo;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -10,28 +11,28 @@ public interface DatabaseService {
 
     @FormUrlEncoded
     @POST("getAddressBusinessInfo.php")
-    Call<DatabaseResponse> getAddressBusinessInfo(
+    Call<DbAddressInfo> getAddressInfo(
             @Field("street_name") String street,
             @Field("post_code") String postCode,
             @Field("city") String city
     );
 
     @FormUrlEncoded
-    @POST("getTravelInfo.php")
-    Call<DatabaseResponse> getTravelInformation(
+    @POST("getDriveInfo.php")
+    Call<DbDriveInfo> getDriveInfo(
             @Field("origin_address") String originAddress,
             @Field("destination_address") String destinationAddress
     );
 
     @FormUrlEncoded
-    @POST("addTravelInformation.php")
-    Call<DatabaseResponse> addTravelInformation(
+    @POST("addDriveInfo.php")
+    Call<Void> addDriveInfo(
             @Field("origin_address") String originAddress,
             @Field("destination_address") String destinationAddress,
-            @Field("distance_human_readable") String distanceHumanReadable,
             @Field("distance_in_meters") long distanceInMeters,
-            @Field("duration_human_readable") String durationHumanReadable,
+            @Field("distance_human_readable") String distanceHumanReadable,
             @Field("duration_in_seconds") long durationInSeconds,
+            @Field("duration_human_readable") String durationHumanReadable,
             @Field("refresh_date") long refreshDate
     );
 }
