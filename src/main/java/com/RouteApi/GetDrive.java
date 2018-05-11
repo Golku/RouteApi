@@ -10,14 +10,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("/getdriveinformation")
-public class GetDriveInformation {
+@Path("/driverequest")
+public class GetDrive {
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Drive getTravelInformation(DriveRequest request) {
-        DriveInfoController controller = new DriveInfoController();
-        return controller.getDriveInfo(request);
+    @Produces(MediaType.APPLICATION_JSON)
+    public Drive driveRequest(DriveRequest request) {
+        return new DriveInfoController().getDriveInfo(request);
     }
+
 }

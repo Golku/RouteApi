@@ -8,10 +8,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 class BaseController {
 
-    RouteManager getRouteManager(){
-        return new RouteManager();
-    }
-
     GoogleMapsApi getGoogleMapsApi(){
         return new GoogleMapsApi();
     }

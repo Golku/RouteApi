@@ -2,6 +2,7 @@ package controller;
 
 import model.*;
 import model.pojos.*;
+import okhttp3.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,31 +17,18 @@ public class RouteController extends BaseController{
      * routeState 4 = Route is ready
      * */
 
-    private RouteManager routeManager;
     private ContainerManager containerManager;
     private DbManager dbManager;
     private GoogleMapsApi googleMapsApi;
     private AddressFormatter addressFormatter;
 
-    private Route userRoute;
+    private Container container;
 
     public RouteController() {
-        routeManager = getRouteManager();
         containerManager = getContainerManager();
         googleMapsApi = getGoogleMapsApi();
         dbManager = getDbManager();
         addressFormatter = getAddressFormatter();
-    }
-
-    public Route fetchRoute(String username) {
-        Route route = routeManager.getRoute(username);
-
-        if (route == null) {
-            route = new Route();
-            route.setRouteState(0);
-        }
-
-        return route;
     }
 
     public void createRoute(IncomingRoute route) {
@@ -56,42 +44,25 @@ public class RouteController extends BaseController{
             return;
         }
 
-        routeManager.createRoute(route.getUsername(), route.getRouteCode());
-
-        userRoute = routeManager.getRoute(route.getUsername());
-
-        containerManager.addRoute(route.getUsername(), userRoute);
+        container = containerManager.getContainer(route.getUsername());
+        container.setRouteCode(route.getRouteCode());
 
         if (route.getAddressList() == null || route.getAddressList().isEmpty()) {
             System.out.println("Route address list is empty");
-            userRoute.setRouteState(1);
-            System.out.println("routeState: " + userRoute.getRouteState());
+            container.setRouteState(1);
+            System.out.println("routeState: " + container.getRouteState());
             return;
         }
 
         validateAddressList(route.getAddressList());
     }
 
-    public void correctedAddresses(CorrectedAddresses correctedAddresses) {
-
-        if (correctedAddresses.getUsername().isEmpty()) {
-            System.out.println("No userRoute identifier provided");
-            return;
-        }
-
-        userRoute = routeManager.getRoute(correctedAddresses.getUsername());
-
-        if (correctedAddresses.getCorrectedAddressesList().size() > 0) {
-//            addressValidation(2, correctedAddresses.getCorrectedAddressesList());
-        }
-    }
-
     private void validateAddressList(List<String> addressList) {
 
-        userRoute.setRouteState(2);
+        container.setRouteState(2);
 
         System.out.println("addressValidation");
-        System.out.println("routeState: " + userRoute.getRouteState());
+        System.out.println("routeState: " + container.getRouteState());
 
         List<Address> addresses = new ArrayList<>();
 
@@ -105,13 +76,13 @@ public class RouteController extends BaseController{
             addresses.add(address);
         }
 
-        userRoute.setAddressList(addresses);
+        container.setRouteAddressList(addresses);
 
         formatAddressList();
     }
 
     private void formatAddressList(){
-        for(Address address: userRoute.getAddressList()){
+        for(Address address: container.getRouteAddressList()){
             if(address.isValid()) {
                 addressFormatter.format(address);
             }
@@ -121,14 +92,14 @@ public class RouteController extends BaseController{
 
     private void sortAddressList(){
 
-        for(Address address: userRoute.getAddressList()){
+        for(Address address: container.getRouteAddressList()){
             if(address.isValid()) {
                 dbManager.getAddressInfo(address);
             }
         }
 
-        userRoute.setRouteState(4);
-        System.out.println("routeState: " + userRoute.getRouteState());
+        container.setRouteState(4);
+        System.out.println("routeState: " + container.getRouteState());
     }
 
     private void organizedRoute() {

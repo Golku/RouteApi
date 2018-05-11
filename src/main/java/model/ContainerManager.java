@@ -1,9 +1,11 @@
 package model;
 
+import model.pojos.Address;
 import model.pojos.Container;
-import model.pojos.Route;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ContainerManager {
@@ -23,11 +25,39 @@ public class ContainerManager {
         if(container == null){
             container = createContainer(username);
         }
+        setAddressTypeCount(container);
         return container;
     }
 
-    public void addRoute(String username, Route route){
-        Container container = getContainer(username);
-        container.setRoute(route);
+    private void setAddressTypeCount(Container container) {
+
+        int privateAddressCount = 0;
+        int businessAddressCount = 0;
+        int invalidAddressCount = 0;
+
+        List<Address> addressList = new ArrayList<>();
+
+        if(container.getUserAddressList() != null){
+            addressList.addAll(container.getUserAddressList());
+        }
+        if(container.getRouteAddressList() != null){
+            addressList.addAll(container.getRouteAddressList());
+        }
+
+        for (Address address : addressList) {
+            if (address.isValid()) {
+                if (address.isBusiness()) {
+                    businessAddressCount++;
+                } else {
+                    privateAddressCount++;
+                }
+            } else {
+                invalidAddressCount++;
+            }
+        }
+
+        container.setPrivateAddressCount(privateAddressCount);
+        container.setBusinessAddressCount(businessAddressCount);
+        container.setInvalidAddressCount(invalidAddressCount);
     }
 }
