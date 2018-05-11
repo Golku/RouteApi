@@ -10,7 +10,9 @@ public class Address {
     private double lat;
     private double lng;
     private int openingHours;
+    private int packageCount;
     private boolean business;
+    private boolean userInputted;
     private boolean valid;
 
     public String getAddress() {
@@ -77,12 +79,28 @@ public class Address {
         this.openingHours = openingHours;
     }
 
+    public int getPackageCount() {
+        return packageCount;
+    }
+
+    public void setPackageCount(int packageCount) {
+        this.packageCount = packageCount;
+    }
+
     public boolean isBusiness() {
         return business;
     }
 
     public void setBusiness(boolean business) {
         this.business = business;
+    }
+
+    public boolean isUserInputted() {
+        return userInputted;
+    }
+
+    public void setUserInputted(boolean userInputted) {
+        this.userInputted = userInputted;
     }
 
     public boolean isValid() {

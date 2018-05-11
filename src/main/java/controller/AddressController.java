@@ -8,6 +8,7 @@ import model.pojos.Address;
 import model.pojos.AddressRequest;
 import model.pojos.Container;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AddressController extends BaseController{
 
@@ -25,8 +26,16 @@ public class AddressController extends BaseController{
 
     public Address getAddress(AddressRequest request){
         Address address = new Address();
-
         address.setAddress(request.getAddress());
+        address.setUserInputted(true);
+
+        Container container = containerManager.getContainer(request.getUsername());
+
+        if(container.getAddressList() == null){
+            container.setAddressList(new ArrayList<Address>());
+        }
+
+        List<Address> addressList = container.getAddressList();
 
         googleMapsApi.verifyAddress(address);
 
@@ -38,14 +47,9 @@ public class AddressController extends BaseController{
             dbManager.getAddressInfo(address);
         }
 
-        Container container = containerManager.getContainer(request.getUsername());
-
-        if(container.getUserAddressList() == null){
-            container.setUserAddressList(new ArrayList<Address>());
-        }
-
-        System.out.println("address added to list");
-        container.getUserAddressList().add(address);
+        //check if address already exist in list, if so add one to packageCount.
+        //But if address does not exist in list add the address to the list.
+        containerManager.putAddressInList(addressList, address);
 
         return address;
     }

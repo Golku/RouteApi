@@ -73,16 +73,16 @@ public class RouteController extends BaseController{
 
             googleMapsApi.verifyAddress(address);
 
-            addresses.add(address);
+            containerManager.putAddressInList(addresses, address);
         }
 
-        container.setRouteAddressList(addresses);
+        container.setAddressList(addresses);
 
         formatAddressList();
     }
 
     private void formatAddressList(){
-        for(Address address: container.getRouteAddressList()){
+        for(Address address: container.getAddressList()){
             if(address.isValid()) {
                 addressFormatter.format(address);
             }
@@ -92,7 +92,7 @@ public class RouteController extends BaseController{
 
     private void sortAddressList(){
 
-        for(Address address: container.getRouteAddressList()){
+        for(Address address: container.getAddressList()){
             if(address.isValid()) {
                 dbManager.getAddressInfo(address);
             }

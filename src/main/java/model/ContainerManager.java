@@ -29,20 +29,30 @@ public class ContainerManager {
         return container;
     }
 
+    public void putAddressInList(List<Address> addressList, Address address){
+        boolean notFound = true;
+        for(Address it : addressList){
+            if(it.getAddress().equals(address.getAddress())){
+                it.setPackageCount(it.getPackageCount()+1);
+                notFound = false;
+            }
+        }
+        if(notFound){
+            addressList.add(address);
+        }
+    }
+
     private void setAddressTypeCount(Container container) {
+
+        if(container.getAddressList() == null){
+            return;
+        }
 
         int privateAddressCount = 0;
         int businessAddressCount = 0;
         int invalidAddressCount = 0;
 
-        List<Address> addressList = new ArrayList<>();
-
-        if(container.getUserAddressList() != null){
-            addressList.addAll(container.getUserAddressList());
-        }
-        if(container.getRouteAddressList() != null){
-            addressList.addAll(container.getRouteAddressList());
-        }
+        List<Address> addressList = container.getAddressList();
 
         for (Address address : addressList) {
             if (address.isValid()) {
