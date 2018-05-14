@@ -37,7 +37,7 @@ public class GoogleMapsApi {
                 address.setLng(resultsGeo[0].geometry.location.lng);
             }
         } catch (ApiException | IOException | InterruptedException e) {
-            System.out.println("verifyAddress in GoogleMapsApi.java was unable to validate: " + address);
+            System.out.println("verifyAddress in GoogleMapsApi.java was unable to validate: " + address.getAddress());
         }
     }
 

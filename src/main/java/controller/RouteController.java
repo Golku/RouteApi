@@ -64,7 +64,14 @@ public class RouteController extends BaseController{
         System.out.println("addressValidation");
         System.out.println("routeState: " + container.getRouteState());
 
-        List<Address> addresses = new ArrayList<>();
+        List<Address> addresses;
+
+        if(container.getAddressList() != null){
+            addresses = container.getAddressList();
+        }else{
+            addresses = new ArrayList<>();
+            container.setAddressList(addresses);
+        }
 
         for(String addressString : addressList){
             Address address = new Address();
@@ -73,29 +80,15 @@ public class RouteController extends BaseController{
 
             googleMapsApi.verifyAddress(address);
 
-            containerManager.putAddressInList(addresses, address);
-        }
-
-        container.setAddressList(addresses);
-
-        formatAddressList();
-    }
-
-    private void formatAddressList(){
-        for(Address address: container.getAddressList()){
             if(address.isValid()) {
                 addressFormatter.format(address);
             }
-        }
-        sortAddressList();
-    }
 
-    private void sortAddressList(){
-
-        for(Address address: container.getAddressList()){
             if(address.isValid()) {
                 dbManager.getAddressInfo(address);
             }
+
+            containerManager.putAddressInList(addresses, address);
         }
 
         container.setRouteState(4);

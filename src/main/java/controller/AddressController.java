@@ -1,10 +1,8 @@
 package controller;
 
-import model.AddressFormatter;
-import model.ContainerManager;
-import model.DbManager;
-import model.GoogleMapsApi;
+import model.*;
 import model.pojos.Address;
+import model.pojos.AddressChangeRequest;
 import model.pojos.AddressRequest;
 import model.pojos.Container;
 import java.util.ArrayList;
@@ -24,6 +22,18 @@ public class AddressController extends BaseController{
         addressFormatter = getAddressFormatter();
     }
 
+    private void validateAddress(Address address){
+        googleMapsApi.verifyAddress(address);
+
+        if(address.isValid()){
+            addressFormatter.format(address);
+        }
+
+        if(address.isValid()){
+            dbManager.getAddressInfo(address);
+        }
+    }
+
     public Address getAddress(AddressRequest request){
         Address address = new Address();
         address.setAddress(request.getAddress());
@@ -37,19 +47,29 @@ public class AddressController extends BaseController{
 
         List<Address> addressList = container.getAddressList();
 
-        googleMapsApi.verifyAddress(address);
-
-        if(address.isValid()){
-            addressFormatter.format(address);
-        }
-
-        if(address.isValid()){
-            dbManager.getAddressInfo(address);
-        }
+        validateAddress(address);
 
         //check if address already exist in list, if so add one to packageCount.
         //But if address does not exist in list add the address to the list.
         containerManager.putAddressInList(addressList, address);
+
+        return address;
+    }
+
+    public Address changeAddress(AddressChangeRequest request){
+        Address address = new Address();
+        address.setAddress(request.getNewAddress());
+
+        List<Address> addressList = containerManager.getContainer(request.getUsername()).getAddressList();
+
+        for(Address it: addressList){
+            if(it.getAddress().equals(request.getOldAddress())){
+                validateAddress(address);
+                addressList.remove(it);
+                containerManager.putAddressInList(addressList, address);
+                break;
+            }
+        }
 
         return address;
     }
