@@ -1,10 +1,8 @@
 package controller;
 
 import model.*;
-import model.pojos.Address;
-import model.pojos.AddressChangeRequest;
-import model.pojos.AddressRequest;
-import model.pojos.Container;
+import model.pojos.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,5 +70,16 @@ public class AddressController extends BaseController{
         }
 
         return address;
+    }
+
+    public void removeAddress(RemoveAddressRequest request){
+        List<Address> addressList = containerManager.getContainer(request.getUsername()).getAddressList();
+
+        for(Address it: addressList){
+            if(it.getAddress().equals(request.getAddress())){
+                addressList.remove(it);
+                break;
+            }
+        }
     }
 }

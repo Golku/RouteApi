@@ -43,6 +43,8 @@ public class DbManager {
             if (dbAddressInfo.getBusiness() == 1) {
                 address.setBusiness(true);
                 address.setOpeningHours(dbAddressInfo.getOpeningHours());
+            }else{
+                address.setBusiness(false);
             }
         }
     }

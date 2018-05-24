@@ -15,6 +15,6 @@ public class GetContainer {
     @Path("/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Container containerRequest(@PathParam("username") String username) {
-        return new ContainerController ().fetchContainer(username);
+        return new ContainerController().fetchContainer(username);
     }
 }
