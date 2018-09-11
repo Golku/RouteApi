@@ -3,7 +3,8 @@ package model.pojos;
 public class DbAddressInfo {
 
     private int business;
-    private int openingHours;
+    private int openingTime;
+    private int closingTime;
 
     public int getBusiness() {
         return business;
@@ -13,11 +14,19 @@ public class DbAddressInfo {
         this.business = business;
     }
 
-    public int getOpeningHours() {
-        return openingHours;
+    public int getOpeningTime() {
+        return openingTime;
     }
 
-    public void setOpeningHours(int openingHours) {
-        this.openingHours = openingHours;
+    public void setOpeningTime(int openingTime) {
+        this.openingTime = openingTime;
+    }
+
+    public int getClosingTime() {
+        return closingTime;
+    }
+
+    public void setClosingTime(int closingTime) {
+        this.closingTime = closingTime;
     }
 }

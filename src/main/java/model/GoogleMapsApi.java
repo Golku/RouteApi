@@ -4,6 +4,7 @@ import com.google.maps.*;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.LatLng;
 import model.pojos.Address;
 import model.pojos.DbAddressInfo;
 import model.pojos.FormattedAddress;
@@ -46,7 +47,6 @@ public class GoogleMapsApi {
         String[] originArray = {drive.getOriginAddress().getAddress()};
         String[] destinationArray = {drive.getDestinationAddress().getAddress()};
 
-        Call<Void> call = null;
         DistanceMatrix resultsDistanceMatrix = null;
 
         try {

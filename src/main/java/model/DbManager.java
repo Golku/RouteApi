@@ -42,7 +42,8 @@ public class DbManager {
         if (dbAddressInfo != null) {
             if (dbAddressInfo.getBusiness() == 1) {
                 address.setBusiness(true);
-                address.setOpeningHours(dbAddressInfo.getOpeningHours());
+                address.setOpeningTime(dbAddressInfo.getOpeningTime());
+                address.setClosingTime(dbAddressInfo.getClosingTime());
             }else{
                 address.setBusiness(false);
             }
@@ -85,7 +86,7 @@ public class DbManager {
         }
     }
 
-    public void addDriveInfo(Drive drive){
+    public void addDriveInfo(Drive drive) {
 
         Call<Void> call = databaseService.addDriveInfo(
                 drive.getOriginAddress().getAddress(),

@@ -9,9 +9,10 @@ public class Address {
     private String country;
     private double lat;
     private double lng;
-    private int openingHours;
     private int packageCount;
     private boolean business;
+    private int openingTime;
+    private int closingTime;
     private boolean userInputted;
     private boolean valid;
 
@@ -71,14 +72,6 @@ public class Address {
         this.lng = lng;
     }
 
-    public int getOpeningHours() {
-        return openingHours;
-    }
-
-    public void setOpeningHours(int openingHours) {
-        this.openingHours = openingHours;
-    }
-
     public int getPackageCount() {
         return packageCount;
     }
@@ -93,6 +86,22 @@ public class Address {
 
     public void setBusiness(boolean business) {
         this.business = business;
+    }
+
+    public int getOpeningTime() {
+        return openingTime;
+    }
+
+    public void setOpeningTime(int openingTime) {
+        this.openingTime = openingTime;
+    }
+
+    public int getClosingTime() {
+        return closingTime;
+    }
+
+    public void setClosingTime(int closingTime) {
+        this.closingTime = closingTime;
     }
 
     public boolean isUserInputted() {
