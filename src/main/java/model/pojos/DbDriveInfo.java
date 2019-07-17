@@ -2,6 +2,8 @@ package model.pojos;
 
 public class DbDriveInfo {
 
+    private boolean error;
+    private String message;
     private boolean infoAvailable;
     private String originAddress;
     private String destinationAddress;
@@ -10,6 +12,22 @@ public class DbDriveInfo {
     private String durationHumanReadable;
     private long durationInSeconds;
     private long refreshDate;
+
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public boolean isInfoAvailable() {
         return infoAvailable;

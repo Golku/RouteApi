@@ -81,8 +81,15 @@ public class DbManager {
                     drive.setDriveDurationHumanReadable(dbDriveInfo.getDurationHumanReadable());
 
                     drive.setValid(true);
+                    //System.out.println("From db");
+                }else{
+                    System.out.println("Date expired, date: " + date + " refresh date: " + refreshDate);
                 }
+            }else{
+                System.out.println("Info not available");
             }
+        }else{
+            System.out.println("dbDriveInfo is null");
         }
     }
 
@@ -100,6 +107,7 @@ public class DbManager {
 
         try {
             call.execute();
+            System.out.println("Drive added to db");
         } catch (IOException e) {
             System.out.println("Failed to add drive info to db: " + e);
         }

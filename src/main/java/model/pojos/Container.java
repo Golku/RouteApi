@@ -5,7 +5,6 @@ import java.util.List;
 public class Container {
 
     private String username;
-    private String routeCode;
     private int routeState;
     private List<Address> addressList;
     private List<Drive> routeList;
@@ -19,14 +18,6 @@ public class Container {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getRouteCode() {
-        return routeCode;
-    }
-
-    public void setRouteCode(String routeCode) {
-        this.routeCode = routeCode;
     }
 
     public int getRouteState() {

@@ -66,6 +66,7 @@ public class GoogleMapsApi {
                 drive.setDriveDurationHumanReadable(resultsDistanceMatrix.rows[0].elements[0].duration.humanReadable);
 
                 drive.setValid(true);
+                //System.out.println("From API");
             }catch (NullPointerException e){
                 System.out.println("Failed to parse distance matrix api response for: " + originArray[0] + " - " + destinationArray[0]);
             }

@@ -10,7 +10,7 @@ public class AddressFormatter {
 
     public void format(Address address){
         try {
-            tryToFormatAddress(address);
+            formatAddress(address);
             if(!address.getCountry().contains("Netherlands")){
                 address.setValid(false);
             }
@@ -19,7 +19,7 @@ public class AddressFormatter {
         }
     }
 
-    private void tryToFormatAddress(Address currentAddress) {
+    private void formatAddress(Address currentAddress) {
 
         String address = currentAddress.getAddress();
 

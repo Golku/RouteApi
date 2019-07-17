@@ -33,19 +33,13 @@ public class RouteController extends BaseController{
 
     public void createRoute(IncomingRoute route) {
 
-        //temporary
-        route.setRouteCode("1");
-        //log this list
-        //route.getAddressList();
-
-        if (route.getRouteCode().isEmpty() || route.getUsername().isEmpty()) {
+        if (route.getUsername().isEmpty()) {
             System.out.println("No userRoute identifier provided");
             //log occurrences of this case
             return;
         }
 
         container = containerManager.getContainer(route.getUsername());
-        container.setRouteCode(route.getRouteCode());
 
         if (route.getAddressList() == null || route.getAddressList().isEmpty()) {
             System.out.println("Route address list is empty");

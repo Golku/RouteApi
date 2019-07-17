@@ -47,8 +47,6 @@ public class AddressController extends BaseController{
 
         validateAddress(address);
 
-        //check if address already exist in list, if so add one to packageCount.
-        //But if address does not exist in list add the address to the list.
         containerManager.putAddressInList(addressList, address);
 
         return address;
@@ -73,10 +71,14 @@ public class AddressController extends BaseController{
     }
 
     public void removeAddress(RemoveAddressRequest request){
+        System.out.println("Removing: "+request.getAddress() +" for user: " + request.getUsername());
         List<Address> addressList = containerManager.getContainer(request.getUsername()).getAddressList();
 
         for(Address it: addressList){
+            System.out.println("Checking: " + it.getAddress());
+            //case sensitive fix this!
             if(it.getAddress().equals(request.getAddress())){
+                System.out.println("Found it");
                 addressList.remove(it);
                 break;
             }
