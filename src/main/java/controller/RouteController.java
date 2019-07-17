@@ -58,15 +58,6 @@ public class RouteController extends BaseController{
         System.out.println("addressValidation");
         System.out.println("routeState: " + container.getRouteState());
 
-        List<Address> addresses;
-
-        if(container.getAddressList() != null){
-            addresses = container.getAddressList();
-        }else{
-            addresses = new ArrayList<>();
-            container.setAddressList(addresses);
-        }
-
         for(String addressString : addressList){
             Address address = new Address();
 
@@ -82,7 +73,7 @@ public class RouteController extends BaseController{
                 dbManager.getAddressInfo(address);
             }
 
-            containerManager.putAddressInList(addresses, address);
+            containerManager.putAddressInList(container.getUsername(), address);
         }
 
         container.setRouteState(4);

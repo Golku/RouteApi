@@ -35,19 +35,10 @@ public class AddressController extends BaseController{
     public Address getAddress(AddressRequest request){
         Address address = new Address();
         address.setAddress(request.getAddress());
-        address.setUserInputted(true);
-
-        Container container = containerManager.getContainer(request.getUsername());
-
-        if(container.getAddressList() == null){
-            container.setAddressList(new ArrayList<Address>());
-        }
-
-        List<Address> addressList = container.getAddressList();
 
         validateAddress(address);
 
-        containerManager.putAddressInList(addressList, address);
+        containerManager.putAddressInList(request.getUsername(), address);
 
         return address;
     }
@@ -62,7 +53,7 @@ public class AddressController extends BaseController{
             if(it.getAddress().equals(request.getOldAddress())){
                 validateAddress(address);
                 addressList.remove(it);
-                containerManager.putAddressInList(addressList, address);
+                containerManager.putAddressInList(request.getUsername(), address);
                 break;
             }
         }

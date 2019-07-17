@@ -13,7 +13,6 @@ public class Address {
     private boolean business;
     private int openingTime;
     private int closingTime;
-    private boolean userInputted;
     private boolean valid;
 
     public String getAddress() {
@@ -102,14 +101,6 @@ public class Address {
 
     public void setClosingTime(int closingTime) {
         this.closingTime = closingTime;
-    }
-
-    public boolean isUserInputted() {
-        return userInputted;
-    }
-
-    public void setUserInputted(boolean userInputted) {
-        this.userInputted = userInputted;
     }
 
     public boolean isValid() {

@@ -2,6 +2,7 @@ package model;
 
 import model.pojos.Address;
 import model.pojos.Container;
+import model.pojos.Drive;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ public class ContainerManager {
     private Container createContainer(String username){
         Container container = new Container();
         container.setUsername(username);
+        container.setAddressList(new ArrayList<Address>());
+        container.setRouteList(new ArrayList<Drive>());
         containers.put(username, container);
         return container;
     }
@@ -25,12 +28,13 @@ public class ContainerManager {
         if(container == null){
             container = createContainer(username);
         }
-        setAddressTypeCount(container);
         return container;
     }
 
-    public void putAddressInList(List<Address> addressList, Address address){
+    public void putAddressInList(String username, Address address){
         boolean notFound = true;
+        Container container = getContainer(username);
+        List<Address> addressList = container.getAddressList();
         for(Address it : addressList){
             if(it.getAddress().equals(address.getAddress())){
                 it.setPackageCount(it.getPackageCount()+1);
@@ -40,11 +44,12 @@ public class ContainerManager {
         if(notFound){
             addressList.add(address);
         }
+        setAddressTypeCount(container);
     }
 
     private void setAddressTypeCount(Container container) {
 
-        if(container.getAddressList() == null){
+        if(container.getAddressList().isEmpty()){
             return;
         }
 

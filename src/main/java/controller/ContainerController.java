@@ -16,18 +16,6 @@ public class ContainerController extends BaseController{
     }
 
     public Container fetchContainer(String username) {
-        Container container = containerManager.getContainer(username);
-
-        if(container.getAddressList() != null){
-
-            for(Address address: container.getAddressList()){
-
-                if(address.isValid()) {
-                    dbManager.getAddressInfo(address);
-                }
-            }
-        }
-
-        return container;
+        return containerManager.getContainer(username);
     }
 }
