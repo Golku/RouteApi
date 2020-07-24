@@ -30,13 +30,15 @@ class BaseController {
     }
 
     private DatabaseService getDatabaseService(){
+
         Gson gson = new Gson();
 
         OkHttpClient okHttpClient = new OkHttpClient();
 
+        System.out.println("3");
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .client(okHttpClient)//192.168.0.16
-                .baseUrl("http://192.168.0.16/map/v1/")
+                .baseUrl("http://192.168.178.164/map/v1/")
                 .addConverterFactory(GsonConverterFactory.create(gson));
 
         Retrofit retrofit = retrofitBuilder.build();

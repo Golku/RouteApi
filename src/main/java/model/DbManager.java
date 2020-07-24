@@ -50,7 +50,6 @@ public class DbManager {
         }
     }
 
-
     public void getDriveInfo(Drive drive) {
 
         String origin = drive.getOriginAddress().getAddress();
