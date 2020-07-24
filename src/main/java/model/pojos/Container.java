@@ -7,7 +7,7 @@ public class Container {
     private String username;
     private int routeState;
     private List<Address> addressList;
-    private List<Drive> routeList;
+    private List<Drive> driveList;
     private int privateAddressCount;
     private int businessAddressCount;
     private int invalidAddressCount;
@@ -36,12 +36,12 @@ public class Container {
         this.addressList = addressList;
     }
 
-    public List<Drive> getRouteList() {
-        return routeList;
+    public List<Drive> getDriveList() {
+        return driveList;
     }
 
-    public void setRouteList(List<Drive> routeList) {
-        this.routeList = routeList;
+    public void setDriveList(List<Drive> driveList) {
+        this.driveList = driveList;
     }
 
     public int getPrivateAddressCount() {
