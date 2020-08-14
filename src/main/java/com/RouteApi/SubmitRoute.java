@@ -1,7 +1,7 @@
 package com.RouteApi;
 
 import controller.RouteController;
-import model.pojos.IncomingRoute;
+import model.pojos.OrganizeRouteRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,9 +13,9 @@ public class SubmitRoute {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response submitRoute(IncomingRoute route) {
+    public Response submitRoute(OrganizeRouteRequest route) {
         RouteController controller = new RouteController();
-        controller.createRoute(route);
+        controller.organizedRoute(route);
         return Response.accepted().build();
     }
 }

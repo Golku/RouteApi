@@ -35,7 +35,6 @@ class BaseController {
 
         OkHttpClient okHttpClient = new OkHttpClient();
 
-        System.out.println("3");
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .client(okHttpClient)//192.168.0.16
                 .baseUrl("http://192.168.178.164/map/v1/")

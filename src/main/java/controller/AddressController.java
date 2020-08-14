@@ -2,8 +2,6 @@ package controller;
 
 import model.*;
 import model.pojos.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class AddressController extends BaseController{
@@ -38,27 +36,30 @@ public class AddressController extends BaseController{
 
         validateAddress(address);
 
-        containerManager.putAddressInList(request.getUsername(), address);
+        if(address.isValid()) {
+            containerManager.putAddressInList(request.getUsername(), address);
+        }
 
         return address;
     }
 
-    public Address changeAddress(AddressChangeRequest request){
-        Address address = new Address();
-        address.setAddress(request.getNewAddress());
+    public void updatePackageCount(UpdatePackageCountRequest request){
 
-        List<Address> addressList = containerManager.getContainer(request.getUsername()).getAddressList();
+        Container container = containerManager.getContainer(request.getUsername());
 
-        for(Address it: addressList){
-            if(it.getAddress().equals(request.getOldAddress())){
-                validateAddress(address);
-                addressList.remove(it);
-                containerManager.putAddressInList(request.getUsername(), address);
-                break;
+        if(container.getAddressList().size() > 0){
+            for (Address address : container.getAddressList()) {
+                for(String addressString : request.getAddressList()){
+                    if(address.getAddress().equals(addressString)){
+                        if (address.isValid()) {
+                            int count = request.getCountList().get(request.getAddressList().indexOf(addressString));
+                            address.setPackageCount(count);
+                        }
+                        break;
+                    }
+                }
             }
         }
-
-        return address;
     }
 
     public void removeAddress(RemoveAddressRequest request){
@@ -67,7 +68,6 @@ public class AddressController extends BaseController{
 
         for(Address it: addressList){
             System.out.println("Checking: " + it.getAddress());
-            //case sensitive fix this!
             if(it.getAddress().equals(request.getAddress())){
                 System.out.println("Found it");
                 addressList.remove(it);

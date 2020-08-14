@@ -2,10 +2,11 @@ package model.pojos;
 
 import java.util.List;
 
-public class IncomingRoute {
+public class UpdatePackageCountRequest {
 
-    private String username;
+    String username;
     private List<String> addressList;
+    private List<Integer> countList;
 
     public String getUsername() {
         return username;
@@ -23,4 +24,11 @@ public class IncomingRoute {
         this.addressList = addressList;
     }
 
+    public List<Integer> getCountList() {
+        return countList;
+    }
+
+    public void setCountList(List<Integer> countList) {
+        this.countList = countList;
+    }
 }

@@ -10,7 +10,6 @@ public class Container {
     private List<Drive> driveList;
     private int privateAddressCount;
     private int businessAddressCount;
-    private int invalidAddressCount;
 
     public String getUsername() {
         return username;
@@ -58,13 +57,5 @@ public class Container {
 
     public void setBusinessAddressCount(int businessAddressCount) {
         this.businessAddressCount = businessAddressCount;
-    }
-
-    public int getInvalidAddressCount() {
-        return invalidAddressCount;
-    }
-
-    public void setInvalidAddressCount(int invalidAddressCount) {
-        this.invalidAddressCount = invalidAddressCount;
     }
 }

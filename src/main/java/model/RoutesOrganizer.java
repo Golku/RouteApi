@@ -1,7 +1,7 @@
-package model;
-
-public class RoutesOrganizer {
-
+//package model;
+//
+//public class RoutesOrganizer {
+//
 //    private GoogleMapsApi googleMapsApi;
 //
 //    private String origin;
@@ -29,15 +29,15 @@ public class RoutesOrganizer {
 //
 //    public List<Drive> organizeRouteClosestAddress(Route route) {
 //
-////        UnorganizedRoute unorganizedRoute = null;
-////
-////        if(unorganizedRoute.getOrigin() == null || unorganizedRoute.getOrigin().isEmpty()){
-////            this.origin = "vrij-harnasch 21, den hoorn";
-////        }else{
-////            this.origin = unorganizedRoute.getOrigin();
-////        }
+//        UnorganizedRoute unorganizedRoute = null;
 //
-////        System.out.println("First origin: "+origin);
+//        if(unorganizedRoute.getOrigin() == null || unorganizedRoute.getOrigin().isEmpty()){
+//            this.origin = "vrij-harnasch 21, den hoorn";
+//        }else{
+//            this.origin = unorganizedRoute.getOrigin();
+//        }
+//
+//        System.out.println("First origin: "+origin);
 //
 //        this.organizedRouteClosestAddress = new ArrayList<>();
 //
@@ -95,7 +95,7 @@ public class RoutesOrganizer {
 //
 //                destination = formattedAddress.getFormattedAddress();
 //
-////                System.out.println("call Origin: "+origin);
+//                System.out.println("call Origin: "+origin);
 ////                System.out.println("call Destination: "+destination);
 ////                System.out.println("");
 //
@@ -187,6 +187,6 @@ public class RoutesOrganizer {
 //        }
 //
 //    }
-
-
-}
+//
+//
+//}

@@ -38,16 +38,22 @@ public class ContainerManager {
         for(Address it : addressList){
             if(it.getAddress().equals(address.getAddress())){
                 it.setPackageCount(it.getPackageCount()+1);
+                address.setPackageCount(it.getPackageCount());
                 notFound = false;
             }
         }
         if(notFound){
+            address.setPackageCount(1);
             addressList.add(address);
+            setAddressTypeCount(container);
         }
-        setAddressTypeCount(container);
     }
 
-    private void setAddressTypeCount(Container container) {
+    public void updatePackageCount(){
+
+    }
+
+    public void setAddressTypeCount(Container container) {
 
         if(container.getAddressList().isEmpty()){
             return;
@@ -55,7 +61,6 @@ public class ContainerManager {
 
         int privateAddressCount = 0;
         int businessAddressCount = 0;
-        int invalidAddressCount = 0;
 
         List<Address> addressList = container.getAddressList();
 
@@ -66,13 +71,10 @@ public class ContainerManager {
                 } else {
                     privateAddressCount++;
                 }
-            } else {
-                invalidAddressCount++;
             }
         }
 
         container.setPrivateAddressCount(privateAddressCount);
         container.setBusinessAddressCount(businessAddressCount);
-        container.setInvalidAddressCount(invalidAddressCount);
     }
 }
