@@ -12,11 +12,6 @@ class BaseController {
         return new GoogleMapsApi();
     }
 
-    RoutesOrganizer getRoutesOrganizer(){
-//        return new RoutesOrganizer();
-        return null;
-    }
-
     ContainerManager getContainerManager(){
         return new ContainerManager();
     }

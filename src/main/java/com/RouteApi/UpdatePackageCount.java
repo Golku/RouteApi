@@ -13,7 +13,7 @@ public class UpdatePackageCount {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeAddress(UpdatePackageCountRequest request) {
+    public Response updatePackageCount(UpdatePackageCountRequest request) {
         AddressController controller = new AddressController();
         controller.updatePackageCount(request);
         return Response.accepted().build();

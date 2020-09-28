@@ -49,10 +49,6 @@ public class ContainerManager {
         }
     }
 
-    public void updatePackageCount(){
-
-    }
-
     public void setAddressTypeCount(Container container) {
 
         if(container.getAddressList().isEmpty()){

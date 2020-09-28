@@ -5,7 +5,6 @@ import java.util.List;
 public class Container {
 
     private String username;
-    private int routeState;
     private List<Address> addressList;
     private List<Drive> driveList;
     private int privateAddressCount;
@@ -17,14 +16,6 @@ public class Container {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public int getRouteState() {
-        return routeState;
-    }
-
-    public void setRouteState(int routeState) {
-        this.routeState = routeState;
     }
 
     public List<Address> getAddressList() {

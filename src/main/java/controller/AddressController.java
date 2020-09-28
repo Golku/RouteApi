@@ -63,13 +63,11 @@ public class AddressController extends BaseController{
     }
 
     public void removeAddress(RemoveAddressRequest request){
-        System.out.println("Removing: "+request.getAddress() +" for user: " + request.getUsername());
+//        System.out.println("Removing: "+request.getAddress() +" for user: " + request.getUsername());
         List<Address> addressList = containerManager.getContainer(request.getUsername()).getAddressList();
 
         for(Address it: addressList){
-            System.out.println("Checking: " + it.getAddress());
             if(it.getAddress().equals(request.getAddress())){
-                System.out.println("Found it");
                 addressList.remove(it);
                 break;
             }

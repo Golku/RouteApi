@@ -3,9 +3,9 @@ package controller;
 import model.AddressFormatter;
 import model.DbManager;
 import model.GoogleMapsApi;
-import model.pojos.Address;
-import model.pojos.Drive;
-import model.pojos.DriveRequest;
+import model.pojos.*;
+
+import java.util.List;
 
 public class DriveInfoController extends BaseController {
 
@@ -17,6 +17,16 @@ public class DriveInfoController extends BaseController {
         googleMapsApi = getGoogleMapsApi();
         dbManager = getDbManager();
         addressFormatter = getAddressFormatter();
+    }
+
+    public void updateDriveList(UpdateDriveListRequest request){
+        Container container = getContainerManager().getContainer(request.getUsername());
+        container.setDriveList(request.getDriveList());
+
+//        for(Drive drive : container.getDriveList()){
+//            System.out.println("Drive from: " + drive.getOriginAddress().getAddress()+ " to " + drive.getDestinationAddress().getAddress());
+//        }
+
     }
 
     public Drive getDriveInfo(DriveRequest request) {
