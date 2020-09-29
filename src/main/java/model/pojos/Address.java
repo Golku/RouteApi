@@ -1,7 +1,12 @@
 package model.pojos;
 
+import java.util.HashMap;
+import java.util.List;
+
 public class Address {
 
+    private boolean valid;
+    private List<String> placeId;
     private String address;
     private String street;
     private String postCode;
@@ -10,10 +15,26 @@ public class Address {
     private double lat;
     private double lng;
     private int packageCount;
+    private Notes notes;
     private boolean business;
-    private int openingTime;
-    private int closingTime;
-    private boolean valid;
+    private List<String> businessName;
+    private HashMap<String, String[]> weekdayText;
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    public List<String> getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(List<String> placeId) {
+        this.placeId = placeId;
+    }
 
     public String getAddress() {
         return address;
@@ -79,6 +100,14 @@ public class Address {
         this.packageCount = packageCount;
     }
 
+    public Notes getNotes() {
+        return notes;
+    }
+
+    public void setNotes(Notes notes) {
+        this.notes = notes;
+    }
+
     public boolean isBusiness() {
         return business;
     }
@@ -87,27 +116,19 @@ public class Address {
         this.business = business;
     }
 
-    public int getOpeningTime() {
-        return openingTime;
+    public List<String> getBusinessName() {
+        return businessName;
     }
 
-    public void setOpeningTime(int openingTime) {
-        this.openingTime = openingTime;
+    public void setBusinessName(List<String> businessName) {
+        this.businessName = businessName;
     }
 
-    public int getClosingTime() {
-        return closingTime;
+    public HashMap<String, String[]> getWeekdayText() {
+        return weekdayText;
     }
 
-    public void setClosingTime(int closingTime) {
-        this.closingTime = closingTime;
-    }
-
-    public boolean isValid() {
-        return valid;
-    }
-
-    public void setValid(boolean valid) {
-        this.valid = valid;
+    public void setWeekdayText(HashMap<String, String[]> weekdayText) {
+        this.weekdayText = weekdayText;
     }
 }

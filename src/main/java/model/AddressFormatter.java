@@ -47,7 +47,7 @@ public class AddressFormatter {
             if (Character.isUpperCase(postCodeLettersHolder.charAt(0))) {
 
                 if (Character.isUpperCase(postCodeLettersHolder.charAt(1))) {
-                    currentAddress.setPostCode(currentAddress.getPostCode() + "" + postCodeLettersHolder);
+                    currentAddress.setPostCode(currentAddress.getPostCode() + " " + postCodeLettersHolder);
 
                     if (address.split(",")[1].substring(1, 7).contains(currentAddress.getPostCode().replaceAll(" ", ""))) {
                         currentAddress.setCity(address.split(",")[1].substring(8));
@@ -71,6 +71,6 @@ public class AddressFormatter {
             currentAddress.setCity(address.split(",")[1].substring(1));
         }
 
-        //displayAddress(currentAddress);
+//        displayAddress(currentAddress);
     }
 }

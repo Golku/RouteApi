@@ -26,6 +26,15 @@ public class AddressController extends BaseController{
         }
 
         if(address.isValid()){
+            googleMapsApi.searchForBusinessNearAddress(address);
+            googleMapsApi.searchForBusinessNearLocation(address);
+        }
+
+        if(address.getPlaceId() != null){
+            googleMapsApi.getAddressDetails(address);
+        }
+
+        if(address.isValid()){
             dbManager.getAddressInfo(address);
         }
     }

@@ -10,7 +10,7 @@ import retrofit2.http.POST;
 public interface DatabaseService {
 
     @FormUrlEncoded
-    @POST("getAddressBusinessInfo.php")
+    @POST("getAddressInfo.php")
     Call<DbAddressInfo> getAddressInfo(
             @Field("street_name") String street,
             @Field("post_code") String postCode,

@@ -1,13 +1,11 @@
 package model;
 
 import com.google.gson.JsonSyntaxException;
-import model.pojos.Address;
-import model.pojos.DbAddressInfo;
-import model.pojos.DbDriveInfo;
-import model.pojos.Drive;
+import model.pojos.*;
 import retrofit2.Call;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class DbManager {
 
@@ -31,22 +29,18 @@ public class DbManager {
                 city
         );
 
-        DbAddressInfo dbAddressInfo = null;
+        DbAddressInfo dbAddressInfo;
 
         try {
             dbAddressInfo = call.execute().body();
+
+            if (dbAddressInfo != null) {
+                if(dbAddressInfo.getNotes() != null){
+                    address.setNotes(dbAddressInfo.getNotes());
+                }
+            }
         } catch (IOException | JsonSyntaxException e) {
             System.out.println("Database request failed for: " + street + ", " + postCode + " " + city);
-        }
-
-        if (dbAddressInfo != null) {
-            if (dbAddressInfo.getBusiness() == 1) {
-                address.setBusiness(true);
-                address.setOpeningTime(dbAddressInfo.getOpeningTime());
-                address.setClosingTime(dbAddressInfo.getClosingTime());
-            }else{
-                address.setBusiness(false);
-            }
         }
     }
 

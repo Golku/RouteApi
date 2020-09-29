@@ -27,7 +27,7 @@ public class ContainerController extends BaseController{
 
             for (Address address : container.getAddressList()) {
                 if (address.isValid()) {
-                    dbManager.getAddressInfo(address);
+//                    dbManager.getAddressInfo(address);
                 }
             }
 
