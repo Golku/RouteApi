@@ -100,27 +100,29 @@ public class RouteController extends BaseController{
 
     private Drive getDriveInfo(Address origin, Address destination) {
 
-        Drive drive = new Drive();
+//        Drive drive = new Drive();
+//
+//        drive.setOriginAddress(origin);
+//        drive.setDestinationAddress(destination);
+//
+//        dbManager.getDriveInfo(drive);
+//
+//        if (!drive.isValid()) {
+//            googleMapsApi.getDriveInfo(drive);
+//            if (drive.isValid()) {
+//                dbManager.addDriveInfo(drive);
+//            }
+//        }
+//
+//        if (drive.isValid()) {
+//            if (drive.getDestinationAddress().isBusiness()) {
+//                drive.setDestinationIsABusiness(true);
+//            }
+//        }
+//
+//        return drive;
 
-        drive.setOriginAddress(origin);
-        drive.setDestinationAddress(destination);
-
-        dbManager.getDriveInfo(drive);
-
-        if (!drive.isValid()) {
-            googleMapsApi.getDriveInfo(drive);
-            if (drive.isValid()) {
-                dbManager.addDriveInfo(drive);
-            }
-        }
-
-        if (drive.isValid()) {
-            if (drive.getDestinationAddress().isBusiness()) {
-                drive.setDestinationIsABusiness(true);
-            }
-        }
-
-        return drive;
+        return null;
     }
 
     private Address buildAddress(String addressString) {

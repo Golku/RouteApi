@@ -19,6 +19,7 @@ public class AddressController extends BaseController{
     }
 
     private void validateAddress(Address address){
+
         googleMapsApi.verifyAddress(address);
 
         if(address.isValid()){
@@ -29,10 +30,10 @@ public class AddressController extends BaseController{
             googleMapsApi.searchForBusinessNearAddress(address);
             googleMapsApi.searchForBusinessNearLocation(address);
         }
-
-        if(address.getPlaceId() != null){
-            googleMapsApi.getAddressDetails(address);
-        }
+//
+//        if(address.getPlaceId() != null){
+//            googleMapsApi.getAddressDetails(address);
+//        }
 
         if(address.isValid()){
             dbManager.getAddressInfo(address);

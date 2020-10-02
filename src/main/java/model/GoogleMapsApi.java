@@ -2,6 +2,7 @@ package model;
 
 import com.google.maps.*;
 import com.google.maps.errors.ApiException;
+import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.*;
 import model.pojos.Address;
 import model.pojos.Drive;
@@ -16,6 +17,10 @@ public class GoogleMapsApi {
     private final GeoApiContext context;
     private final AddressFormatter formatter;
 
+    static int geoRequest = 0;
+    static int textSearchQueryRequest = 0;
+    static int nearbySearchQueryRequest = 0;
+
     public GoogleMapsApi() {
         //If there are many threads making api request with this key, you might hit the query per second limit! FIX THIS!
         context = new GeoApiContext.Builder()
@@ -29,6 +34,8 @@ public class GoogleMapsApi {
         GeocodingResult[] resultsGeo;
 
         try {
+            geoRequest++;
+//            System.out.println("geoRequest: " + geoRequest);
             resultsGeo =  GeocodingApi.geocode(context, address.getAddress()).await();
 
             if(resultsGeo.length > 0){
@@ -44,29 +51,43 @@ public class GoogleMapsApi {
 
     public void searchForBusinessNearAddress(Address address){
 
+        int count = 0;
         PlacesSearchResponse searchResult;
 
         try {
+            textSearchQueryRequest++;
+//            System.out.println("textSearchQueryRequest: " + textSearchQueryRequest);
             searchResult = PlacesApi.textSearchQuery(context, "businesses near " + address.getAddress()).radius(20).await();
             if(searchResult.results.length >= 1){
 
                 for(PlacesSearchResult result : searchResult.results){
+
                     Address resultAddress = new Address();
                     resultAddress.setAddress(result.formattedAddress);
                     formatter.format(resultAddress);
-//                    System.out.println("Name: "+result.name);
-//                    System.out.println("");
-                    if(resultAddress.getStreet().equals(address.getStreet()) && resultAddress.getCity().equals(address.getCity())){
-                        if(address.getPlaceId() == null){
-                            address.setPlaceId(new ArrayList<String>());
-                        }
-                        address.getPlaceId().add(result.placeId);
+//
+                    System.out.println("Street: "+resultAddress.getStreet());
+                    System.out.println("Address: "+result.formattedAddress);
+                    System.out.println("Name: "+result.name);
+                    System.out.println("");
+
+                    if(resultAddress.getStreet().contains(address.getStreet()) && resultAddress.getCity().equals(address.getCity())){
+//                        if(address.getPlaceId() == null){
+//                            address.setPlaceId(new ArrayList<String>());
+//                        }
+//                        address.getPlaceId().add(result.placeId);
+
+                        addCompanyName(address,result.name);
+                        count++;
+
 //                        System.out.println("Name: "+result.name);
 //                        System.out.println("Formatted Address: "+result.formattedAddress);
 //                        System.out.println("Address: "+address.getAddress());
 //                        System.out.println("");
                     }
                 }
+                System.out.println("searchForBusinessNearAddress results: " + count);
+                System.out.println("");
             }
         } catch (ApiException | IOException | InterruptedException e) {
             System.out.println("searchForBusinessNearAddress in GoogleMapsApi.java: " + address.getAddress());
@@ -76,9 +97,12 @@ public class GoogleMapsApi {
     public void searchForBusinessNearLocation(Address address){
 
         PlacesSearchResponse searchResult;
+        int count = 0;
         LatLng latLng = new LatLng(address.getLat(), address.getLng());
 
         try {
+            nearbySearchQueryRequest++;
+//            System.out.println("nearbySearchQueryRequest: " + nearbySearchQueryRequest);
             searchResult = PlacesApi.nearbySearchQuery(context, latLng).radius(20).await();
             if(searchResult.results.length>= 1){
 
@@ -93,17 +117,21 @@ public class GoogleMapsApi {
                             street = vicinityBreakdown[0];
                             city = vicinityBreakdown[1];
                             city = city.replaceAll(" ", "");
-//                            System.out.println("Street: "+ street);
-//                            System.out.println("city: "+ city);
-//                            System.out.println("name: "+ result.name);
-//                            System.out.println("");
+                            System.out.println("Street: "+ street);
+                            System.out.println("city: "+ city);
+                            System.out.println("name: "+ result.name);
+                            System.out.println("");
                         }
 
-                        if(street.equals(address.getStreet()) && city.equals(address.getCity())){
-                            if(address.getPlaceId() == null){
-                                address.setPlaceId(new ArrayList<String>());
-                            }
-                            address.getPlaceId().add(result.placeId);
+                        if(street.contains(address.getStreet()) && city.equals(address.getCity())){
+//                            if(address.getPlaceId() == null){
+//                                address.setPlaceId(new ArrayList<String>());
+//                            }
+//                            address.getPlaceId().add(result.placeId);
+
+                            addCompanyName(address,result.name);
+                            count++;
+
 //                            System.out.println("Name: "+result.name);
 //                            System.out.println("Vicinity: "+result.vicinity);
 //                            System.out.println("Address: "+address.getStreet() + ", " + address.getCity());
@@ -111,11 +139,22 @@ public class GoogleMapsApi {
                         }
                     }
                 }
+                System.out.println("searchForBusinessNearLocation results: " + count);
             }
         } catch (ApiException | IOException | InterruptedException e) {
             System.out.println("searchForBusinessNearLocation in GoogleMapsApi.java: " + address.getAddress());
         }
 
+    }
+
+    public void addCompanyName(Address address, String name){
+        if(address.getBusinessName() == null){
+            address.setBusinessName(new ArrayList<String>());
+        }
+        if(!address.getBusinessName().contains(name) && !name.equals(address.getStreet())){
+            address.setBusiness(true);
+            address.getBusinessName().add(name);
+        }
     }
 
     public void getAddressDetails(Address address){
@@ -153,6 +192,9 @@ public class GoogleMapsApi {
                 System.out.println("getAddressDetails in GoogleMapsApi.java: " + address.getAddress());
             }
         }
+        if(address.getBusinessName() != null && !address.getBusinessName().get(0).isEmpty()){
+            address.setChosenBusinessName(address.getBusinessName().get(0));
+        }
     }
 
     public void formatWeekdayText(String key, Address address) {
@@ -167,34 +209,66 @@ public class GoogleMapsApi {
         }
     }
 
-    public void getDriveInfo(Drive drive) {
+    public void getDirections(Drive drive){
 
-        String[] originArray = {drive.getOriginAddress().getAddress()};
-        String[] destinationArray = {drive.getDestinationAddress().getAddress()};
-
-        DistanceMatrix resultsDistanceMatrix = null;
+        DirectionsResult directionsResult;
 
         try {
-            resultsDistanceMatrix = DistanceMatrixApi.getDistanceMatrix(context, originArray, destinationArray).await();
-        } catch (ApiException | IOException | InterruptedException e) {
-            System.out.println("Distance matrix api request failed for: " + originArray[0] + " - " + destinationArray[0]);
-        }
+            directionsResult = DirectionsApi.getDirections(context, drive.getOriginAddress(), drive.getDestinationAddress()).alternatives(false).await();
 
-        if(resultsDistanceMatrix != null){
-            try {
+            if(directionsResult.routes.length >= 1){
 
-                drive.getOriginAddress().setAddress(resultsDistanceMatrix.originAddresses[0]);
-                drive.getDestinationAddress().setAddress(resultsDistanceMatrix.destinationAddresses[0]);
-                drive.setDriveDistanceInMeters(resultsDistanceMatrix.rows[0].elements[0].distance.inMeters);
-                drive.setDriveDistanceHumanReadable(resultsDistanceMatrix.rows[0].elements[0].distance.humanReadable);
-                drive.setDriveDurationInSeconds(resultsDistanceMatrix.rows[0].elements[0].duration.inSeconds);
-                drive.setDriveDurationHumanReadable(resultsDistanceMatrix.rows[0].elements[0].duration.humanReadable);
+//                System.out.println("Origin: " + directionsResult.routes[0].legs[0].arrivalTime);
+//                System.out.println("Destination: " + directionsResult.routes[0].legs[0].endAddress);
+//                System.out.println("Distance: " + directionsResult.routes[0].legs[0].duration);
+//                System.out.println("Duration: " + directionsResult.routes[0].legs[0].distance);
+
+                drive.setOriginAddress(directionsResult.routes[0].legs[0].startAddress);
+                drive.setDestinationAddress(directionsResult.routes[0].legs[0].endAddress);
+                drive.setDriveDistanceHumanReadable(directionsResult.routes[0].legs[0].distance.humanReadable);
+                drive.setDriveDistanceInMeters(directionsResult.routes[0].legs[0].distance.inMeters);
+                drive.setDriveDurationHumanReadable(directionsResult.routes[0].legs[0].duration.humanReadable);
+                drive.setDriveDurationInSeconds(directionsResult.routes[0].legs[0].duration.inSeconds);
+                drive.setPolyline(PolylineEncoding.decode(directionsResult.routes[0].overviewPolyline.getEncodedPath()));
+
 
                 drive.setValid(true);
-                //System.out.println("From API");
-            }catch (NullPointerException e){
-                System.out.println("Failed to parse distance matrix api response for: " + originArray[0] + " - " + destinationArray[0]);
             }
+
+        } catch (ApiException | IOException | InterruptedException e) {
+            drive.setValid(false);
+            System.out.println("getDriveInfo in GoogleMapsApi.java");
         }
+    }
+
+    public void getDriveInfo(Drive drive) {
+
+//        String[] originArray = {drive.getOriginAddress().getAddress()};
+//        String[] destinationArray = {drive.getDestinationAddress().getAddress()};
+//
+//        DistanceMatrix resultsDistanceMatrix = null;
+//
+//        try {
+//            resultsDistanceMatrix = DistanceMatrixApi.getDistanceMatrix(context, originArray, destinationArray).await();
+//        } catch (ApiException | IOException | InterruptedException e) {
+//            System.out.println("getDriveInfo in GoogleMapsApi.java: " + originArray[0] + " - " + destinationArray[0]);
+//        }
+//
+//        if(resultsDistanceMatrix != null){
+//            try {
+//
+//                drive.getOriginAddress().setAddress(resultsDistanceMatrix.originAddresses[0]);
+//                drive.getDestinationAddress().setAddress(resultsDistanceMatrix.destinationAddresses[0]);
+//                drive.setDriveDistanceInMeters(resultsDistanceMatrix.rows[0].elements[0].distance.inMeters);
+//                drive.setDriveDistanceHumanReadable(resultsDistanceMatrix.rows[0].elements[0].distance.humanReadable);
+//                drive.setDriveDurationInSeconds(resultsDistanceMatrix.rows[0].elements[0].duration.inSeconds);
+//                drive.setDriveDurationHumanReadable(resultsDistanceMatrix.rows[0].elements[0].duration.humanReadable);
+//
+//                drive.setValid(true);
+//                //System.out.println("From API");
+//            }catch (NullPointerException e){
+//                System.out.println("Failed to parse distance matrix api response for: " + originArray[0] + " - " + destinationArray[0]);
+//            }
+//        }
     }
 }

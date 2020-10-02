@@ -1,22 +1,21 @@
 package model.pojos;
 
+import com.google.maps.model.LatLng;
+
+import java.util.List;
+
 public class Drive {
 
     private boolean valid;
-
-    private Address originAddress;
-    private Address destinationAddress;
-
-    private boolean destinationIsABusiness;
-
-    private long driveDurationInSeconds;
+    private String originAddress;
+    private String destinationAddress;
     private String driveDurationHumanReadable;
-
-    private long driveDistanceInMeters;
+    private long driveDurationInSeconds;
     private String driveDistanceHumanReadable;
-
-    private long deliveryTimeInMillis;
+    private long driveDistanceInMeters;
     private String deliveryTimeHumanReadable;
+    private long deliveryTimeInMillis;
+    private List<LatLng> polyline;
 
     public boolean isValid() {
         return valid;
@@ -26,36 +25,20 @@ public class Drive {
         this.valid = valid;
     }
 
-    public Address getOriginAddress() {
+    public String getOriginAddress() {
         return originAddress;
     }
 
-    public void setOriginAddress(Address originAddress) {
+    public void setOriginAddress(String originAddress) {
         this.originAddress = originAddress;
     }
 
-    public Address getDestinationAddress() {
+    public String getDestinationAddress() {
         return destinationAddress;
     }
 
-    public void setDestinationAddress(Address destinationAddress) {
+    public void setDestinationAddress(String destinationAddress) {
         this.destinationAddress = destinationAddress;
-    }
-
-    public boolean getDestinationIsABusiness() {
-        return destinationIsABusiness;
-    }
-
-    public void setDestinationIsABusiness(boolean destinationIsABusiness) {
-        this.destinationIsABusiness = destinationIsABusiness;
-    }
-
-    public long getDriveDurationInSeconds() {
-        return driveDurationInSeconds;
-    }
-
-    public void setDriveDurationInSeconds(long driveDurationInSeconds) {
-        this.driveDurationInSeconds = driveDurationInSeconds;
     }
 
     public String getDriveDurationHumanReadable() {
@@ -66,12 +49,12 @@ public class Drive {
         this.driveDurationHumanReadable = driveDurationHumanReadable;
     }
 
-    public long getDriveDistanceInMeters() {
-        return driveDistanceInMeters;
+    public long getDriveDurationInSeconds() {
+        return driveDurationInSeconds;
     }
 
-    public void setDriveDistanceInMeters(long driveDistanceInMeters) {
-        this.driveDistanceInMeters = driveDistanceInMeters;
+    public void setDriveDurationInSeconds(long driveDurationInSeconds) {
+        this.driveDurationInSeconds = driveDurationInSeconds;
     }
 
     public String getDriveDistanceHumanReadable() {
@@ -82,12 +65,12 @@ public class Drive {
         this.driveDistanceHumanReadable = driveDistanceHumanReadable;
     }
 
-    public long getDeliveryTimeInMillis() {
-        return deliveryTimeInMillis;
+    public long getDriveDistanceInMeters() {
+        return driveDistanceInMeters;
     }
 
-    public void setDeliveryTimeInMillis(long deliveryTimeInMillis) {
-        this.deliveryTimeInMillis = deliveryTimeInMillis;
+    public void setDriveDistanceInMeters(long driveDistanceInMeters) {
+        this.driveDistanceInMeters = driveDistanceInMeters;
     }
 
     public String getDeliveryTimeHumanReadable() {
@@ -96,5 +79,21 @@ public class Drive {
 
     public void setDeliveryTimeHumanReadable(String deliveryTimeHumanReadable) {
         this.deliveryTimeHumanReadable = deliveryTimeHumanReadable;
+    }
+
+    public long getDeliveryTimeInMillis() {
+        return deliveryTimeInMillis;
+    }
+
+    public void setDeliveryTimeInMillis(long deliveryTimeInMillis) {
+        this.deliveryTimeInMillis = deliveryTimeInMillis;
+    }
+
+    public List<LatLng> getPolyline() {
+        return polyline;
+    }
+
+    public void setPolyline(List<LatLng> polyline) {
+        this.polyline = polyline;
     }
 }

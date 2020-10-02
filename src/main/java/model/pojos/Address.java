@@ -17,6 +17,7 @@ public class Address {
     private int packageCount;
     private Notes notes;
     private boolean business;
+    private String chosenBusinessName;
     private List<String> businessName;
     private HashMap<String, String[]> weekdayText;
 
@@ -114,6 +115,14 @@ public class Address {
 
     public void setBusiness(boolean business) {
         this.business = business;
+    }
+
+    public String getChosenBusinessName() {
+        return chosenBusinessName;
+    }
+
+    public void setChosenBusinessName(String chosenBusinessName) {
+        this.chosenBusinessName = chosenBusinessName;
     }
 
     public List<String> getBusinessName() {

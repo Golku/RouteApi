@@ -19,56 +19,23 @@ public class DriveInfoController extends BaseController {
         addressFormatter = getAddressFormatter();
     }
 
-    public void updateDriveList(UpdateDriveListRequest request){
-        Container container = getContainerManager().getContainer(request.getUsername());
-        container.setDriveList(request.getDriveList());
-
-//        for(Drive drive : container.getDriveList()){
-//            System.out.println("Drive from: " + drive.getOriginAddress().getAddress()+ " to " + drive.getDestinationAddress().getAddress());
-//        }
-
-    }
-
     public Drive getDriveInfo(DriveRequest request) {
 
         Drive drive = new Drive();
+        drive.setOriginAddress(request.getOrigin());
+        drive.setDestinationAddress(request.getDestination());
 
-        drive.setOriginAddress(buildAddress(request.getOrigin()));
-        drive.setDestinationAddress(buildAddress(request.getDestination()));
+//        dbManager.getDriveInfo(drive);
 
-        dbManager.getDriveInfo(drive);
+//        if (!drive.isValid()) {
+//            googleMapsApi.getDriveInfo(drive);
+//            if (drive.isValid()) {
+//                dbManager.addDriveInfo(drive);
+//            }
+//        }
 
-        if (!drive.isValid()) {
-            googleMapsApi.getDriveInfo(drive);
-            if (drive.isValid()) {
-                dbManager.addDriveInfo(drive);
-            }
-        }
-
-        if (drive.isValid()) {
-            if (drive.getDestinationAddress().isBusiness()) {
-                drive.setDestinationIsABusiness(true);
-            }
-        }
+        googleMapsApi.getDirections(drive);
 
         return drive;
-    }
-
-    private Address buildAddress(String addressString) {
-
-        Address address = new Address();
-        address.setAddress(addressString);
-
-        googleMapsApi.verifyAddress(address);
-
-        if (address.isValid()) {
-            addressFormatter.format(address);
-        }
-
-        if (address.isValid()) {
-            dbManager.getAddressInfo(address);
-        }
-
-        return address;
     }
 }
