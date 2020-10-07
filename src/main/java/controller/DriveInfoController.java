@@ -9,9 +9,9 @@ import java.util.List;
 
 public class DriveInfoController extends BaseController {
 
-    private GoogleMapsApi googleMapsApi;
-    private DbManager dbManager;
-    private AddressFormatter addressFormatter;
+    private final GoogleMapsApi googleMapsApi;
+    private final DbManager dbManager;
+    private final AddressFormatter addressFormatter;
 
     public DriveInfoController() {
         googleMapsApi = getGoogleMapsApi();
@@ -27,14 +27,12 @@ public class DriveInfoController extends BaseController {
 
 //        dbManager.getDriveInfo(drive);
 
-//        if (!drive.isValid()) {
-//            googleMapsApi.getDriveInfo(drive);
-//            if (drive.isValid()) {
+        if (!drive.isValid()) {
+            googleMapsApi.getDirections(drive);
+            if (drive.isValid()) {
 //                dbManager.addDriveInfo(drive);
-//            }
-//        }
-
-        googleMapsApi.getDirections(drive);
+            }
+        }
 
         return drive;
     }

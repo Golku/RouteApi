@@ -1,7 +1,5 @@
 package model.pojos;
 
-import com.google.maps.model.LatLng;
-
 import java.util.List;
 
 public class Drive {
@@ -13,9 +11,7 @@ public class Drive {
     private long driveDurationInSeconds;
     private String driveDistanceHumanReadable;
     private long driveDistanceInMeters;
-    private String deliveryTimeHumanReadable;
-    private long deliveryTimeInMillis;
-    private List<LatLng> polyline;
+    private List<Polyline> polyline;
 
     public boolean isValid() {
         return valid;
@@ -73,27 +69,11 @@ public class Drive {
         this.driveDistanceInMeters = driveDistanceInMeters;
     }
 
-    public String getDeliveryTimeHumanReadable() {
-        return deliveryTimeHumanReadable;
-    }
-
-    public void setDeliveryTimeHumanReadable(String deliveryTimeHumanReadable) {
-        this.deliveryTimeHumanReadable = deliveryTimeHumanReadable;
-    }
-
-    public long getDeliveryTimeInMillis() {
-        return deliveryTimeInMillis;
-    }
-
-    public void setDeliveryTimeInMillis(long deliveryTimeInMillis) {
-        this.deliveryTimeInMillis = deliveryTimeInMillis;
-    }
-
-    public List<LatLng> getPolyline() {
+    public List<Polyline> getPolyline() {
         return polyline;
     }
 
-    public void setPolyline(List<LatLng> polyline) {
+    public void setPolyline(List<Polyline> polyline) {
         this.polyline = polyline;
     }
 }

@@ -6,10 +6,10 @@ import java.util.List;
 
 public class AddressController extends BaseController{
 
-    private ContainerManager containerManager;
-    private DbManager dbManager;
-    private GoogleMapsApi googleMapsApi;
-    private AddressFormatter addressFormatter;
+    private final ContainerManager containerManager;
+    private final DbManager dbManager;
+    private final GoogleMapsApi googleMapsApi;
+    private final AddressFormatter addressFormatter;
 
     public AddressController() {
         containerManager = getContainerManager();
@@ -26,12 +26,15 @@ public class AddressController extends BaseController{
             addressFormatter.format(address);
         }
 
-        if(address.isValid()){
-            googleMapsApi.searchForBusinessNearAddress(address);
-            googleMapsApi.searchForBusinessNearLocation(address);
-        }
-//
-//        if(address.getPlaceId() != null){
+//        if(address.isValid()){
+//            googleMapsApi.searchForBusinessNearAddress(address);
+//            googleMapsApi.searchForBusinessNearLocation(address);
+//            if(address.getBusinessName() != null && !address.getBusinessName().get(0).isEmpty()){
+//                address.setChosenBusinessName(address.getBusinessName().get(0));
+//            }
+//        }
+
+//        if(address.getBusinessName() != null){
 //            googleMapsApi.getAddressDetails(address);
 //        }
 
