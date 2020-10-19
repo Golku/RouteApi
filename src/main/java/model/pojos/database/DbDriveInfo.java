@@ -1,4 +1,4 @@
-package model.pojos;
+package model.pojos.database;
 
 public class DbDriveInfo {
 

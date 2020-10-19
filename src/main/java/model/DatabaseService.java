@@ -1,7 +1,7 @@
 package model;
 
-import model.pojos.DbAddressInfo;
-import model.pojos.DbDriveInfo;
+import model.pojos.database.DbAddressInfo;
+import model.pojos.database.DbDriveInfo;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;

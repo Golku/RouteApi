@@ -1,5 +1,7 @@
 package model.pojos;
 
+import model.pojos.database.Notes;
+
 import java.util.HashMap;
 import java.util.List;
 

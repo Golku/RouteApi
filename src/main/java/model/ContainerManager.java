@@ -12,7 +12,7 @@ import java.util.Map;
 public class ContainerManager {
 
     //Change this to a vectors to make it usable with more threads
-    private static Map<String, Container> containers = new HashMap<>();
+    private static final Map<String, Container> containers = new HashMap<>();
 
     private Container createContainer(String username){
         Container container = new Container();

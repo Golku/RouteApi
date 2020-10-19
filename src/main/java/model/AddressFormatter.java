@@ -21,11 +21,13 @@ public class AddressFormatter {
     }
 
     private void displayAddress(Address address){
+        System.out.println("");
         System.out.println("Address: " + address.getAddress());
         System.out.println("Street: " + address.getStreet());
         System.out.println("postcode: " + address.getPostCode());
         System.out.println("City: "+ address.getCity());
         System.out.println("country: "+ address.getCountry());
+        System.out.println("");
     }
 
     private void formatAddress(Address currentAddress) {
@@ -70,7 +72,6 @@ public class AddressFormatter {
             currentAddress.setPostCode("");
             currentAddress.setCity(address.split(",")[1].substring(1));
         }
-
 //        displayAddress(currentAddress);
     }
 }

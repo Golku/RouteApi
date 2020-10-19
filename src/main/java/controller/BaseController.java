@@ -12,6 +12,10 @@ class BaseController {
         return new GoogleMapsApi();
     }
 
+    GraphhopperApi getGraphhopperApi(){
+        return new GraphhopperApi(getGraphhopperApiService());
+    }
+
     ContainerManager getContainerManager(){
         return new ContainerManager();
     }
@@ -39,4 +43,21 @@ class BaseController {
 
         return retrofit.create(DatabaseService.class);
     }
+
+    private GraphhopperApiService getGraphhopperApiService(){
+
+        Gson gson = new Gson();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+
+        Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
+                .client(okHttpClient)//192.168.0.16
+                .baseUrl("https://graphhopper.com/api/1/")
+                .addConverterFactory(GsonConverterFactory.create(gson));
+
+        Retrofit retrofit = retrofitBuilder.build();
+
+        return retrofit.create(GraphhopperApiService.class);
+    }
+
 }

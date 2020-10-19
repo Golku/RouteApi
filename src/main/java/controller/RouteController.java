@@ -130,7 +130,7 @@ public class RouteController extends BaseController{
 
         System.out.println("buildAddress from RouteController");
 
-        googleMapsApi.verifyAddress(address);
+        googleMapsApi.geocodeAddress(address);
 
         if (address.isValid()) {
             addressFormatter.format(address);

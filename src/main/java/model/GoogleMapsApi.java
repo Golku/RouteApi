@@ -26,13 +26,12 @@ public class GoogleMapsApi {
     public GoogleMapsApi() {
         //If there are many threads making api request with this key, you might hit the query per second limit! FIX THIS!
         context = new GeoApiContext.Builder()
-                .apiKey("")//(test)
-//                .apiKey("")//(work)
+
                 .build();
         formatter = new AddressFormatter();
     }
 
-    public void verifyAddress(Address address){
+    public void geocodeAddress(Address address){
         GeocodingResult[] resultsGeo;
 
         try {
@@ -43,9 +42,10 @@ public class GoogleMapsApi {
                 address.setAddress(resultsGeo[0].formattedAddress);
                 address.setLat(resultsGeo[0].geometry.location.lat);
                 address.setLng(resultsGeo[0].geometry.location.lng);
+                System.out.println("From googlemaps");
             }
 
-        } catch (ApiException | IOException | InterruptedException e) {
+        } catch (ApiException | IOException | InterruptedException | IndexOutOfBoundsException e) {
             System.out.println("verifyAddress in GoogleMapsApi.java: " + address.getAddress());
         }
     }
@@ -56,17 +56,16 @@ public class GoogleMapsApi {
 
         try {
             searchResult = PlacesApi.textSearchQuery(context, "businesses near " + address.getAddress()).radius(20).await();
+
             if(searchResult.results.length >= 1){
-
                 for(PlacesSearchResult result : searchResult.results){
-
                     Address resultAddress = new Address();
                     resultAddress.setAddress(result.formattedAddress);
                     formatter.format(resultAddress);
                     matchAddressWithCompany(address, resultAddress, result.name);
                 }
             }
-        } catch (ApiException | IOException | InterruptedException e) {
+        } catch (ApiException | IOException | InterruptedException | IndexOutOfBoundsException e) {
             System.out.println("searchForBusinessNearAddress in GoogleMapsApi.java: " + address.getAddress());
         }
     }
@@ -110,12 +109,14 @@ public class GoogleMapsApi {
 
     public void matchAddressWithCompany(Address address, Address resultAddress, String companyName){
 
+//        System.out.println("Formatted address: " + resultAddress.getAddress());
+//        System.out.println("");
+
         String addressStreet = address.getStreet().replaceAll("[^A-Za-z]","").toLowerCase();
         String resultAddressStreet = resultAddress.getStreet().replaceAll("[^A-Za-z]","").toLowerCase();
 
-//        System.out.println("");
-//        System.out.println("address street found: " + addressStreetFound);
-//        System.out.println("address street given: " + addressStreetGiven);
+//        System.out.println("address street given: " + addressStreet);
+//        System.out.println("address street found: " + resultAddressStreet);
 //        System.out.println("");
 
         String addressNum = address.getStreet().replaceAll("[^\\d]", "");
@@ -124,13 +125,21 @@ public class GoogleMapsApi {
         ResultAddressNum = ResultAddressNum.trim();
         String[] numBreakdown = ResultAddressNum.split(" ");
 
+//        System.out.println("address num given: " + addressNum);
 //        System.out.println(Arrays.toString(numBreakdown));
-//        System.out.println("address num given: " + addressNumGiven);
+//        System.out.println("");
+//
+//        System.out.println("Address city: " + address.getCity());
+//        System.out.println("Result city: " + resultAddress.getCity());
 //        System.out.println("");
 
-        if(addressStreet.equals(resultAddressStreet) && resultAddress.getCity().contains(address.getCity())){
-            for(String num: numBreakdown){
-                if(num.equals(addressNum)){
+        if(resultAddress.getCity() == null){
+            resultAddress.setCity("");
+        }
+
+        if (addressStreet.equals(resultAddressStreet) && resultAddress.getCity().contains(address.getCity())) {
+            for (String num : numBreakdown) {
+                if (num.equals(addressNum)) {
                     addCompanyName(address, companyName);
                 }
             }
@@ -143,6 +152,8 @@ public class GoogleMapsApi {
         }
         if(!address.getBusinessName().contains(companyName) && !companyName.equals(address.getStreet())){
             address.setBusiness(true);
+//            System.out.println("Adding: " + companyName);
+//            System.out.println("");
             address.getBusinessName().add(companyName);
         }
     }
@@ -231,7 +242,7 @@ public class GoogleMapsApi {
 
                 drive.setPolyline(polyline);
 
-                System.out.println("From Api");
+                System.out.println("Directions from Api");
 
                 drive.setValid(true);
             }

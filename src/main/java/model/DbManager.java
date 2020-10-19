@@ -2,14 +2,15 @@ package model;
 
 import com.google.gson.JsonSyntaxException;
 import model.pojos.*;
+import model.pojos.database.DbAddressInfo;
+import model.pojos.database.DbDriveInfo;
 import retrofit2.Call;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class DbManager {
 
-    private DatabaseService databaseService;
+    private final DatabaseService databaseService;
     private long date;
 
     public DbManager(DatabaseService databaseService) {
