@@ -1,8 +1,8 @@
 package model;
 
 import model.pojos.graphhopper.GeocodingResults;
-import model.pojos.graphhopper.RoutingRequest;
-import model.pojos.graphhopper.RoutingResult;
+import model.pojos.graphhopper.RouteOptimizationRequest;
+import model.pojos.graphhopper.RouteOptimizationResponse;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -17,5 +17,5 @@ public interface GraphhopperApiService {
 
     @Headers("Content-Type: application/json")
     @POST("vrp")
-    Call<RoutingResult> routingRequest(@Body RoutingRequest request);
+    Call<RouteOptimizationResponse> routingRequest(@Body RouteOptimizationRequest request, @Query("key") String key);
 }

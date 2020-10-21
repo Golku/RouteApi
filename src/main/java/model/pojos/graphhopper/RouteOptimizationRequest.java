@@ -2,7 +2,7 @@ package model.pojos.graphhopper;
 
 import java.util.List;
 
-public class RoutingRequest {
+public class RouteOptimizationRequest {
 
     public List<Vehicle> vehicles;
     public List<Service> services;

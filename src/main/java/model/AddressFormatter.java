@@ -11,10 +11,6 @@ public class AddressFormatter {
     public void format(Address address){
         try {
             formatAddress(address);
-            if(!address.getCountry().contains("Netherlands")){
-                address.setValid(false);
-            }
-
         } catch (StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException | NullPointerException e) {
             address.setValid(false);
         }
@@ -35,7 +31,7 @@ public class AddressFormatter {
         String address = currentAddress.getAddress();
 
         currentAddress.setStreet(address.split(",")[0]);
-        currentAddress.setCountry(address.split(",")[2].substring(1));
+        currentAddress.setCountry("The Netherlands");
 
         if (address.split(",")[1].substring(1, 4).matches("[0-9]+")) {
 

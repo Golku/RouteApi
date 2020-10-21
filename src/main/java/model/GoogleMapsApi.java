@@ -26,7 +26,6 @@ public class GoogleMapsApi {
     public GoogleMapsApi() {
         //If there are many threads making api request with this key, you might hit the query per second limit! FIX THIS!
         context = new GeoApiContext.Builder()
-
                 .build();
         formatter = new AddressFormatter();
     }
@@ -42,7 +41,7 @@ public class GoogleMapsApi {
                 address.setAddress(resultsGeo[0].formattedAddress);
                 address.setLat(resultsGeo[0].geometry.location.lat);
                 address.setLng(resultsGeo[0].geometry.location.lng);
-                System.out.println("From googlemaps");
+                System.out.println("Geocoding from google maps");
             }
 
         } catch (ApiException | IOException | InterruptedException | IndexOutOfBoundsException e) {
@@ -92,7 +91,6 @@ public class GoogleMapsApi {
                             street = vicinityBreakdown[0];
                             city = vicinityBreakdown[1];
                             city = city.replaceAll(" ", "");
-
                             resultAddress.setAddress(street+", "+city+", Netherlands");
                             formatter.format(resultAddress);
                             matchAddressWithCompany(address, resultAddress, result.name);
