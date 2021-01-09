@@ -3,7 +3,6 @@ package com.RouteApi;
 import controller.RouteController;
 import model.pojos.OrganizeRouteRequest;
 import model.pojos.OptimizedRoute;
-import model.pojos.graphhopper.RouteOptimizationResponse;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -17,8 +16,8 @@ public class OrganizeRoute {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public OptimizedRoute submitRoute(OrganizeRouteRequest route) {
+    public OptimizedRoute submitRoute(OrganizeRouteRequest request) {
         RouteController controller = new RouteController();
-        return controller.organizedRoute(route);
+        return controller.optimizeRouteOpenRouteService(request);
     }
 }

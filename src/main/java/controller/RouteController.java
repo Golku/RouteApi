@@ -4,6 +4,7 @@ import model.*;
 import model.pojos.*;
 import model.pojos.Address;
 import model.pojos.graphhopper.*;
+import model.pojos.openrouteservice.Step;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 public class RouteController extends BaseController{
 
     private final GraphhopperApi graphhopperApi;
+    private final OpenRouteServiceApi openRouteServiceApi;
     private final ContainerManager containerManager;
     private final DbManager dbManager;
     private final GoogleMapsApi googleMapsApi;
@@ -24,57 +26,148 @@ public class RouteController extends BaseController{
     public RouteController() {
         containerManager = getContainerManager();
         googleMapsApi = getGoogleMapsApi();
+        openRouteServiceApi = getOpenRouteServiceApi();
         graphhopperApi = getGraphhopperApi();
         dbManager = getDbManager();
         addressFormatter = getAddressFormatter();
     }
 
-    public OptimizedRoute organizedRoute(OrganizeRouteRequest request) {
+    private Address findAddress(String addressString, List<Address> addresses){
+        Address address = null;
+        for(Address it : addresses){
+            if(it.getAddress().equals(addressString)){
+                address = it;
+                break;
+            }
+        }
+        return address;
+    }
+
+    public OptimizedRoute optimizeRouteOpenRouteService(OrganizeRouteRequest request){
 
         Container container = containerManager.getContainer(request.getUsername());
 
         OptimizedRoute optimizedRoute = new OptimizedRoute();
-        ArrayList<Drive> organizedRoute = new ArrayList<>();
-        optimizedRoute.setOrganizedRoute(organizedRoute);
-        RouteOptimizationRequest routeOptimizationRequest = new RouteOptimizationRequest();
-        RouteOptimizationResponse routeOptimizationResponse;
-        List<Vehicle> vehicles = new ArrayList<>();
-        List<Service> services = new ArrayList<>();
-        routeOptimizationRequest.setVehicles(vehicles);
-        routeOptimizationRequest.setServices(services);
+        ArrayList<Drive> optimizedStops = new ArrayList<>();
+        optimizedRoute.setOrganizedRoute(optimizedStops);
 
-        Address startLocation = buildAddress(request.getRouteList().get(0));
-        optimizedRoute.setOriginAddress(startLocation);
+        Address startLocation = null;
+        Address endLocation = null;
+        List<Address> stopList = new ArrayList<>();
 
-        Vehicle vehicle = new Vehicle();
-        vehicle.setVehicle_id("my_vehicle");
-        vehicle.setReturn_to_depot(false);
-        StartAddress startAddress = new StartAddress();
-        startAddress.setLocation_id(startLocation.getAddress());
-        startAddress.setLat(startLocation.getLat());
-        startAddress.setLon(startLocation.getLng());
-        vehicle.setStart_address(startAddress);
-        vehicles.add(vehicle);
-
-        for(Address address : container.getAddressList()){
-//            if(request.getRouteList().get(0).equals(address.getAddress())){
-//                    System.out.println("Start location: " + address.getAddress());
-//                    startLocation = address;
-//            }else{
-                Service service = new Service();
-                service.setId(address.getAddress());
-                service.setName("delivery for: "+address.getAddress());
-                model.pojos.graphhopper.Address serviceAddress = new model.pojos.graphhopper.Address();
-                serviceAddress.setLocation_id(address.getAddress());
-                serviceAddress.setLat(address.getLat());
-                serviceAddress.setLon(address.getLng());
-                service.setAddress(serviceAddress);
-                services.add(service);
-//                System.out.println("Service for: " + address.getAddress());
-//            }
+        for(Address address: container.getAddressList()){
+            if(request.getStartLocation().contains(address.getAddress())){
+                if(request.getStartLocation().contains(address.getCity())){
+                    startLocation = address;
+                    printLn("startLoc from list");
+                    break;
+                }
+            }
         }
 
-        routeOptimizationResponse = graphhopperApi.routeOptimization(routeOptimizationRequest);
+        if(startLocation == null){
+            startLocation = buildAddress(request.getStartLocation());
+        }
+
+        if(!request.getEndLocation().equals("best_time")){
+            endLocation = buildAddress(request.getEndLocation());
+            optimizedRoute.setEndLocation(endLocation);
+        }
+
+        for(String address: request.getRouteList()){
+            stopList.add(findAddress(address, container.getAddressList()));
+        }
+
+        model.pojos.openrouteservice.RouteOptimizationResponse routeOptimizationResponse;
+
+        routeOptimizationResponse = openRouteServiceApi.optimizedRoute(startLocation, endLocation, stopList);
+
+        List<Step> steps = routeOptimizationResponse.getRoutes().get(0).getSteps();
+
+        for(Step step : steps){
+
+            if(steps.indexOf(step) != steps.size()-1){
+
+                Drive drive = new Drive();
+
+                switch (step.getType()){
+                    case "start":
+                        drive.setOriginAddress(startLocation.getAddress());
+                        drive.setDestinationAddress(stopList.get(steps.get(1).getId()).getAddress());
+                        break;
+                    case "job":
+                        drive.setOriginAddress(stopList.get(step.getId()).getAddress());
+
+                        if(!steps.get(steps.indexOf(step)+1).getType().equals("end")){
+                            drive.setDestinationAddress(stopList.get(steps.get(steps.indexOf(step)+1).getId()).getAddress());
+                        }else{
+                            drive.setDestinationAddress(endLocation.getAddress());
+                        }
+                        break;
+                }
+
+                for(Drive driveFromList : drives){
+                        if(driveFromList.getOriginAddress().equals(drive.getOriginAddress())){
+                            if(driveFromList.getDestinationAddress().equals(drive.getDestinationAddress())){
+                                drive = driveFromList;
+                                break;
+                            }
+                        }
+                }
+
+                if (!drive.isValid()) {
+                    googleMapsApi.getDirections(drive);
+                    if (drive.isValid()) {
+                        drives.add(drive);
+                    }
+                }
+
+                optimizedStops.add(drive);
+            }
+
+        }
+
+        return optimizedRoute;
+    }
+
+    public OptimizedRoute optimizeRouteGraphhopper(OrganizeRouteRequest request) {
+
+        Container container = containerManager.getContainer(request.getUsername());
+
+        OptimizedRoute optimizedRoute = new OptimizedRoute();
+        ArrayList<Drive> optimizedStops = new ArrayList<>();
+        optimizedRoute.setOrganizedRoute(optimizedStops);
+
+        Address startLocation = null;
+        Address endLocation = null;
+        List<Address> stopList = new ArrayList<>();
+
+        for(Address address: container.getAddressList()){
+            if(request.getStartLocation().contains(address.getAddress())){
+                if(request.getStartLocation().contains(address.getCity())){
+                    startLocation = address;
+                    printLn("startLoc from list");
+                    break;
+                }
+            }
+        }
+
+        if(startLocation == null){
+            startLocation = buildAddress(request.getStartLocation());
+        }
+
+        if(!request.getEndLocation().equals("best_time")){
+            endLocation = buildAddress(request.getEndLocation());
+            optimizedRoute.setEndLocation(endLocation);
+        }
+
+        for(String address: request.getRouteList()){
+            stopList.add(findAddress(address, container.getAddressList()));
+        }
+
+        RouteOptimizationResponse routeOptimizationResponse;
+
+        routeOptimizationResponse = graphhopperApi.optimizedRoute(startLocation, endLocation, stopList);
 
         List<Activity> activityList = routeOptimizationResponse.getSolution().getRoutes().get(0).getActivities();
 
@@ -87,7 +180,7 @@ public class RouteController extends BaseController{
                 for(Drive driveFromList : drives){
                     if(driveFromList.getOriginAddress().equals(drive.getOriginAddress())){
                         if(driveFromList.getDestinationAddress().equals(drive.getDestinationAddress())){
-                            System.out.println("Directions from list");
+//                            System.out.println("Directions from list");
                             drive = driveFromList;
                             break;
                         }
@@ -101,16 +194,14 @@ public class RouteController extends BaseController{
                     }
                 }
 
-                organizedRoute.add(drive);
+                optimizedStops.add(drive);
             }
-//            System.out.println("Address: " + activity.getAddress().getLocation_id());
-//            System.out.println("Type: " + activity.getType());
         }
 
         return optimizedRoute;
     }
 
-    public OptimizedRoute organizedRouteShortestDistance(OrganizeRouteRequest request) {
+    public OptimizedRoute optimizedRouteClosestAddress(OrganizeRouteRequest request) {
 
         OptimizedRoute response = new OptimizedRoute();
 //        organizedRoute = new ArrayList<>();
@@ -216,7 +307,7 @@ public class RouteController extends BaseController{
 
         address.setBusiness(false);
 
-        System.out.println("buildAddress from RouteController");
+//        System.out.println("buildAddress from RouteController");
 
         graphhopperApi.geocodeAddress(address);
 

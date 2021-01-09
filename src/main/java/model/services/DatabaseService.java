@@ -1,4 +1,4 @@
-package model;
+package model.services;
 
 import model.pojos.database.DbAddressInfo;
 import model.pojos.database.DbDriveInfo;

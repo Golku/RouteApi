@@ -2,22 +2,66 @@ package controller;
 
 import model.*;
 import model.pojos.*;
+import model.pojos.openrouteservice.AutocompleteRequest;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class AddressController extends BaseController{
 
     private final ContainerManager containerManager;
     private final DbManager dbManager;
     private final GoogleMapsApi googleMapsApi;
+    private final OpenRouteServiceApi openRouteServiceApi;
     private final GraphhopperApi graphhopperApi;
     private final AddressFormatter addressFormatter;
+
+    private static Map<Integer, Integer> sessionIds = new HashMap<>();
+    private static Map<Integer, UUID> sessionTokens = new HashMap<>();
 
     public AddressController() {
         containerManager = getContainerManager();
         dbManager = getDbManager();
         googleMapsApi = getGoogleMapsApi();
+        openRouteServiceApi = getOpenRouteServiceApi();
         graphhopperApi = getGraphhopperApi();
         addressFormatter = getAddressFormatter();
+    }
+
+    public List<AutocompletePrediction> getAutocomplete(AutocompleteRequest request){
+
+        System.out.println("user id: " + request.getUserId());
+        System.out.println("Session id: " + request.getSessionId());
+        System.out.println("Query text: " + request.getQueryText());
+        System.out.println("User lat: " + request.getUserLocation().getLatitude());
+        System.out.println("User lng: " + request.getUserLocation().getLongitude());
+
+        UUID sessionToken;
+
+        int userId = request.getUserId();
+        int sessionId = request.getSessionId();
+
+        if(sessionIds.containsKey(userId)){
+            if(sessionIds.get(request.getUserId()) == sessionId){
+                sessionToken = sessionTokens.get(userId);
+            }else{
+                sessionIds.remove(userId);
+                sessionIds.put(userId, sessionId);
+                sessionToken = UUID.randomUUID();
+                sessionTokens.remove(userId);
+                sessionTokens.put(userId, sessionToken);
+            }
+        }else{
+            sessionIds.put(userId, sessionId);
+            sessionToken = UUID.randomUUID();
+            sessionTokens.put(userId, sessionToken);
+        }
+
+        System.out.println("SessionToken: " + sessionToken.toString());
+        return googleMapsApi.autocompleteAddress(sessionToken, request.getQueryText(), request.getUserLocation());
+        //return null;
     }
 
     public Address getAddress(AddressRequest request){
@@ -36,14 +80,31 @@ public class AddressController extends BaseController{
 
     private void validateAddress(Address address){
 
-        graphhopperApi.geocodeAddress(address);
+        String tempAddress = address.getAddress();
 
-        if(!address.isValid()){
-            googleMapsApi.geocodeAddress(address);
+//        printLn("Incoming address:" + tempAddress);
+
+        googleMapsApi.geocodeAddress(address);
+
+        if(!address.isValid()) {
+            graphhopperApi.geocodeAddress(address);
+        }
+
+        if(!address.isValid()) {
+            openRouteServiceApi.geocodeAddress(address);
         }
 
         if(address.isValid()){
             addressFormatter.format(address);
+
+            String street = tempAddress.split(",")[0];
+
+            if(!street.equalsIgnoreCase(address.getStreet())){
+                address.setStreet(street);
+                address.setAddress(street+", "+address.getPostCode()+" "+address.getCity()+", "+address.getCountry());
+//                Removes everything after last digit (Does not work in this case "Nieuwe Binnenweg 271B-01")
+//                address.setStreet(address.getStreet().replaceAll("[^\\d]*$", ""));
+            }
         }
 
         if(address.isValid()){

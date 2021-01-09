@@ -2,12 +2,13 @@ package model;
 
 import com.google.gson.JsonSyntaxException;
 import model.pojos.Address;
-import model.pojos.graphhopper.GeocodingResults;
-import model.pojos.graphhopper.RouteOptimizationRequest;
-import model.pojos.graphhopper.RouteOptimizationResponse;
+import model.pojos.graphhopper.*;
+import model.services.GraphhopperApiService;
 import retrofit2.Call;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GraphhopperApi {
 
@@ -54,7 +55,7 @@ public class GraphhopperApi {
                     }
 
                 }else{
-                    System.out.println("No geocoding results from graphhopper");
+                    System.out.println("Graphhopper Geocoding request failed for: " + address.getAddress());
                 }
 
             }
@@ -64,7 +65,73 @@ public class GraphhopperApi {
         }
     }
 
-    public RouteOptimizationResponse routeOptimization(RouteOptimizationRequest request){
+    public RouteOptimizationResponse optimizedRoute(Address startLocation, Address endLocation, List<Address> stopList){
+        return buildRouteOptimizationRequest(startLocation, endLocation, stopList);
+    }
+
+    private RouteOptimizationResponse buildRouteOptimizationRequest(Address startLocation, Address endLocation, List<Address> stopList){
+
+        RouteOptimizationRequest routeOptimizationRequest = new RouteOptimizationRequest();
+        RouteOptimizationRequestWithEndAddress routeOptimizationRequestWithEndAddress = new RouteOptimizationRequestWithEndAddress();
+
+        List<Vehicle> vehicles = new ArrayList<>();
+        List<VehicleWithEndAddress> vehiclesWithEndAddresses = new ArrayList<>();
+
+        List<Service> services = new ArrayList<>();
+
+        routeOptimizationRequest.setVehicles(vehicles);
+        routeOptimizationRequest.setServices(services);
+        routeOptimizationRequestWithEndAddress.setVehicles(vehiclesWithEndAddresses);
+        routeOptimizationRequestWithEndAddress.setServices(services);
+
+        Vehicle vehicle = new Vehicle();
+        VehicleWithEndAddress vehicleWithEndAddress = new VehicleWithEndAddress();
+        vehicle.setVehicle_id("my_vehicle");
+        vehicleWithEndAddress.setVehicle_id("my_vehicle");
+
+        StartAddress startAddress = new StartAddress();
+        startAddress.setLocation_id(startLocation.getAddress());
+        startAddress.setLat(startLocation.getLat());
+        startAddress.setLon(startLocation.getLng());
+
+        vehicle.setStart_address(startAddress);
+        vehicleWithEndAddress.setStart_address(startAddress);
+
+        if (endLocation == null) {
+            vehicle.setReturn_to_depot(false);
+            routeOptimizationRequestWithEndAddress = null;
+        } else {
+            EndAddress endAddress = new EndAddress();
+            endAddress.setLocation_id(endLocation.getAddress());
+            endAddress.setLat(endLocation.getLat());
+            endAddress.setLon(endLocation.getLng());
+            vehicleWithEndAddress.setEnd_address(endAddress);
+            routeOptimizationRequest = null;
+        }
+
+        vehicles.add(vehicle);
+        vehiclesWithEndAddresses.add(vehicleWithEndAddress);
+
+        for(Address address : stopList){
+            Service service = new Service();
+            service.setId(address.getAddress());
+            service.setName("delivery for: "+address.getAddress());
+            model.pojos.graphhopper.Address serviceAddress = new model.pojos.graphhopper.Address();
+            serviceAddress.setLocation_id(address.getAddress());
+            serviceAddress.setLat(address.getLat());
+            serviceAddress.setLon(address.getLng());
+            service.setAddress(serviceAddress);
+            services.add(service);
+        }
+
+        if(routeOptimizationRequest != null){
+            return getOptimizedRoute(routeOptimizationRequest);
+        }else{
+           return getOptimizedRoute(routeOptimizationRequestWithEndAddress);
+        }
+    }
+
+    private RouteOptimizationResponse getOptimizedRoute(RouteOptimizationRequest request){
 
         Call<RouteOptimizationResponse> call = graphhopperApiService.routingRequest(
                 request,
@@ -79,4 +146,23 @@ public class GraphhopperApi {
         }
         return routeOptimizationResponse;
     }
+
+    private RouteOptimizationResponse getOptimizedRoute(RouteOptimizationRequestWithEndAddress request){
+
+        Call<RouteOptimizationResponse> call = graphhopperApiService.routingRequest(
+                request,
+                apiKey
+        );
+
+        RouteOptimizationResponse routeOptimizationResponse = new RouteOptimizationResponse();
+        try {
+            routeOptimizationResponse = call.execute().body();
+        } catch (IOException | JsonSyntaxException e) {
+            System.out.println("GraphhopperApi request failed for: ");
+        }
+        return routeOptimizationResponse;
+    }
+
+
+
 }

@@ -4,15 +4,15 @@ import java.util.List;
 
 public class OptimizedRoute {
 
-    Address originAddress;
+    Address endLocation;
     List<Drive> organizedRoute;
 
-    public Address getOriginAddress() {
-        return originAddress;
+    public Address getEndLocation() {
+        return endLocation;
     }
 
-    public void setOriginAddress(Address originAddress) {
-        this.originAddress = originAddress;
+    public void setEndLocation(Address endLocation) {
+        this.endLocation = endLocation;
     }
 
     public List<Drive> getOrganizedRoute() {
