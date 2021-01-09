@@ -1,6 +1,7 @@
 package model;
 
 import com.google.maps.*;
+import com.google.maps.PlaceDetailsRequest;
 import com.google.maps.errors.ApiException;
 import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.*;
@@ -18,7 +19,6 @@ public class GoogleMapsApi {
 
     private final GeoApiContext context;
     private final AddressFormatter formatter;
-
 
     static int geoRequest = 0;
     static int textSearchQueryRequest = 0;
@@ -78,7 +78,6 @@ public class GoogleMapsApi {
     public void getPlaceDetails(String placeId, UUID sessionId) {
 
         PlaceDetails placeDetails;
-        PlaceDetailsRequest request;
 
         try {
             placeDetails = PlacesApi.placeDetails(context, placeId)

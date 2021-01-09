@@ -64,6 +64,11 @@ public class AddressController extends BaseController{
         //return null;
     }
 
+    public Address getPlaceDetails(AddressRequest request){
+
+        return null;
+    }
+
     public Address getAddress(AddressRequest request){
 
         Address address = new Address();
