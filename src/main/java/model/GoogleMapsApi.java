@@ -19,8 +19,6 @@ public class GoogleMapsApi {
 
     private final GeoApiContext context;
     private final AddressFormatter formatter;
-    //    private final String apiKey = "AIzaSyAxDpHfocbtkDGFblUL5ihe8X2Rtt3duww"; //(test)
-    private final String apiKey = "AIzaSyAguwrwu7jVwoaqqoXo1YHFwk2NepOV-6E"; //(work)
 
     static int geoRequest = 0;
     static int textSearchQueryRequest = 0;
