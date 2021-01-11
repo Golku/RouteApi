@@ -18,8 +18,8 @@ public class AddressController extends BaseController{
     private final GraphhopperApi graphhopperApi;
     private final AddressFormatter addressFormatter;
 
-    private static Map<Integer, Integer> sessionIds = new HashMap<>();
-    private static Map<Integer, UUID> sessionTokens = new HashMap<>();
+    private static final Map<Integer, Integer> sessionIds = new HashMap<>();
+    private static final Map<Integer, UUID> sessionTokens = new HashMap<>();
 
     public AddressController() {
         containerManager = getContainerManager();
@@ -59,17 +59,37 @@ public class AddressController extends BaseController{
             sessionTokens.put(userId, sessionToken);
         }
 
-        System.out.println("SessionToken: " + sessionToken.toString());
+        System.out.println("SessionToken autocomplete: " + sessionToken.toString());
         return googleMapsApi.autocompleteAddress(sessionToken, request.getQueryText(), request.getUserLocation());
-        //return null;
-    }
-
-    public Address getPlaceDetails(AddressRequest request){
-
-        return null;
     }
 
     public Address getAddress(AddressRequest request){
+
+        Address address = new Address();
+
+        if(sessionTokens.get(request.getUserId()) != null){
+            System.out.println("SessionToken placeDetails: " + sessionTokens.get(request.getUserId()).toString());
+        }
+
+        if(!request.getPlaceId().trim().isEmpty()){
+            googleMapsApi.getPlaceDetails(address, request.getPlaceId(), sessionTokens.get(request.getUserId()));
+        }else if(!request.getAddress().trim().isEmpty()){
+            address.setAddress(request.getAddress());
+            googleMapsApi.geocodeAddress(address);
+        }
+
+        if(address.isValid()){
+            addressFormatter.format(address);
+        }
+
+        if(address.isValid()){
+            dbManager.getAddressInfo(address);
+        }
+
+        return address;
+    }
+
+    public Address getAddressDec(AddressRequest request){
 
         Address address = new Address();
         address.setAddress(request.getAddress());
@@ -77,7 +97,7 @@ public class AddressController extends BaseController{
         validateAddress(address);
 
         if(address.isValid()) {
-            containerManager.putAddressInList(request.getUsername(), address);
+            //containerManager.putAddressInList(request.getUsername(), address);
         }
 
         return address;
@@ -115,8 +135,8 @@ public class AddressController extends BaseController{
         if(address.isValid()){
             googleMapsApi.searchForBusinessNearAddress(address);
             googleMapsApi.searchForBusinessNearLocation(address);
-            if(address.getBusinessName() != null && address.getBusinessName().size() > 0){
-                address.setChosenBusinessName(address.getBusinessName().get(0));
+            if(address.getBusinessNames() != null && address.getBusinessNames().size() > 0){
+                address.setChosenBusinessName(address.getBusinessNames().get(0));
             }
         }
 

@@ -12,7 +12,6 @@ import java.util.List;
 
 public class OpenRouteServiceApi {
 
-    private final String apiKey = "5b3ce3597851110001cf624899effb59381240569b659067599f6881";
     private final OpenRouteServiceService openRouteServiceService;
 
     public OpenRouteServiceApi(OpenRouteServiceService openRouteServiceService) {

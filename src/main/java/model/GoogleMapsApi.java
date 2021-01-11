@@ -19,8 +19,6 @@ public class GoogleMapsApi {
 
     private final GeoApiContext context;
     private final AddressFormatter formatter;
-    //    private final String apiKey = "AIzaSyAxDpHfocbtkDGFblUL5ihe8X2Rtt3duww"; //(test)
-    private final String apiKey = "AIzaSyAguwrwu7jVwoaqqoXo1YHFwk2NepOV-6E"; //(work)
 
     static int geoRequest = 0;
     static int textSearchQueryRequest = 0;
@@ -34,9 +32,7 @@ public class GoogleMapsApi {
         formatter = new AddressFormatter();
     }
 
-    public List<model.pojos.AutocompletePrediction> autocompleteAddress(
-            UUID sessionId,
-            String queryText,
+    public List<model.pojos.AutocompletePrediction> autocompleteAddress(UUID sessionId, String queryText,
             model.pojos.LatLng userLocation) {
 
         AutocompletePrediction[] autocompletePredictions;
@@ -58,18 +54,17 @@ public class GoogleMapsApi {
 
             if (autocompletePredictions.length > 0) {
                 for (AutocompletePrediction prediction : autocompletePredictions) {
-                    System.out.println(prediction.description);
+                    //System.out.println(prediction.description);
                     model.pojos.AutocompletePrediction autocompletePrediction = new model.pojos.AutocompletePrediction(
                             prediction.placeId,
                             prediction.structuredFormatting.mainText,
                             prediction.structuredFormatting.secondaryText
                     );
-                    predictions.add(autocompletePrediction);
+                    if(predictions.size()<4){
+                        predictions.add(autocompletePrediction);
+                    }
                 }
-            } else {
-                System.out.println("Empty");
             }
-
         } catch (ApiException | IOException | InterruptedException | IndexOutOfBoundsException e) {
             System.out.println("searchForBusinessNearAddress in GoogleMapsApi.java: ");
         }
@@ -77,20 +72,21 @@ public class GoogleMapsApi {
         return predictions;
     }
 
-    public void getPlaceDetails(String placeId, UUID sessionId) {
+    public void getPlaceDetails(Address address, String placeId, UUID sessionId) {
 
         PlaceDetails placeDetails;
 
         try {
             placeDetails = PlacesApi.placeDetails(context, placeId)
                     .sessionToken(new PlaceAutocompleteRequest.SessionToken(sessionId))
-                    .fields(PlaceDetailsRequest.FieldMask.GEOMETRY_LOCATION)
-                    .fields(PlaceDetailsRequest.FieldMask.FORMATTED_ADDRESS)
+                    .fields(PlaceDetailsRequest.FieldMask.FORMATTED_ADDRESS, PlaceDetailsRequest.FieldMask.GEOMETRY_LOCATION)
                     .await();
 
             if (placeDetails != null) {
-                System.out.println("Address: " + placeDetails.formattedAddress);
-                System.out.println("Location: " + placeDetails.geometry.location.toString());
+                address.setValid(true);
+                address.setAddress(placeDetails.formattedAddress);
+                address.setLat(placeDetails.geometry.location.lat);
+                address.setLng(placeDetails.geometry.location.lng);
             }
         } catch (ApiException | IOException | InterruptedException e) {
             System.out.println("getAddressDetails in GoogleMapsApi.java: ");
@@ -222,14 +218,14 @@ public class GoogleMapsApi {
     }
 
     public void addCompanyName(Address address, String companyName) {
-        if (address.getBusinessName() == null) {
-            address.setBusinessName(new ArrayList<String>());
+        if (address.getBusinessNames() == null) {
+            address.setBusinessNames(new ArrayList<String>());
         }
-        if (!address.getBusinessName().contains(companyName) && !companyName.equals(address.getStreet())) {
+        if (!address.getBusinessNames().contains(companyName) && !companyName.equals(address.getStreet())) {
             address.setBusiness(true);
 //            System.out.println("Adding: " + companyName);
 //            System.out.println("");
-            address.getBusinessName().add(companyName);
+            address.getBusinessNames().add(companyName);
         }
     }
 
@@ -245,11 +241,11 @@ public class GoogleMapsApi {
 
                         address.setBusiness(true);
 
-                        if (address.getBusinessName() == null) {
-                            address.setBusinessName(new ArrayList<String>());
+                        if (address.getBusinessNames() == null) {
+                            address.setBusinessNames(new ArrayList<String>());
                         }
 
-                        address.getBusinessName().add(placeDetails.name);
+                        address.getBusinessNames().add(placeDetails.name);
 
 //                        System.out.println("Name: "+placeDetails.name);
 //                        System.out.println("");
@@ -268,8 +264,8 @@ public class GoogleMapsApi {
                 System.out.println("getAddressDetails in GoogleMapsApi.java: " + address.getAddress());
             }
         }
-        if (address.getBusinessName() != null && !address.getBusinessName().get(0).isEmpty()) {
-            address.setChosenBusinessName(address.getBusinessName().get(0));
+        if (address.getBusinessNames() != null && !address.getBusinessNames().get(0).isEmpty()) {
+            address.setChosenBusinessName(address.getBusinessNames().get(0));
         }
     }
 

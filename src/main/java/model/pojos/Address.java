@@ -20,7 +20,7 @@ public class Address {
     private Notes notes;
     private boolean business;
     private String chosenBusinessName;
-    private List<String> businessName;
+    private List<String> businessNames;
     private HashMap<String, String[]> weekdayText;
 
     public boolean isValid() {
@@ -127,12 +127,12 @@ public class Address {
         this.chosenBusinessName = chosenBusinessName;
     }
 
-    public List<String> getBusinessName() {
-        return businessName;
+    public List<String> getBusinessNames() {
+        return businessNames;
     }
 
-    public void setBusinessName(List<String> businessName) {
-        this.businessName = businessName;
+    public void setBusinessNames(List<String> businessNames) {
+        this.businessNames = businessNames;
     }
 
     public HashMap<String, String[]> getWeekdayText() {

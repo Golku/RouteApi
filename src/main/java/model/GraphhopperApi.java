@@ -12,7 +12,6 @@ import java.util.List;
 
 public class GraphhopperApi {
 
-    private final String apiKey = "817cc600-c9a5-4a1f-84dd-357aac783c9d";
     private final GraphhopperApiService graphhopperApiService;
 
     public GraphhopperApi(GraphhopperApiService graphhopperApiService) {
