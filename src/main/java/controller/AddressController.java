@@ -63,8 +63,9 @@ public class AddressController extends BaseController{
         return googleMapsApi.autocompleteAddress(sessionToken, request.getQueryText(), request.getUserLocation());
     }
 
-    public Address getAddress(AddressRequest request){
+    public AddressResponse getAddress(AddressRequest request){
 
+        AddressResponse response = new AddressResponse();
         Address address = new Address();
 
         if(sessionTokens.get(request.getUserId()) != null){
@@ -84,9 +85,11 @@ public class AddressController extends BaseController{
 
         if(address.isValid()){
             dbManager.getAddressInfo(address);
+            response.setValid(true);
+            response.setAddress(address);
         }
 
-        return address;
+        return response;
     }
 
     public Address getAddressDec(AddressRequest request){

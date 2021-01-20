@@ -3,6 +3,7 @@ package com.RouteApi;
 import controller.AddressController;
 import model.pojos.Address;
 import model.pojos.AddressRequest;
+import model.pojos.AddressResponse;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -16,7 +17,7 @@ public class GetAddress {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Address addressRequest(AddressRequest request) {
+    public AddressResponse addressRequest(AddressRequest request) {
         return new AddressController().getAddress(request);
     }
 }

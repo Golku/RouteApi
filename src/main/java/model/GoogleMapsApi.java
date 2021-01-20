@@ -58,7 +58,7 @@ public class GoogleMapsApi {
                     model.pojos.AutocompletePrediction autocompletePrediction = new model.pojos.AutocompletePrediction(
                             prediction.placeId,
                             prediction.structuredFormatting.mainText,
-                            prediction.structuredFormatting.secondaryText
+                            prediction.structuredFormatting.secondaryText.split(",")[0]
                     );
                     if(predictions.size()<4){
                         predictions.add(autocompletePrediction);
